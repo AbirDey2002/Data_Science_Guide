@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Modelling — Study Guide</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root {
+  --bg:        #0d1117;
+  --surface:   #161b22;
+  --surface2:  #1c2128;
+  --border:    #30363d;
+  --text:      #e6edf3;
+  --muted:     #8b949e;
+  --blue:      #4f8ef7;
+  --gold:      #e2c97e;
+  --green:     #7ee8a2;
+  --amber:     #f0a957;
+  --red:       #f47067;
+  --purple:    #c084fc;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* TOC Sidebar */
+.toc-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 24px 0;
+}
+
+.toc-sidebar .toc-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 20px 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.toc-sidebar a {
+  display: block;
+  padding: 5px 20px;
+  font-size: 12.5px;
+  color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.toc-sidebar a:hover { color: var(--text); background: var(--surface2); }
+.toc-sidebar a.active { color: var(--blue); border-left-color: var(--blue); background: rgba(79,142,247,0.07); }
+.toc-sidebar a.toc-h1 { font-weight: 600; color: var(--text); font-size: 12px; margin-top: 8px; }
+.toc-sidebar a.toc-h2 { padding-left: 32px; font-size: 12px; }
+.toc-sidebar a.toc-h3 { padding-left: 44px; font-size: 11.5px; }
+
+/* Main content */
+.main {
+  flex: 1;
+  max-width: 900px;
+  padding: 48px 48px 80px;
+  overflow-x: hidden;
+}
+
+/* Hero */
+.hero {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+
+.hero h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.hero-meta {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid;
+}
+.badge-blue  { color: var(--blue);   border-color: var(--blue);   background: rgba(79,142,247,0.1); }
+.badge-gold  { color: var(--gold);   border-color: var(--gold);   background: rgba(226,201,126,0.1); }
+.badge-green { color: var(--green);  border-color: var(--green);  background: rgba(126,232,162,0.1); }
+.badge-amber { color: var(--amber);  border-color: var(--amber);  background: rgba(240,169,87,0.1); }
+.badge-red   { color: var(--red);    border-color: var(--red);    background: rgba(244,112,103,0.1); }
+
+/* Topic cards */
+.topic-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+}
+
+.checkpoint-header {
+  background: linear-gradient(135deg, #1a2550, #141c38);
+  border: 1px solid #2a3a70;
+  border-left: 4px solid var(--blue);
+  border-radius: 10px;
+  padding: 20px 28px;
+  margin-bottom: 16px;
+  margin-top: 40px;
+}
+
+.checkpoint-header .cp-num {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+
+.checkpoint-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.checkpoint-header p { font-size: 13.5px; color: var(--muted); }
+
+h2.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 18px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+p { font-size: 13.5px; color: var(--muted); margin-bottom: 10px; line-height: 1.75; }
+
+.intro-text { font-size: 14px; color: var(--text); margin-bottom: 16px; }
+
+/* Tags */
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 16px; }
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+.tag-when  { background: rgba(79,142,247,0.15); color: var(--blue);  }
+.tag-warn  { background: rgba(240,169,87,0.15);  color: var(--amber); }
+.tag-good  { background: rgba(126,232,162,0.15); color: var(--green); }
+.tag-drop  { background: rgba(244,112,103,0.15); color: var(--red);   }
+
+/* Formula blocks */
+.formula-block {
+  background: #090916;
+  border: 1px solid #2a2a50;
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin: 14px 0;
+  overflow-x: auto;
+}
+
+.formula-block .katex-display { margin: 4px 0; }
+.formula-label { font-size: 12px; color: var(--muted); margin-top: 8px; margin-bottom: 0; }
+
+/* Gotchas */
+.gotcha {
+  background: rgba(240,169,87,0.08);
+  border: 1px solid rgba(240,169,87,0.3);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--amber);
+}
+
+.gotcha strong { font-weight: 700; }
+
+/* Decision blocks */
+.decision-block {
+  background: rgba(126,232,162,0.05);
+  border: 1px solid rgba(126,232,162,0.2);
+  border-left: 3px solid var(--green);
+  border-radius: 0 6px 6px 0;
+  padding: 12px 16px;
+  margin: 14px 0;
+}
+
+.decision-block .d-title {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--green);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.decision-block ul { padding-left: 18px; }
+.decision-block li { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 16px 0;
+}
+
+th {
+  background: var(--surface2);
+  color: var(--text);
+  font-weight: 600;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--border);
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+
+td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  vertical-align: top;
+}
+
+td:first-child { color: var(--text); font-weight: 500; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Code blocks */
+pre {
+  margin: 14px 0;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+
+pre code { font-size: 12.5px; line-height: 1.7; }
+
+.code-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1e2a1e;
+  border: 1px solid #2a3a2a;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: 6px 14px;
+}
+.code-label span { font-size: 11px; color: var(--green); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+.code-label + pre { border-radius: 0 0 8px 8px; margin-top: 0; }
+
+/* Section dividers */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
+}
+
+/* Concept table section */
+#concept-table .topic-card,
+#formula-sheet .topic-card,
+#code-appendix .topic-card {
+  overflow-x: auto;
+}
+
+/* Inline code */
+code:not(pre code) {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 12px;
+  color: var(--amber);
+}
+
+/* Back to top */
+#back-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: none;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  z-index: 100;
+}
+
+#back-to-top svg { width: 16px; height: 16px; stroke: white; }
+
+/* Print styles */
+@media print {
+  .toc-sidebar { display: none; }
+  .main { padding: 20px; }
+  .topic-card { break-inside: avoid; box-shadow: none; }
+  #back-to-top { display: none !important; }
+}
+
+@media (max-width: 768px) {
+  .toc-sidebar { display: none; }
+  .main { padding: 24px 20px; }
+}
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- TOC Sidebar -->
+<nav class="toc-sidebar">
+  <div class="toc-title">Contents</div>
+  <a href="#intro" class="toc-h1">What is Pre-Modelling?</a>
+  <a href="#pipeline" class="toc-h1">Pipeline Position</a>
+  <a href="#cp1" class="toc-h1">Checkpoint 1 — Variable Relevance</a>
+  <a href="#cont-cont" class="toc-h2">Continuous vs Continuous</a>
+  <a href="#pearson" class="toc-h3">Pearson Correlation</a>
+  <a href="#spearman" class="toc-h3">Spearman Correlation</a>
+  <a href="#vif" class="toc-h3">VIF</a>
+  <a href="#multicollinearity" class="toc-h2">Multicollinearity Problem</a>
+  <a href="#cat-cont" class="toc-h2">Categorical vs Continuous</a>
+  <a href="#anova" class="toc-h3">t-test / ANOVA</a>
+  <a href="#nonparam" class="toc-h3">Mann-Whitney / Kruskal-Wallis</a>
+  <a href="#tukey" class="toc-h3">Tukey HSD</a>
+  <a href="#cat-cat" class="toc-h2">Categorical vs Categorical</a>
+  <a href="#chisq" class="toc-h3">Chi-Square</a>
+  <a href="#cramersv" class="toc-h3">Cramér's V</a>
+  <a href="#fisher" class="toc-h3">Fisher's Exact</a>
+  <a href="#cp2" class="toc-h1">Checkpoint 2 — Assumptions</a>
+  <a href="#normality" class="toc-h2">Normality Testing</a>
+  <a href="#homoscedasticity" class="toc-h2">Homoscedasticity</a>
+  <a href="#linearity" class="toc-h2">Linearity Assessment</a>
+  <a href="#cp3" class="toc-h1">Checkpoint 3 — Relationships</a>
+  <a href="#interactions" class="toc-h2">Interaction Effects</a>
+  <a href="#confounding" class="toc-h2">Confounding</a>
+  <a href="#cp4" class="toc-h1">Checkpoint 4 — Target</a>
+  <a href="#target-dist" class="toc-h2">Target Distribution</a>
+  <a href="#imbalance" class="toc-h2">Class Imbalance</a>
+  <a href="#outliers" class="toc-h2">Target Outliers</a>
+  <a href="#leakage" class="toc-h2">Target Leakage</a>
+  <a href="#concept-table" class="toc-h1">All Concepts at a Glance</a>
+  <a href="#formula-sheet" class="toc-h1">Formula Reference Sheet</a>
+  <a href="#code-appendix" class="toc-h1">Python Code Reference</a>
+</nav>
+
+<!-- Main -->
+<main class="main">
+
+<!-- Hero -->
+<div class="hero" id="top">
+  <div class="hero-label">Study Guide — Data Science</div>
+  <h1>Pre-Modelling</h1>
+  <div class="hero-meta">A complete framework for validating data before training any model</div>
+  <div class="badge-row">
+    <span class="badge badge-blue">Statistics</span>
+    <span class="badge badge-gold">4 Checkpoints</span>
+    <span class="badge badge-green">13 Categories</span>
+    <span class="badge badge-amber">30+ Tests</span>
+    <span class="badge badge-red">Python Code</span>
+  </div>
+</div>
+
+<!-- ────────────────────────────── INTRO ────────────────────────────── -->
+<section id="intro">
+  <div class="topic-card">
+    <h2 class="section-title">What is Pre-Modelling?</h2>
+    <p class="intro-text">Pre-modelling is the systematic process of interrogating your data <strong>before training any model</strong>. Think of it as the soil check before laying a building's foundations — you wouldn't start laying bricks without verifying the ground is stable.</p>
+    <p>It answers three fundamental questions:</p>
+    <div class="tag-row">
+      <span class="tag tag-when">Is my data healthy enough to model?</span>
+      <span class="tag tag-when">Do my variables carry useful signal?</span>
+      <span class="tag tag-when">Am I violating my model's assumptions?</span>
+    </div>
+
+    <h3>Why it matters</h3>
+    <p>Models are blind optimists — they will find patterns whether or not they exist. Skipping pre-modelling leads to:</p>
+    <div class="gotcha"><strong>Overfitting</strong> — model memorises noise instead of signal</div>
+    <div class="gotcha"><strong>Multicollinearity</strong> — variables silently cancelling each other out</div>
+    <div class="gotcha"><strong>Biased coefficients</strong> — model lying confidently</div>
+    <div class="gotcha"><strong>Wasted compute</strong> — training on zero-signal variables</div>
+
+    <h3>EDA vs Pre-Modelling</h3>
+    <table>
+      <thead><tr><th>EDA</th><th>Pre-Modelling</th></tr></thead>
+      <tbody>
+        <tr><td>Visual and descriptive</td><td>Statistical and prescriptive</td></tr>
+        <tr><td>Asks "what do I see?"</td><td>Asks "what does this mean for my model?"</td></tr>
+        <tr><td>Observation</td><td>Decision-making</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ────────────────────────────── PIPELINE ────────────────────────────── -->
+<section id="pipeline">
+  <div class="topic-card">
+    <h2 class="section-title">Where Pre-Modelling Fits</h2>
+    <p class="intro-text">Pre-modelling sits <strong>after data cleaning</strong> and <strong>before feature engineering</strong>. It's the bridge between "I have data" and "I'm ready to model."</p>
+    <table>
+      <thead><tr><th>Stage</th><th>What You're Doing</th></tr></thead>
+      <tbody>
+        <tr><td>Data Collection</td><td>Gathering raw data</td></tr>
+        <tr><td>Data Cleaning</td><td>Fixing nulls, types, duplicates</td></tr>
+        <tr><td style="color:var(--gold); font-weight:700;">Pre-Modelling ★</td><td style="color:var(--gold);">Understanding, testing, validating your data</td></tr>
+        <tr><td>Feature Engineering</td><td>Creating/transforming variables</td></tr>
+        <tr><td>Modelling</td><td>Training your algorithm</td></tr>
+        <tr><td>Evaluation</td><td>Measuring performance</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- CHECKPOINT 1 -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="cp1" class="checkpoint-header">
+  <div class="cp-num">Checkpoint 1</div>
+  <h2>Variable Relevance</h2>
+  <p>Does each variable deserve a seat at the table? Test choice depends on the type pairing between predictor and target.</p>
+</div>
+
+<!-- Continuous vs Continuous -->
+<section id="cont-cont">
+  <div class="topic-card">
+    <h2 class="section-title">Continuous vs Continuous</h2>
+    <p class="intro-text">When both predictor and target are continuous, you measure how strongly and consistently they move together. Always pair visual checks (scatter plots) with statistical tests.</p>
+
+    <!-- Pearson -->
+    <div id="pearson">
+      <h3>Pearson Correlation</h3>
+      <div class="tag-row">
+        <span class="tag tag-when">When: both variables are roughly normal</span>
+        <span class="tag tag-when">When: relationship is expected to be linear</span>
+        <span class="tag tag-warn">Sensitive to outliers</span>
+      </div>
+      <p>Measures the strength and direction of a <strong>linear</strong> relationship. Output r ranges from -1 to +1.</p>
+      <div class="formula-block">
+        $$r = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum(x_i-\bar{x})^2 \cdot \sum(y_i-\bar{y})^2}}$$
+        <p class="formula-label">|r| &lt; 0.1 = negligible · 0.1–0.3 = weak · 0.3–0.5 = moderate · &gt;0.5 = strong</p>
+      </div>
+      <pre><code class="language-python">from scipy.stats import pearsonr
+
+for col in num_cols:
+    if col != target:
+        r, p = pearsonr(df[col].dropna(), df[target].dropna())
+        print(f"{col}: r={r:.3f}, p={p:.4f}")</code></pre>
+    </div>
+
+    <!-- Spearman -->
+    <div id="spearman">
+      <h3>Spearman Correlation</h3>
+      <div class="tag-row">
+        <span class="tag tag-when">When: data is skewed or has outliers</span>
+        <span class="tag tag-when">When: relationship is monotonic but possibly curved</span>
+      </div>
+      <p>Non-parametric. Computes Pearson on the <strong>ranks</strong> rather than raw values — robust to outliers and non-normal distributions.</p>
+      <div class="formula-block">
+        $$\rho = 1 - \frac{6\sum d_i^2}{n(n^2-1)}$$
+        <p class="formula-label">$d_i = \text{rank}(x_i) - \text{rank}(y_i)$. If Spearman &gt;&gt; Pearson, relationship is curved → flag for linearity check.</p>
+      </div>
+      <pre><code class="language-python">from scipy.stats import spearmanr, pearsonr
+
+for col in num_cols:
+    if col != target:
+        rho, _ = spearmanr(df[col].dropna(), df[target].dropna())
+        r,   _ = pearsonr(df[col].dropna(),  df[target].dropna())
+        diff = abs(rho) - abs(r)
+        flag = "⚠ CURVED" if diff > 0.1 else ""
+        print(f"{col}: Spearman={rho:.3f}, Pearson={r:.3f} {flag}")</code></pre>
+    </div>
+
+    <!-- VIF -->
+    <div id="vif">
+      <h3>VIF — Variance Inflation Factor</h3>
+      <div class="tag-row">
+        <span class="tag tag-when">When: checking for multicollinearity between predictors</span>
+        <span class="tag tag-warn">Always run — even when correlation matrix looks clean</span>
+      </div>
+      <p>Measures how well each predictor can be explained by ALL other predictors. Catches group collinearity that pairwise correlations miss.</p>
+      <div class="formula-block">
+        $$\text{VIF}_j = \frac{1}{1 - R^2_j}$$
+        <p class="formula-label">$R^2_j$ = R-squared from regressing variable $j$ on all other predictors. VIF=1 → no collinearity · VIF 1–5 → acceptable · VIF 5–10 → investigate · VIF &gt;10 → action required.</p>
+      </div>
+      <pre><code class="language-python">from statsmodels.stats.outliers_influence import variance_inflation_factor
+import statsmodels.api as sm
+
+X = sm.add_constant(df[num_cols].dropna())
+vif = pd.DataFrame({
+    "feature": X.columns,
+    "VIF": [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+}).iloc[1:]
+print(vif.sort_values("VIF", ascending=False))</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Multicollinearity -->
+<section id="multicollinearity">
+  <div class="topic-card">
+    <h2 class="section-title">The Multicollinearity Problem</h2>
+    <p class="intro-text">When two or more input variables are highly correlated with <strong>each other</strong>, the model can't tell which one deserves credit for explaining the target.</p>
+    <p>Consequences: unstable coefficients (swing wildly on small data changes), inflated standard errors, wrong variable importance. Your model may predict well but explain nothing correctly.</p>
+
+    <div class="gotcha"><strong>Key trap:</strong> The correlation matrix only catches pairwise collinearity. VIF catches group collinearity — three or four variables that are collectively linear combinations of each other, even when no single pair exceeds 0.8.</div>
+
+    <div class="decision-block">
+      <div class="d-title">When VIF > 10 — your options</div>
+      <ul>
+        <li><strong>Drop one</strong> — keep whichever correlates more strongly with the target</li>
+        <li><strong>Combine them</strong> — ratio, average, or PCA component</li>
+        <li><strong>Ridge Regression</strong> — adds $\lambda||\beta||^2$ penalty, naturally handles collinearity</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Categorical vs Continuous -->
+<section id="cat-cont">
+  <div class="topic-card">
+    <h2 class="section-title">Categorical vs Continuous</h2>
+    <p class="intro-text">Does the value of a categorical variable shift the distribution of a continuous target? If all groups produce similar distributions, the variable adds nothing.</p>
+
+    <div id="anova">
+      <h3>t-test / ANOVA</h3>
+      <div class="tag-row">
+        <span class="tag tag-when">t-test: exactly 2 groups</span>
+        <span class="tag tag-when">ANOVA: 3+ groups</span>
+        <span class="tag tag-warn">Requires approximate normality within groups</span>
+      </div>
+      <div class="formula-block">
+        $$F = \frac{MS_{between}}{MS_{within}} = \frac{\sum n_j(\bar{y}_j - \bar{y})^2 / (k-1)}{\sum\sum(y_{ij}-\bar{y}_j)^2/(N-k)}$$
+        <p class="formula-label">$k$ = number of groups, $N$ = total observations. Significant F → at least one group mean differs.</p>
+      </div>
+      <pre><code class="language-python">from scipy.stats import f_oneway, ttest_ind
+
+for col in cat_cols:
+    groups = [df[df[col]==g][target].dropna() for g in df[col].unique()]
+    if len(groups) == 2:
+        stat, p = ttest_ind(*groups)
+    else:
+        stat, p = f_oneway(*groups)
+    print(f"{col}: stat={stat:.3f}, p={p:.4f}")</code></pre>
+    </div>
+
+    <div id="nonparam">
+      <h3>Mann-Whitney U / Kruskal-Wallis</h3>
+      <div class="tag-row">
+        <span class="tag tag-when">When normality fails within groups</span>
+        <span class="tag tag-when">When data is heavily skewed or has outliers</span>
+      </div>
+      <p>Work on <strong>ranks</strong> rather than raw values. More general than their parametric equivalents — test whether distributions differ, not just means.</p>
+      <div class="formula-block">
+        $$H = \frac{12}{N(N+1)}\sum\frac{n_j\bar{R}_j^2}{1} - 3(N+1) \sim \chi^2(k-1)$$
+        <p class="formula-label">Kruskal-Wallis H statistic. $\bar{R}_j$ = mean rank in group $j$.</p>
+      </div>
+      <pre><code class="language-python">from scipy.stats import mannwhitneyu, kruskal
+
+for col in cat_cols:
+    groups = [df[df[col]==g][target].dropna() for g in df[col].unique()]
+    if len(groups) == 2:
+        stat, p = mannwhitneyu(*groups, alternative='two-sided')
+    else:
+        stat, p = kruskal(*groups)
+    print(f"{col}: stat={stat:.3f}, p={p:.4f}")</code></pre>
+    </div>
+
+    <div id="tukey">
+      <h3>Tukey HSD (post-hoc)</h3>
+      <div class="tag-row">
+        <span class="tag tag-when">After ANOVA — to find WHICH groups differ</span>
+      </div>
+      <p>ANOVA tells you <em>that</em> a difference exists. Tukey HSD identifies <em>which</em> pairs, controlling the family-wise error rate. Use results to decide whether to <strong>collapse similar groups</strong> into one category.</p>
+      <div class="formula-block">
+        $$q^* = \frac{\bar{y}_i - \bar{y}_j}{\sqrt{MS_{within}/2 \cdot (1/n_i + 1/n_j)}}$$
+        <p class="formula-label">Compared against Studentised Range distribution. Groups differ if $|q^*| > q_\alpha$.</p>
+      </div>
+      <pre><code class="language-python">from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+result = pairwise_tukeyhsd(
+    endog=df[target].dropna(),
+    groups=df[col][df[target].notna()],
+    alpha=0.05
+)
+print(result.summary())</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Categorical vs Categorical -->
+<section id="cat-cat">
+  <div class="topic-card">
+    <h2 class="section-title">Categorical vs Categorical</h2>
+    <p class="intro-text">Does knowing the category of one variable change the probability distribution of the other? Always pair Chi-Square (significance) with Cramér's V (effect size).</p>
+
+    <div id="chisq">
+      <h3>Chi-Square Test of Independence</h3>
+      <div class="tag-row">
+        <span class="tag tag-when">When: testing association between two categorical variables</span>
+        <span class="tag tag-warn">Expected cell counts must all be ≥ 5</span>
+      </div>
+      <div class="formula-block">
+        $$\chi^2 = \sum\frac{(O_{ij} - E_{ij})^2}{E_{ij}}, \quad E_{ij} = \frac{R_i \cdot C_j}{N}$$
+        <p class="formula-label">$O_{ij}$ = observed, $E_{ij}$ = expected, $df = (rows-1)(cols-1)$. Sensitive to large $N$ — always pair with Cramér's V.</p>
+      </div>
+      <pre><code class="language-python">from scipy.stats import chi2_contingency
+
+ct = pd.crosstab(df[col], df[target])
+chi2, p, dof, expected = chi2_contingency(ct)
+print(f"χ²={chi2:.2f}, p={p:.4f}, min_expected={expected.min():.1f}")</code></pre>
+    </div>
+
+    <div id="cramersv">
+      <h3>Cramér's V — Effect Size</h3>
+      <div class="tag-row">
+        <span class="tag tag-when">Always use alongside Chi-Square</span>
+        <span class="tag tag-good">Solves Chi-Square's sensitivity to large N</span>
+      </div>
+      <div class="formula-block">
+        $$V = \sqrt{\frac{\chi^2}{N \cdot \min(r-1,\, c-1)}}$$
+        <p class="formula-label">Ranges 0–1. 0.0–0.1 = negligible · 0.1–0.3 = weak · 0.3–0.5 = moderate · &gt;0.5 = strong.</p>
+      </div>
+      <pre><code class="language-python">def cramers_v(x, y):
+    ct = pd.crosstab(x, y)
+    chi2, _, _, _ = chi2_contingency(ct)
+    n = ct.sum().sum()
+    r, c = ct.shape
+    return np.sqrt(chi2 / (n * (min(r, c) - 1)))
+
+print(cramers_v(df[col], df[target]))</code></pre>
+    </div>
+
+    <div id="fisher">
+      <h3>Fisher's Exact Test</h3>
+      <div class="tag-row">
+        <span class="tag tag-when">When any expected cell count &lt; 5</span>
+        <span class="tag tag-when">Best for 2×2 tables</span>
+      </div>
+      <p>Calculates the exact probability — doesn't rely on chi-squared approximation. Use when Chi-Square assumptions are violated.</p>
+      <pre><code class="language-python">from scipy.stats import fisher_exact
+
+if ct.shape == (2, 2) and expected.min() < 5:
+    odds, p = fisher_exact(ct)
+    print(f"Fisher p={p:.4f}, OR={odds:.3f}")</code></pre>
+    </div>
+
+    <div class="decision-block">
+      <div class="d-title">Decision matrix</div>
+      <ul>
+        <li><strong>Keep</strong> if Chi-Square significant AND Cramér's V &gt; 0.1</li>
+        <li><strong>Drop</strong> if not significant</li>
+        <li><strong>Watch for quasi-separation</strong> — one category almost perfectly predicts a target class → coefficients blow up in logistic regression</li>
+        <li><strong>Merge sparse categories</strong> with &lt; 30 observations into similar groups</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- CHECKPOINT 2 -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="cp2" class="checkpoint-header">
+  <div class="cp-num">Checkpoint 2</div>
+  <h2>Distribution &amp; Assumptions</h2>
+  <p>Every model carries hidden assumptions. Violating them doesn't crash the model — it makes it quietly wrong with full confidence. Understand your data's behaviour first, then choose a model that suits it.</p>
+</div>
+
+<!-- Normality -->
+<section id="normality">
+  <div class="topic-card">
+    <h2 class="section-title">Normality Testing</h2>
+    <p class="intro-text">Checks whether a variable follows a Gaussian distribution. Critical nuance: <strong>linear regression requires residual normality, not input normality</strong>. Testing inputs here is early warning for likely residual problems downstream.</p>
+    <p>Always use visual + statistical together. Visuals tell you the shape; statistical tests tell you if it's detectable.</p>
+
+    <h3>Visual Checks First</h3>
+    <table>
+      <thead><tr><th>Plot</th><th>What to Look For</th></tr></thead>
+      <tbody>
+        <tr><td>Q-Q Plot</td><td>Points hug the diagonal line. S-curve = skewness. Both tails above line = heavy tails. Both below = light tails.</td></tr>
+        <tr><td>Histogram</td><td>Bell shape, symmetric around mean, no multiple peaks (multimodality)</td></tr>
+        <tr><td>Box Plot</td><td>Median centred, whiskers roughly equal length</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Statistical Tests</h3>
+    <table>
+      <thead><tr><th>Test</th><th>Use When</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Shapiro-Wilk</td><td>Default choice, n &lt; 2000</td><td>Gold standard; loses power at very large n</td></tr>
+        <tr><td>Jarque-Bera</td><td>Large samples or to isolate cause</td><td>Tests skewness + kurtosis separately; tells you WHY normality fails</td></tr>
+        <tr><td>Anderson-Darling</td><td>Emphasising tail behaviour</td><td>More sensitive to tail deviations</td></tr>
+      </tbody>
+    </table>
+
+    <div class="formula-block">
+      $$W = \frac{\left(\sum a_i x_{(i)}\right)^2}{\sum(x_i - \bar{x})^2}, \quad JB = \frac{n}{6}\left[S^2 + \frac{K^2}{4}\right]$$
+      <p class="formula-label">$W$ (Shapiro-Wilk) close to 1 → normal. $JB$ (Jarque-Bera): $S$ = skewness, $K$ = excess kurtosis. Both ~ 0 for a perfect normal.</p>
+    </div>
+
+    <pre><code class="language-python">from scipy.stats import shapiro, jarque_bera
+
+for col in num_cols:
+    data = df[col].dropna()
+    sample = data.sample(min(2000, len(data)), random_state=42)
+    W, p_sw = shapiro(sample)
+    jb, p_jb = jarque_bera(data)
+    print(f"{col}: SW W={W:.4f} p={p_sw:.4f} | JB={jb:.2f} p={p_jb:.4f}")</code></pre>
+
+    <div class="decision-block">
+      <div class="d-title">Fix strategy</div>
+      <ul>
+        <li>Right skew → <code>np.log1p(x)</code> or <code>np.sqrt(x)</code></li>
+        <li>Severe skew → Box-Cox: finds optimal power $\lambda$ automatically</li>
+        <li>Tree-based model → normality not required, accept and move on</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Homoscedasticity -->
+<section id="homoscedasticity">
+  <div class="topic-card">
+    <h2 class="section-title">Homoscedasticity</h2>
+    <p class="intro-text"><strong>Homo = same, scedasticity = scatter.</strong> Variance of residuals must stay constant across all predictor levels. When it fans out (heteroscedasticity), coefficients remain unbiased but standard errors become wrong — making p-values and confidence intervals unreliable.</p>
+
+    <h3>Visual Check: Residual vs Fitted Plot</h3>
+    <p>Plot residuals against fitted values. A flat horizontal band = homoscedastic. A cone/funnel = heteroscedastic. A curve = linearity problem too.</p>
+
+    <h3>Statistical Tests</h3>
+    <table>
+      <thead><tr><th>Test</th><th>Use When</th><th>Mechanism</th></tr></thead>
+      <tbody>
+        <tr><td>Breusch-Pagan</td><td>Default choice</td><td>Regresses $e_i^2$ on predictors — significant = variance depends on X</td></tr>
+        <tr><td>White's Test</td><td>Non-linear heteroscedasticity suspected</td><td>Adds squared terms and cross-products — more general but lower power</td></tr>
+        <tr><td>Levene's Test</td><td>Comparing groups</td><td>Tests equality of variance across categories</td></tr>
+      </tbody>
+    </table>
+
+    <div class="formula-block">
+      $$LM = n \cdot R^2_{aux} \sim \chi^2(k)$$
+      <p class="formula-label">Breusch-Pagan LM statistic. $R^2_{aux}$ from regressing $e_i^2$ on predictors. $k$ = number of predictors. p &lt; 0.05 → reject homoscedasticity.</p>
+    </div>
+
+    <pre><code class="language-python">from statsmodels.stats.diagnostic import het_breuschpagan, het_white
+
+model = sm.OLS(y, X).fit()
+lm, lm_p, _, _ = het_breuschpagan(model.resid, model.model.exog)
+print(f"Breusch-Pagan: LM={lm:.3f}, p={lm_p:.4f}")
+
+# If BP is borderline, also run White's:
+lm_w, lm_p_w, _, _ = het_white(model.resid, model.model.exog)
+print(f"White's Test: LM={lm_w:.3f}, p={lm_p_w:.4f}")</code></pre>
+
+    <div class="decision-block">
+      <div class="d-title">Fix strategy</div>
+      <ul>
+        <li><strong>Mild</strong> → log transform the target variable</li>
+        <li><strong>Moderate</strong> → Weighted Least Squares (WLS): $\min \sum w_i(y_i - \hat{y}_i)^2$ where $w_i = 1/\text{Var}(\epsilon_i)$</li>
+        <li><strong>Severe</strong> → HC3 robust standard errors: keeps coefficients, corrects the SEs</li>
+        <li><strong>Cannot fix</strong> → switch to tree-based models (no assumption)</li>
+      </ul>
+    </div>
+    <div class="gotcha"><strong>Connection:</strong> normality and homoscedasticity are linked. A log transform on the target often fixes both simultaneously — always recheck both after any transformation.</div>
+  </div>
+</section>
+
+<!-- Linearity -->
+<section id="linearity">
+  <div class="topic-card">
+    <h2 class="section-title">Linearity Assessment</h2>
+    <p class="intro-text">The relationship between inputs and target must follow a straight line for linear models. Non-linearity won't crash your model — it produces plausible-looking but <strong>systematically wrong</strong> coefficients in a structured, predictable way.</p>
+
+    <h3>Tests</h3>
+    <table>
+      <thead><tr><th>Method</th><th>What It Does</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>LOWESS Curve</td><td>Fits a smooth curve with no shape assumptions</td><td>Curve bends or changes direction → non-linear</td></tr>
+        <tr><td>Ramsey RESET Test</td><td>Adds polynomial fitted-value terms, tests if they improve fit</td><td>Significant p → linearity violated</td></tr>
+        <tr><td>Pearson vs Spearman</td><td>Compare linear vs monotonic correlation</td><td>Spearman &gt;&gt; Pearson → curved but consistent</td></tr>
+      </tbody>
+    </table>
+
+    <div class="formula-block">
+      $$\text{RESET: } F\text{-test on } \hat{y}^2, \hat{y}^3 \text{ added to original model}$$
+      <p class="formula-label">If adding polynomial terms significantly improves fit, the original linear form was misspecified.</p>
+    </div>
+
+    <pre><code class="language-python">from statsmodels.stats.diagnostic import linear_reset
+
+model = sm.OLS(y, X).fit()
+reset = linear_reset(model, power=3, use_f=True)
+print(f"RESET: F={reset.statistic:.3f}, p={reset.pvalue:.4f}")
+if reset.pvalue < 0.05:
+    print("⚠ Linearity violated")</code></pre>
+
+    <div class="decision-block">
+      <div class="d-title">Fix strategy</div>
+      <ul>
+        <li>Mild curve → polynomial features: $X^2$ or $X^3$</li>
+        <li>Exponential growth → log transform the variable</li>
+        <li>U-shape → polynomial terms or bin into categories</li>
+        <li>Complex shape → tree-based models or GAMs (handle non-linearity natively)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- CHECKPOINT 3 -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="cp3" class="checkpoint-header">
+  <div class="cp-num">Checkpoint 3</div>
+  <h2>Relationships Between Variables</h2>
+  <p>How do your predictors relate to <em>each other</em>? Three problems: multicollinearity (already covered in Ch.1), interaction effects, and confounding.</p>
+</div>
+
+<!-- Interactions -->
+<section id="interactions">
+  <div class="topic-card">
+    <h2 class="section-title">Interaction Effects</h2>
+    <p class="intro-text">The effect of variable A on the target <strong>changes depending on the value of variable B</strong>. This is not just two variables both influencing the target — it's them modifying each other's influence.</p>
+    <p>Example: income reduces default risk strongly for salaried employees — but barely at all for self-employed. The effect of income <em>depends on</em> employment type.</p>
+
+    <div class="gotcha"><strong>Critical:</strong> most models won't automatically create interaction terms. You must engineer them explicitly. Tree-based models are the exception — they detect interactions naturally via splits.</div>
+
+    <h3>Detection</h3>
+    <p><strong>Interaction plot:</strong> plot the relationship between continuous X and target separately for each group of a categorical variable. <strong>Crossing lines = interaction present. Parallel lines = no interaction.</strong></p>
+
+    <h3>Statistical Test</h3>
+    <p>Add a multiplication term $X_1 \times X_2$ to the model. If the coefficient is significant, the interaction is real.</p>
+
+    <div class="formula-block">
+      $$\hat{y} = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3(X_1 X_2)$$
+      <p class="formula-label">$\partial\hat{y}/\partial X_1 = \beta_1 + \beta_3 X_2$. The marginal effect of $X_1$ depends on $X_2$ — this is the interaction. Always include both main effects alongside the interaction term (hierarchy principle).</p>
+    </div>
+
+    <pre><code class="language-python">import statsmodels.api as sm
+from sklearn.preprocessing import StandardScaler
+
+# Centre before creating interaction (reduces collinearity)
+df['X1_c'] = df['X1'] - df['X1'].mean()
+df['X2_c'] = df['X2'] - df['X2'].mean()
+df['X1_X2'] = df['X1_c'] * df['X2_c']
+
+X_interact = sm.add_constant(df[['X1_c', 'X2_c', 'X1_X2']].dropna())
+model = sm.OLS(df[target][X_interact.index], X_interact).fit()
+print(f"Interaction p-value: {model.pvalues['X1_X2']:.4f}")</code></pre>
+  </div>
+</section>
+
+<!-- Confounding -->
+<section id="confounding">
+  <div class="topic-card">
+    <h2 class="section-title">Confounding</h2>
+    <p class="intro-text">A third variable C drives both X and Y, creating a spurious or exaggerated X→Y relationship. Classic example: ice cream sales and drowning rates correlate — not because ice cream causes drowning, but because <em>temperature</em> drives both.</p>
+
+    <div class="two-col">
+      <div>
+        <h3>vs. Interaction</h3>
+        <p><strong>Interaction:</strong> two variables modify each other's effect on the target.</p>
+        <p><strong>Confounding:</strong> a third variable secretly drives what looks like a direct relationship.</p>
+      </div>
+      <div>
+        <h3>Types of Bias</h3>
+        <p><strong>Confounder in dataset:</strong> model misattributes its effect.</p>
+        <p><strong>Confounder absent:</strong> omitted variable bias — systematic wrongness you may never detect.</p>
+      </div>
+    </div>
+
+    <h3>Detection: Correlation Triangle</h3>
+    <p>Ask: Does A↔B weaken substantially when you control for C? If yes → C is confounding the relationship.</p>
+
+    <h3>Detection: Partial Correlation</h3>
+    <div class="formula-block">
+      $$r_{AB \cdot C} = \frac{r_{AB} - r_{AC} \cdot r_{BC}}{\sqrt{(1-r_{AC}^2)(1-r_{BC}^2)}}$$
+      <p class="formula-label">If $|r_{AB \cdot C}| \ll |r_{AB}|$ → C is confounding. If $r_{AB \cdot C} \approx 0$ → relationship was entirely spurious.</p>
+    </div>
+
+    <pre><code class="language-python">import pingouin as pg
+
+result = pg.partial_corr(
+    data=df.dropna(),
+    x='X1', y=target,
+    covar=['confounder']
+)
+print(result[['r', 'p-val']])</code></pre>
+
+    <div class="decision-block">
+      <div class="d-title">Action</div>
+      <ul>
+        <li>Confounder in dataset → add as a control variable in the model</li>
+        <li>Confounder absent → acknowledge as a limitation (omitted variable bias)</li>
+        <li>Spurious relationship found → drop one variable; they're not telling independent stories</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- CHECKPOINT 4 -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="cp4" class="checkpoint-header">
+  <div class="cp-num">Checkpoint 4</div>
+  <h2>Target Variable Behaviour</h2>
+  <p>Every prior checkpoint examined inputs. This examines what you're trying to predict. Your target's distribution drives every downstream modelling decision.</p>
+</div>
+
+<!-- Target Distribution -->
+<section id="target-dist">
+  <div class="topic-card">
+    <h2 class="section-title">Target Distribution</h2>
+    <p class="intro-text">The shape of the target determines which model family is appropriate. Most people default to linear or logistic regression without checking. Using a linear model on count data can predict negative counts — this is wrong.</p>
+    <table>
+      <thead><tr><th>Target Distribution</th><th>Appropriate Model Family</th></tr></thead>
+      <tbody>
+        <tr><td>Continuous, normal</td><td>Linear Regression (OLS)</td></tr>
+        <tr><td>Continuous, skewed</td><td>Linear Regression + log transform, or Gradient Boosting</td></tr>
+        <tr><td>Binary (0/1)</td><td>Logistic Regression, tree-based classifiers</td></tr>
+        <tr><td>Count (0,1,2,3...)</td><td>Poisson Regression or Negative Binomial</td></tr>
+        <tr><td>Heavily zero-inflated</td><td>Zero-inflated Poisson / hurdle models</td></tr>
+        <tr><td>Time to event</td><td>Survival models (Cox proportional hazards)</td></tr>
+      </tbody>
+    </table>
+    <pre><code class="language-python">import scipy.stats as stats
+import numpy as np
+
+data = df[target].dropna()
+print(f"Skewness: {data.skew():.3f}")
+print(f"Kurtosis: {data.kurtosis():.3f}")
+
+# Test against distributions
+for dist in ['norm', 'lognorm', 'expon']:
+    params = getattr(stats, dist).fit(data)
+    ks, p = stats.kstest(data, dist, params)
+    print(f"{dist}: KS={ks:.4f}, p={p:.4f}")</code></pre>
+  </div>
+</section>
+
+<!-- Class Imbalance -->
+<section id="imbalance">
+  <div class="topic-card">
+    <h2 class="section-title">Class Imbalance</h2>
+    <p class="intro-text">One class heavily outnumbers another. A model trained on 95/5 imbalance achieves <strong>95% accuracy by saying "not fraud" every single time</strong> — catching zero actual fraud. Accuracy becomes a completely meaningless metric.</p>
+
+    <h3>Severity Thresholds</h3>
+    <table>
+      <thead><tr><th>Ratio</th><th>Severity</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>60/40</td><td>Mild</td><td>Usually fine, change metric</td></tr>
+        <tr><td>70/30</td><td>Moderate</td><td>Monitor, change metric</td></tr>
+        <tr><td>80/20</td><td>Concerning</td><td>Class weights</td></tr>
+        <tr><td>90/10</td><td>Severe</td><td>Class weights + SMOTE</td></tr>
+        <tr><td>95/5+</td><td>Extreme</td><td>SMOTE + undersampling or anomaly detection framing</td></tr>
+      </tbody>
+    </table>
+
+    <div class="formula-block">
+      $$w_i = \frac{n_{total}}{n_{classes} \cdot n_{class_i}}, \quad \text{SMOTE: } x_{new} = x_i + \lambda(x_{neighbour} - x_i)$$
+      <p class="formula-label">Class weights penalise the model more for missing minority class. SMOTE generates synthetic minority samples by interpolating between neighbours, $\lambda \sim \text{Uniform}(0,1)$.</p>
+    </div>
+
+    <pre><code class="language-python">from imblearn.over_sampling import SMOTE
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+
+# Step 1: Class weights (least invasive, always try first)
+model = RandomForestClassifier(class_weight='balanced', random_state=42)
+model.fit(X_train, y_train)
+print(classification_report(y_test, model.predict(X_test)))
+
+# Step 2: SMOTE if class weights insufficient
+smote = SMOTE(random_state=42, k_neighbors=5)
+X_res, y_res = smote.fit_resample(X_train, y_train)
+print(f"After SMOTE: {dict(zip(*np.unique(y_res, return_counts=True)))}")</code></pre>
+
+    <div class="gotcha"><strong>Always</strong> use stratified train/test splits with imbalanced data. Change metric to F1, AUC-ROC, or Precision-Recall AUC — never use accuracy.</div>
+  </div>
+</section>
+
+<!-- Target Outliers -->
+<section id="outliers">
+  <div class="topic-card">
+    <h2 class="section-title">Target Outliers</h2>
+    <p class="intro-text">Outliers in the target are more dangerous than outliers in inputs. In OLS, every extreme value in Y exerts <strong>gravitational pull</strong> on the regression line — distorting coefficients for every variable in the model. One influential observation can shift the model's entire understanding of reality.</p>
+
+    <h3>IQR Rule + Z-Score (initial flagging)</h3>
+    <div class="formula-block">
+      $$\text{IQR fences: } Q_1 - 1.5 \cdot IQR \text{ and } Q_3 + 1.5 \cdot IQR$$
+      $$z_i = \frac{x_i - \bar{x}}{s}, \quad |z_i| > 3 \text{ → flag}$$
+      <p class="formula-label">Caution: both assume symmetric data. For skewed targets, these methods over-flag legitimate high values. Log-transform first, then check.</p>
+    </div>
+
+    <h3>Cook's Distance (influence measure)</h3>
+    <div class="formula-block">
+      $$D_i = \frac{\sum(\hat{y}_j - \hat{y}_{j(i)})^2}{p \cdot MSE} = \frac{e_i^2}{p \cdot MSE} \cdot \frac{h_i}{(1-h_i)^2}$$
+      <p class="formula-label">$\hat{y}_{j(i)}$ = fitted value with observation $i$ removed. $h_i$ = leverage. $D_i > 4/n$ → investigate. $D_i > 1$ → action likely needed. A point can be extreme but low influence, or moderately extreme but massively influential.</p>
+    </div>
+
+    <pre><code class="language-python">import statsmodels.api as sm
+import numpy as np
+
+model = sm.OLS(y, X).fit()
+influence = model.get_influence()
+cooks_d, _ = influence.cooks_distance
+
+n = len(y)
+print(f"Cook's D > 4/n: {sum(cooks_d > 4/n)}")
+print(f"Cook's D > 1:   {sum(cooks_d > 1)}")</code></pre>
+
+    <div class="decision-block">
+      <div class="d-title">Fix strategy</div>
+      <ul>
+        <li>Data error → remove, document</li>
+        <li>Genuine extreme → winsorise: cap at 99th percentile</li>
+        <li>Many outliers in one direction → log transform the target</li>
+        <li>High Cook's D → investigate; consider Huber robust regression</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Target Leakage -->
+<section id="leakage">
+  <div class="topic-card">
+    <h2 class="section-title">Target Leakage</h2>
+    <p class="intro-text">The most dangerous issue in pre-modelling. Variables containing information about the target that would <strong>not exist at prediction time in production</strong>. Produces spectacular development metrics and complete production failure.</p>
+
+    <div class="gotcha"><strong>The model isn't learning a pattern — it's memorising the answer.</strong></div>
+
+    <h3>The Timeline Test</h3>
+    <p>For every variable: <strong>"At the moment I need to make a prediction — does this variable already exist?"</strong></p>
+    <p>Example: predicting loan default. Variable: <em>collection calls received</em>. Collection calls happen <em>because</em> someone defaulted. At prediction time (loan approval) this variable doesn't exist yet → leakage.</p>
+
+    <h3>Three Types of Leakage</h3>
+    <table>
+      <thead><tr><th>Type</th><th>Description</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Direct leakage</td><td>Variable is a direct consequence of the target</td><td>Remove immediately</td></tr>
+        <tr><td>Proxy leakage</td><td>Variable doesn't directly leak but encodes the same info</td><td>Also remove</td></tr>
+        <tr><td>Pipeline leakage</td><td>Preprocessing used full dataset (including test set) before split</td><td>Fit all transforms on train only</td></tr>
+      </tbody>
+    </table>
+
+    <div class="formula-block">
+      $$\text{WRONG: } \texttt{scaler.fit(X\_all)} \to \texttt{split} \quad \text{(test info leaks in)}$$
+      $$\text{CORRECT: } \texttt{split} \to \texttt{scaler.fit(X\_train)} \to \texttt{scaler.transform(X\_test)}$$
+      <p class="formula-label">Always fit ALL preprocessing steps (scalers, imputers, encoders) on training data only. Use sklearn Pipelines to guarantee this holds inside cross-validation too.</p>
+    </div>
+
+    <pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+
+# Pipeline guarantees no leakage — transforms fit on train fold only inside CV
+pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler',  StandardScaler()),
+    ('model',   RandomForestClassifier(random_state=42))
+])
+
+scores = cross_val_score(pipeline, X, y, cv=5, scoring='roc_auc')
+print(f"CV AUC: {scores.mean():.4f} ± {scores.std():.4f}")</code></pre>
+
+    <div class="gotcha"><strong>Red flag:</strong> AUC &gt; 0.97 on a non-trivial problem, or a single feature dominating importance (&gt;60%) — investigate for leakage immediately.</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- MASTER CONCEPT TABLE -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="concept-table">
+  <div class="topic-card">
+    <h2 class="section-title">All Concepts at a Glance</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Concept</th>
+          <th>Checkpoint</th>
+          <th>When to Use</th>
+          <th>Key Output</th>
+          <th>Action Threshold</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Pearson r</td><td>1</td><td>Continuous vs continuous, normal, no outliers</td><td>r ∈ [-1, 1]</td><td>|r| &lt; 0.1 → consider drop</td></tr>
+        <tr><td>Spearman ρ</td><td>1</td><td>Skewed, outliers, or curved relationship</td><td>ρ ∈ [-1, 1]</td><td>ρ &gt;&gt; r → flag non-linearity</td></tr>
+        <tr><td>VIF</td><td>1, 3</td><td>Always — checking multicollinearity among inputs</td><td>VIF per feature</td><td>VIF &gt; 10 → must act</td></tr>
+        <tr><td>t-test</td><td>1</td><td>Categorical predictor, 2 groups, normal within groups</td><td>t-stat, p-value</td><td>p &lt; 0.05 → groups differ</td></tr>
+        <tr><td>ANOVA</td><td>1</td><td>Categorical predictor, 3+ groups, normal within groups</td><td>F-stat, p-value</td><td>p &lt; 0.05 → at least one group differs</td></tr>
+        <tr><td>Mann-Whitney U</td><td>1</td><td>2 groups, normality fails</td><td>U-stat, p-value</td><td>p &lt; 0.05 → distributions differ</td></tr>
+        <tr><td>Kruskal-Wallis</td><td>1</td><td>3+ groups, normality fails</td><td>H-stat, p-value</td><td>p &lt; 0.05 → at least one group differs</td></tr>
+        <tr><td>Tukey HSD</td><td>1</td><td>After significant ANOVA</td><td>Pairwise p-values</td><td>Non-significant pairs → collapse groups</td></tr>
+        <tr><td>Chi-Square</td><td>1</td><td>Categorical vs categorical</td><td>χ², p-value</td><td>p &lt; 0.05 → association exists (use with V)</td></tr>
+        <tr><td>Cramér's V</td><td>1</td><td>Effect size alongside Chi-Square</td><td>V ∈ [0, 1]</td><td>V &lt; 0.1 → negligible (consider drop)</td></tr>
+        <tr><td>Fisher's Exact</td><td>1</td><td>2×2 table with expected cell counts &lt; 5</td><td>p-value, OR</td><td>p &lt; 0.05 → association exists</td></tr>
+        <tr><td>Shapiro-Wilk</td><td>2</td><td>Normality test, n &lt; 2000</td><td>W stat, p-value</td><td>p &lt; 0.05 → non-normal → transform</td></tr>
+        <tr><td>Jarque-Bera</td><td>2</td><td>Large samples, diagnosing skew vs kurtosis</td><td>JB stat, p-value</td><td>p &lt; 0.05 → non-normal; check S and K</td></tr>
+        <tr><td>Breusch-Pagan</td><td>2</td><td>Testing homoscedasticity (default)</td><td>LM stat, p-value</td><td>p &lt; 0.05 → heteroscedasticity</td></tr>
+        <tr><td>White's Test</td><td>2</td><td>Non-linear heteroscedasticity suspected</td><td>LM stat, p-value</td><td>p &lt; 0.05 → heteroscedasticity</td></tr>
+        <tr><td>LOWESS Curve</td><td>2</td><td>Visual linearity check</td><td>Smooth curve shape</td><td>Bend/curve → flag non-linearity</td></tr>
+        <tr><td>Ramsey RESET</td><td>2</td><td>Formal linearity test</td><td>F-stat, p-value</td><td>p &lt; 0.05 → add polynomial features</td></tr>
+        <tr><td>Interaction Plots</td><td>3</td><td>Testing for interaction between variables</td><td>Line slopes per group</td><td>Crossing lines → interaction term needed</td></tr>
+        <tr><td>Partial Correlation</td><td>3</td><td>Testing for confounding by third variable</td><td>Partial r, p-value</td><td>r drops significantly → C confounds A↔B</td></tr>
+        <tr><td>Cook's Distance</td><td>4</td><td>Influential observation detection in target</td><td>D_i per observation</td><td>D &gt; 4/n → investigate; D &gt; 1 → act</td></tr>
+        <tr><td>SMOTE</td><td>4</td><td>Severe class imbalance (&gt;80/20)</td><td>Resampled dataset</td><td>Prefer class weights first</td></tr>
+        <tr><td>Timeline Test</td><td>4</td><td>Every variable — detecting target leakage</td><td>Yes/No per feature</td><td>No → remove immediately</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- FORMULA SHEET -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="formula-sheet">
+  <div class="topic-card">
+    <h2 class="section-title">Formula Reference Sheet</h2>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>Pearson Correlation</h3>
+      <div class="formula-block">$$r = \frac{\sum(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum(x_i-\bar{x})^2\sum(y_i-\bar{y})^2}}, \quad t = \frac{r\sqrt{n-2}}{\sqrt{1-r^2}}$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>Spearman Correlation</h3>
+      <div class="formula-block">$$\rho = 1 - \frac{6\sum d_i^2}{n(n^2-1)}, \quad d_i = \text{rank}(x_i) - \text{rank}(y_i)$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>Variance Inflation Factor</h3>
+      <div class="formula-block">$$\text{VIF}_j = \frac{1}{1 - R^2_j}, \quad \text{Tolerance}_j = 1 - R^2_j$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>ANOVA F-statistic</h3>
+      <div class="formula-block">$$F = \frac{MS_{between}}{MS_{within}} = \frac{\sum n_j(\bar{y}_j-\bar{y})^2/(k-1)}{\sum\sum(y_{ij}-\bar{y}_j)^2/(N-k)}$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>Chi-Square + Cramér's V</h3>
+      <div class="formula-block">$$\chi^2 = \sum\frac{(O_{ij}-E_{ij})^2}{E_{ij}}, \quad V = \sqrt{\frac{\chi^2}{N\cdot\min(r-1,c-1)}}$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>Shapiro-Wilk + Jarque-Bera</h3>
+      <div class="formula-block">$$W = \frac{(\sum a_i x_{(i)})^2}{\sum(x_i-\bar{x})^2}, \quad JB = \frac{n}{6}\left[S^2 + \frac{K^2}{4}\right]$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>Breusch-Pagan / White's Test</h3>
+      <div class="formula-block">$$LM = n \cdot R^2_{aux} \sim \chi^2(k)$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>Interaction Model</h3>
+      <div class="formula-block">$$\hat{y} = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3(X_1 X_2), \quad \frac{\partial\hat{y}}{\partial X_1} = \beta_1 + \beta_3 X_2$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>Partial Correlation</h3>
+      <div class="formula-block">$$r_{AB\cdot C} = \frac{r_{AB} - r_{AC}\cdot r_{BC}}{\sqrt{(1-r_{AC}^2)(1-r_{BC}^2)}}$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>Cook's Distance</h3>
+      <div class="formula-block">$$D_i = \frac{e_i^2}{p\cdot MSE}\cdot\frac{h_i}{(1-h_i)^2}, \quad h_i = x_i'(X'X)^{-1}x_i$$</div>
+    </div>
+
+    <div class="formula-entry" style="margin-bottom:24px;">
+      <h3>SMOTE Interpolation</h3>
+      <div class="formula-block">$$x_{new} = x_i + \lambda(x_{neighbour} - x_i), \quad \lambda \sim \text{Uniform}(0,1)$$</div>
+    </div>
+
+    <div class="formula-entry">
+      <h3>Box-Cox Transformation</h3>
+      <div class="formula-block">$$y^{(\lambda)} = \begin{cases} (y^\lambda - 1)/\lambda & \lambda \neq 0 \\ \ln(y) & \lambda = 0 \end{cases}$$</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- CODE APPENDIX -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="code-appendix">
+  <div class="topic-card">
+    <h2 class="section-title">Python Code Reference</h2>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Setup</span></div>
+      <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+import statsmodels.api as sm
+
+df = pd.read_csv("your_data.csv")
+target = 'your_target_column'
+num_cols = df.select_dtypes(include=np.number).columns.tolist()
+cat_cols = df.select_dtypes(include='object').columns.tolist()</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Pearson + Spearman comparison</span></div>
+      <pre><code class="language-python">from scipy.stats import pearsonr, spearmanr
+
+for col in num_cols:
+    if col != target:
+        r,   _ = pearsonr(df[col].dropna(), df[target].dropna())
+        rho, _ = spearmanr(df[col].dropna(), df[target].dropna())
+        diff = abs(rho) - abs(r)
+        flag = "⚠ CURVED" if diff > 0.1 else ""
+        print(f"{col:<25} r={r:.3f}  ρ={rho:.3f}  Δ={diff:.3f} {flag}")</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>VIF — iterative removal</span></div>
+      <pre><code class="language-python">from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+def remove_high_vif(df, cols, thresh=10):
+    while True:
+        X = sm.add_constant(df[cols].dropna())
+        vifs = [variance_inflation_factor(X.values, i) for i in range(1, X.shape[1])]
+        max_vif = max(vifs)
+        if max_vif > thresh:
+            drop = cols[vifs.index(max_vif)]
+            print(f"Dropping {drop} (VIF={max_vif:.1f})")
+            cols = [c for c in cols if c != drop]
+        else:
+            break
+    return cols</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>ANOVA + Kruskal-Wallis</span></div>
+      <pre><code class="language-python">from scipy.stats import f_oneway, kruskal, shapiro
+
+for col in cat_cols:
+    groups = [df[df[col]==g][target].dropna() for g in df[col].unique()]
+    # Normality check within groups
+    all_normal = all(shapiro(g[:2000])[1] > 0.05 for g in groups if len(g) > 3)
+    if all_normal:
+        stat, p = f_oneway(*groups); test = "ANOVA"
+    else:
+        stat, p = kruskal(*groups); test = "Kruskal-Wallis"
+    print(f"{col} [{test}]: p={p:.4f}")</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Chi-Square + Cramér's V</span></div>
+      <pre><code class="language-python">from scipy.stats import chi2_contingency
+
+def cramers_v(x, y):
+    ct = pd.crosstab(x, y)
+    chi2, _, _, exp = chi2_contingency(ct)
+    n, r, c = ct.sum().sum(), *ct.shape
+    return np.sqrt(chi2 / (n * (min(r,c) - 1))), exp.min()
+
+for col in cat_cols:
+    if col != target:
+        v, min_exp = cramers_v(df[col], df[target])
+        flag = "⚠ Use Fisher's Exact" if min_exp < 5 else ""
+        print(f"{col}: V={v:.3f} {flag}")</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Normality — Shapiro-Wilk + Box-Cox</span></div>
+      <pre><code class="language-python">from scipy.stats import shapiro, boxcox
+
+for col in num_cols:
+    data = df[col].dropna()
+    W, p = shapiro(data.sample(min(2000, len(data)), random_state=42))
+    if p < 0.05 and data.min() > 0:
+        transformed, lam = boxcox(data)
+        W2, p2 = shapiro(transformed[:2000])
+        print(f"{col}: λ={lam:.3f} | Before p={p:.4f} | After p={p2:.4f}")</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Homoscedasticity — Breusch-Pagan</span></div>
+      <pre><code class="language-python">from statsmodels.stats.diagnostic import het_breuschpagan, het_white
+
+model = sm.OLS(y, X).fit()
+lm, p, _, _ = het_breuschpagan(model.resid, model.model.exog)
+print(f"Breusch-Pagan: LM={lm:.3f}, p={p:.4f}")
+
+if p < 0.05:
+    # Option 1: log transform target
+    df['log_target'] = np.log1p(df[target])
+    # Option 2: robust standard errors
+    model_robust = sm.OLS(y, X).fit(cov_type='HC3')</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Linearity — RESET Test + LOWESS</span></div>
+      <pre><code class="language-python">from statsmodels.stats.diagnostic import linear_reset
+import statsmodels.nonparametric.smoothers_lowess as lowess_sm
+
+# RESET test
+reset = linear_reset(model, power=3, use_f=True)
+print(f"RESET p={reset.pvalue:.4f}")
+
+# LOWESS visual
+for col in num_cols[:4]:
+    data = df[[col, target]].dropna().sort_values(col)
+    smoothed = lowess_sm.lowess(data[target], data[col], frac=0.3)
+    plt.scatter(data[col], data[target], alpha=0.15, s=10)
+    plt.plot(smoothed[:,0], smoothed[:,1], 'r-', lw=2)
+    plt.title(f"LOWESS: {col} vs {target}"); plt.show()</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Interaction Effects</span></div>
+      <pre><code class="language-python">from scipy.stats import chi2
+
+# Centre before interacting
+df['X1_c'] = df['X1'] - df['X1'].mean()
+df['X2_c'] = df['X2'] - df['X2'].mean()
+df['X1_X2'] = df['X1_c'] * df['X2_c']
+
+# Likelihood Ratio Test
+m0 = sm.OLS(y, sm.add_constant(df[['X1_c','X2_c']].dropna())).fit()
+m1 = sm.OLS(y, sm.add_constant(df[['X1_c','X2_c','X1_X2']].dropna())).fit()
+lr = -2 * (m0.llf - m1.llf)
+p  = 1 - chi2.cdf(lr, df=1)
+print(f"LRT: LR={lr:.3f}, p={p:.4f}")</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Confounding — Partial Correlation</span></div>
+      <pre><code class="language-python">import pingouin as pg
+from scipy.stats import pearsonr
+
+raw_r, _ = pearsonr(df['X1'].dropna(), df[target].dropna())
+result = pg.partial_corr(data=df.dropna(), x='X1', y=target, covar=['confounder'])
+partial_r = result['r'].values[0]
+
+print(f"Raw r:         {raw_r:.3f}")
+print(f"Partial r:     {partial_r:.3f}")
+print(f"Attenuation:   {abs(raw_r) - abs(partial_r):.3f}")</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Cook's Distance</span></div>
+      <pre><code class="language-python">model = sm.OLS(y, X).fit()
+cooks_d, _ = model.get_influence().cooks_distance
+n = len(y)
+
+import matplotlib.pyplot as plt
+plt.stem(range(n), cooks_d, markerfmt=',', linefmt='steelblue', basefmt='gray')
+plt.axhline(4/n, color='orange', linestyle='--', label=f'4/n={4/n:.4f}')
+plt.axhline(1,   color='red',    linestyle='--', label='D=1')
+plt.legend(); plt.title("Cook's Distance"); plt.show()</code></pre>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="code-label"><span>Class Imbalance — SMOTE Pipeline</span></div>
+      <pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score, StratifiedKFold
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline as ImbPipeline
+
+# Stratified CV + SMOTE inside pipeline = no leakage
+pipe = ImbPipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler',  StandardScaler()),
+    ('smote',   SMOTE(random_state=42)),
+    ('model',   RandomForestClassifier(class_weight='balanced', random_state=42))
+])
+
+scores = cross_val_score(pipe, X, y, cv=StratifiedKFold(5), scoring='roc_auc')
+print(f"CV AUC: {scores.mean():.4f} ± {scores.std():.4f}")</code></pre>
+    </div>
+
+  </div>
+</section>
+
+</main>
+</div>
+
+<!-- Back to top -->
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5">
+    <path d="M8 12V4M4 7l4-4 4 4"/>
+  </svg>
+</button>
+
+<script>
+  hljs.highlightAll();
+
+  renderMathInElement(document.body, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '$',  right: '$',  display: false }
+    ],
+    throwOnError: false
+  });
+
+  // Back to top
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.style.display = window.scrollY > 200 ? 'flex' : 'none';
+  });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // Active TOC link
+  const tocLinks = document.querySelectorAll('.toc-sidebar a[href^="#"]');
+  const targets  = [...tocLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+  window.addEventListener('scroll', () => {
+    let current = targets[0];
+    targets.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s; });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current?.id);
+    });
+  }, { passive: true });
+</script>
+
+</body>
+</html>

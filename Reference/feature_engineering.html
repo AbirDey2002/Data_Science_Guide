@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feature Engineering — Study Guide</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --card: #1c2128;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --primary: #388bfd;
+  --green: #3fb950;
+  --amber: #d29922;
+  --red: #f85149;
+  --purple: #bc8cff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  gap: 2rem;
+}
+
+/* Sidebar TOC */
+.toc-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 2rem;
+  height: fit-content;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem;
+}
+
+.toc-sidebar h3 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 0.8rem;
+}
+
+.toc-sidebar a {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  transition: all 0.15s;
+  margin-bottom: 0.1rem;
+}
+
+.toc-sidebar a:hover,
+.toc-sidebar a.active {
+  color: var(--primary);
+  background: rgba(56, 139, 253, 0.1);
+}
+
+/* Main content */
+.main-content { flex: 1; min-width: 0; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.hero h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.hero p { color: var(--muted); font-size: 0.95rem; margin-bottom: 1rem; }
+
+.badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.badge.blue { background: rgba(56,139,253,0.12); color: #79c0ff; border-color: rgba(56,139,253,0.3); }
+.badge.green { background: rgba(63,185,80,0.12); color: #7ee787; border-color: rgba(63,185,80,0.3); }
+.badge.purple { background: rgba(188,140,255,0.12); color: #d2a8ff; border-color: rgba(188,140,255,0.3); }
+.badge.amber { background: rgba(210,153,34,0.12); color: #e3b341; border-color: rgba(210,153,34,0.3); }
+
+/* Topic cards */
+.topic-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.topic-card h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.topic-card h3 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 1.2rem 0 0.5rem;
+}
+
+.topic-card p, .topic-card li {
+  font-size: 0.92rem;
+  color: #cdd9e5;
+  margin-bottom: 0.4rem;
+}
+
+.topic-card ol, .topic-card ul {
+  padding-left: 1.4rem;
+}
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+
+.tag {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.tag.when { background: rgba(56,139,253,0.15); color: #79c0ff; }
+.tag.avoid { background: rgba(248,81,73,0.12); color: #ff7b72; }
+
+.formula-block {
+  background: #0d1117;
+  border-left: 3px solid var(--primary);
+  padding: 1rem 1.4rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.formula-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.gotcha {
+  background: rgba(210,153,34,0.1);
+  border-left: 3px solid var(--amber);
+  padding: 0.75rem 1rem;
+  border-radius: 0 8px 8px 0;
+  margin: 0.8rem 0;
+  font-size: 0.88rem;
+  color: #e3b341;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+
+th {
+  background: #21262d;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.65rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+td {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid #21262d;
+  color: #cdd9e5;
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Code */
+pre {
+  margin: 1rem 0;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  font-size: 0.83rem;
+}
+
+pre code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; }
+
+/* Formula sheet */
+.formula-entry {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.formula-entry h4 {
+  font-size: 0.9rem;
+  color: var(--primary);
+  margin-bottom: 0.6rem;
+}
+
+.formula-entry p {
+  font-size: 0.83rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+.formula-display {
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+/* Code appendix */
+.code-entry { margin-bottom: 1.8rem; }
+
+.code-entry h4 {
+  font-size: 0.88rem;
+  color: var(--green);
+  margin-bottom: 0.5rem;
+  font-family: 'Cascadia Code', monospace;
+}
+
+/* Back to top */
+#back-to-top {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 38px;
+  height: 38px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(56,139,253,0.4);
+  transition: opacity 0.2s;
+  z-index: 999;
+}
+
+#back-to-top svg { width: 16px; height: 16px; }
+
+@media print {
+  .toc-sidebar { display: none; }
+  .layout { display: block; }
+  .topic-card { break-inside: avoid; border: 1px solid #ccc; }
+  #back-to-top { display: none !important; }
+}
+
+@media (max-width: 768px) {
+  .toc-sidebar { display: none; }
+  .layout { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar TOC -->
+  <nav class="toc-sidebar">
+    <h3>Contents</h3>
+    <a href="#why">Why Feature Engineering</a>
+    <a href="#where">Where It Fits</a>
+    <a href="#transforms">Transformations</a>
+    <a href="#selection">Feature Selection</a>
+    <a href="#interpretation">Interpreting Findings</a>
+    <a href="#dimreduction">Dimensionality Reduction</a>
+    <a href="#pca-math">PCA — Mathematics</a>
+    <a href="#pca-example">PCA — Worked Example</a>
+    <a href="#eigen">Eigen Decomposition</a>
+    <a href="#ncomponents">Choosing Components</a>
+    <a href="#autoencoders">Autoencoders</a>
+    <a href="#concept-table">All Concepts</a>
+    <a href="#formula-sheet">Formula Sheet</a>
+    <a href="#code-appendix">Code Appendix</a>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>Feature Engineering</h1>
+      <p>Study guide from a guided learning session — March 2026</p>
+      <div class="badge-row">
+        <span class="badge blue">Machine Learning</span>
+        <span class="badge green">Statistics</span>
+        <span class="badge purple">Linear Algebra</span>
+        <span class="badge amber">Deep Learning</span>
+      </div>
+    </div>
+
+    <!-- 1. Why -->
+    <section class="topic-card" id="why">
+      <h2>Why Feature Engineering</h2>
+      <p>The process of using domain knowledge and data manipulation to create, transform, or select input variables that make ML models perform better. Raw data is almost never model-ready.</p>
+      <h3>When to Use</h3>
+      <div class="tag-row">
+        <span class="tag when">Before any modelling</span>
+        <span class="tag when">When raw data has skew, mixed types, or missingness</span>
+        <span class="tag when">When model performance plateaus</span>
+      </div>
+      <h3>Key Principles</h3>
+      <ul>
+        <li>Models don't understand context — you have to encode it (e.g. extract <code>is_weekend</code> from a timestamp)</li>
+        <li>Feature engineering often outperforms algorithm selection in impact</li>
+        <li>Better features reduce model complexity and data requirements</li>
+        <li>It is a feedback loop — the first model tells you where features are failing</li>
+      </ul>
+      <div class="gotcha">Garbage in, garbage out. No algorithm compensates for poorly represented data.</div>
+    </section>
+
+    <!-- 2. Where -->
+    <section class="topic-card" id="where">
+      <h2>Where Feature Engineering Fits in the Pipeline</h2>
+      <p>Feature engineering picks up where EDA ends — it is the translation layer between data understanding and model consumption.</p>
+      <h3>Three Zones</h3>
+      <table>
+        <thead><tr><th>Zone</th><th>What Happens</th></tr></thead>
+        <tbody>
+          <tr><td>Pre-modelling</td><td>Transformations, encoding, scaling — making data digestible</td></tr>
+          <tr><td>Model-aware</td><td>Features crafted knowing the model's assumptions (linear vs tree)</td></tr>
+          <tr><td>Post-first-model</td><td>Using residuals, importances, errors to engineer new features iteratively</td></tr>
+        </tbody>
+      </table>
+      <div class="gotcha">Feature engineering is not a one-time step — it is a feedback loop driven by model outputs.</div>
+    </section>
+
+    <!-- 3. Transformations -->
+    <section class="topic-card" id="transforms">
+      <h2>Types of Feature Transformations</h2>
+
+      <h3>Distributional Transformations</h3>
+      <table>
+        <thead><tr><th>Transform</th><th>When</th><th>Watch Out</th></tr></thead>
+        <tbody>
+          <tr><td>log(x)</td><td>Right-skewed, strictly positive</td><td>Zeros — use log(x+1)</td></tr>
+          <tr><td>sqrt(x)</td><td>Moderate right skew, count data</td><td>Negative values</td></tr>
+          <tr><td>Box-Cox</td><td>Optimally approach normality</td><td>Requires positive values</td></tr>
+          <tr><td>Yeo-Johnson</td><td>Like Box-Cox with negatives</td><td>Heavier compute</td></tr>
+        </tbody>
+      </table>
+      <div class="gotcha">Tree-based models are indifferent to skew. Linear models, KNN, and SVMs care a lot. Always ask: does this model care about distribution?</div>
+
+      <h3>Interaction & Polynomial Features</h3>
+      <p>Explicitly encoding that two variables together carry a signal neither holds alone. Most valuable in linear models — tree models discover interactions implicitly. Best interaction features come from domain knowledge, not brute-force expansion.</p>
+
+      <h3>Categorical Encoding</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Use Case</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td>One-hot encoding</td><td>Low cardinality nominals</td><td>Feature explosion</td></tr>
+          <tr><td>Target encoding</td><td>High cardinality, strong target signal</td><td>Leaks if not inside CV folds</td></tr>
+          <tr><td>Frequency encoding</td><td>When rarity is signal</td><td>Loses category identity</td></tr>
+          <tr><td>Embeddings</td><td>Very high cardinality, deep learning</td><td>Needs training data</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Temporal Features</h3>
+      <p>Raw datetimes are useless. Extract: hour of day, is_weekend, lag features, rolling means. Use sin/cos encoding for cyclical features so that 11pm and 1am are numerically close.</p>
+    </section>
+
+    <!-- 4. Feature Selection -->
+    <section class="topic-card" id="selection">
+      <h2>Feature Selection</h2>
+      <p>Knowing what to remove is as important as knowing what to create. Three families of methods:</p>
+
+      <h3>Filter Methods — Statistics First, Model Never</h3>
+      <table>
+        <thead><tr><th>Test</th><th>Use Case</th></tr></thead>
+        <tbody>
+          <tr><td>Pearson correlation</td><td>Continuous feature vs continuous target</td></tr>
+          <tr><td>Spearman correlation</td><td>Non-linear monotonic or ordinal data</td></tr>
+          <tr><td>ANOVA F-test</td><td>Continuous feature vs categorical target</td></tr>
+          <tr><td>Chi-squared</td><td>Categorical feature vs categorical target</td></tr>
+          <tr><td>Mutual Information</td><td>Any type — captures non-linear dependencies</td></tr>
+        </tbody>
+      </table>
+      <div class="gotcha">Filter methods evaluate features in isolation — they miss interaction effects entirely. Use for fast pruning only.</div>
+
+      <h3>Wrapper Methods — Let the Model Decide</h3>
+      <p>RFE (Recursive Feature Elimination), forward/backward selection. Uses model performance as the selection criterion. Expensive but captures interactions. Risk: overfitting the feature selection if not wrapped inside proper CV.</p>
+
+      <h3>Embedded Methods — Selection During Training</h3>
+      <p>Lasso (L1) drives irrelevant coefficients to zero. Ridge (L2) shrinks but doesn't zero out. Tree-based importances (Gini or permutation). Elastic Net combines L1 + L2. Most practical in real workflows — selection and modelling in one pass.</p>
+
+      <h3>Practical Order of Operations</h3>
+      <p>EDA findings → Filter methods to prune noise → Embedded methods in first model → Wrapper methods on shortlist if squeezing further</p>
+
+      <div class="gotcha">Gini-based importance is biased toward high-cardinality features. Correlated features split importance between themselves. Permutation importance is far more reliable.</div>
+    </section>
+
+    <!-- 5. Interpreting Findings -->
+    <section class="topic-card" id="interpretation">
+      <h2>Reading and Interpreting Findings</h2>
+
+      <h3>Feature Importance Flavours</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Question Answered</th><th>Limitation</th></tr></thead>
+        <tbody>
+          <tr><td>Gini / Split-based</td><td>How often did the model use this feature?</td><td>Biased toward high cardinality</td></tr>
+          <tr><td>Permutation importance</td><td>How much does performance drop when shuffled?</td><td>Correlated features dilute each other</td></tr>
+          <tr><td>SHAP values</td><td>How much did this feature affect this specific prediction?</td><td>Computationally heavier</td></tr>
+        </tbody>
+      </table>
+      <p>SHAP is the gold standard — it gives both global and per-prediction explanations, grounded in Shapley values from game theory.</p>
+
+      <h3>Partial Dependence Plots (PDPs) and ICE</h3>
+      <p>PDPs show the shape of the relationship between a feature and the target (averaged across all observations). ICE plots show the same per individual row — if ICE lines diverge wildly, interaction effects are present that PDP is hiding.</p>
+
+      <h3>Ablation Testing</h3>
+      <p>Train with and without a feature, compare CV scores. If the delta is within your confidence interval, the feature is not contributing anything real.</p>
+
+      <h3>Red Flags</h3>
+      <ul>
+        <li>Suspiciously high importance — check for target leakage</li>
+        <li>Two features with split importance — likely correlated, check VIF</li>
+        <li>Feature important in train but not validation — overfitting, possibly high-cardinality ID column</li>
+      </ul>
+
+      <h3>Interpretability Stack</h3>
+      <p>SHAP summary plot → SHAP dependence plot → ICE plots → Ablation tests → VIF / correlation matrix</p>
+    </section>
+
+    <!-- 6. Dimensionality Reduction -->
+    <section class="topic-card" id="dimreduction">
+      <h2>Dimensionality Reduction</h2>
+      <p>A fourth category — feature compression. Unlike filter/wrapper/embedded methods which choose among existing features, compression methods synthesize new ones. The trade-off: interpretability for signal density.</p>
+
+      <h3>Main Techniques</h3>
+      <table>
+        <thead><tr><th>Technique</th><th>Type</th><th>Best For</th><th>Key Assumption</th></tr></thead>
+        <tbody>
+          <tr><td>PCA</td><td>Linear</td><td>Continuous, correlated features</td><td>Linear relationships</td></tr>
+          <tr><td>Kernel PCA</td><td>Non-linear</td><td>Complex manifolds</td><td>Kernel-dependent</td></tr>
+          <tr><td>ICA</td><td>Linear</td><td>Signal separation (EEG, audio)</td><td>Statistical independence</td></tr>
+          <tr><td>UMAP</td><td>Non-linear</td><td>Visualization, clustering prep</td><td>Local structure preservation</td></tr>
+          <tr><td>t-SNE</td><td>Non-linear</td><td>Visualization only</td><td>Not suitable for modelling</td></tr>
+          <tr><td>Autoencoders</td><td>Non-linear (DL)</td><td>High-dim data, images, text</td><td>Requires sufficient training data</td></tr>
+          <tr><td>Factor Analysis</td><td>Linear</td><td>Latent variable discovery</td><td>Features driven by hidden factors</td></tr>
+        </tbody>
+      </table>
+
+      <div class="gotcha">PCA must be fit only on training data then applied to validation/test. Always place it inside a sklearn Pipeline — never fit on the full dataset before splitting.</div>
+    </section>
+
+    <!-- 7. PCA Math -->
+    <section class="topic-card" id="pca-math">
+      <h2>PCA — Mathematical Internals</h2>
+      <p>PCA finds directions in feature space along which data varies most, then projects data onto the top k such directions.</p>
+
+      <h3>Step-by-Step</h3>
+      <ol>
+        <li><strong>Center the data:</strong> subtract column means from X</li>
+        <li><strong>Compute covariance matrix:</strong> $C = \frac{1}{n} X_c^T X_c$</li>
+        <li><strong>Eigen decomposition:</strong> solve $C \cdot v = \lambda \cdot v$ for all eigenpairs</li>
+        <li><strong>Sort and select:</strong> rank eigenvectors by eigenvalue descending, keep top k</li>
+        <li><strong>Project:</strong> $X_{reduced} = X_c \cdot W$ where W contains the top k eigenvectors</li>
+      </ol>
+
+      <div class="formula-block">
+        $$C = \frac{1}{n} X_c^T X_c \qquad C \cdot v = \lambda v \qquad X_{red} = X_c \cdot W$$
+        <p class="formula-label">C = covariance matrix (m×m) · v = eigenvector · λ = eigenvalue · W = matrix of top k eigenvectors</p>
+      </div>
+
+      <h3>Geometric Intuition</h3>
+      <p>The covariance matrix encodes in which directions data spreads. Eigen decomposition finds those exact directions and how much spread lies in each. PCA rotates your coordinate system to align with the natural axes of data variance, then discards the least informative axes.</p>
+
+      <div class="gotcha">Scaling is not optional — features on different scales will dominate the covariance matrix. Always StandardScale before PCA.</div>
+    </section>
+
+    <!-- 8. PCA Example -->
+    <section class="topic-card" id="pca-example">
+      <h2>PCA — Worked Example (5 People, 2 Features)</h2>
+      <p>Dataset: hours studied (x1) and exam score (x2) for 5 people.</p>
+
+      <table>
+        <thead><tr><th>Person</th><th>Hours (x1)</th><th>Score (x2)</th><th>x1 centered</th><th>x2 centered</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td>2</td><td>50</td><td>-4</td><td>-28</td></tr>
+          <tr><td>P2</td><td>4</td><td>70</td><td>-2</td><td>-8</td></tr>
+          <tr><td>P3</td><td>6</td><td>80</td><td>0</td><td>2</td></tr>
+          <tr><td>P4</td><td>8</td><td>90</td><td>2</td><td>12</td></tr>
+          <tr><td>P5</td><td>10</td><td>100</td><td>4</td><td>22</td></tr>
+        </tbody>
+      </table>
+
+      <p>Covariance matrix: $C = \begin{pmatrix} 8 & 48 \\ 48 & 336 \end{pmatrix}$</p>
+
+      <p>Strong off-diagonal (48) signals high redundancy — the two features are largely saying the same thing.</p>
+
+      <p>Eigen decomposition yields:</p>
+      <ul>
+        <li>$\lambda_1 = 342.9$, $v_1 = [0.141, 0.990]$ — PC1: overall performance axis</li>
+        <li>$\lambda_2 = 1.1$, $v_2 = [0.990, -0.141]$ — PC2: residual noise</li>
+      </ul>
+
+      <div class="formula-block">
+        $$\text{PC1 explains} = \frac{342.9}{342.9 + 1.1} = 99.7\%$$
+        <p class="formula-label">One component captures nearly all information. The 5×2 matrix reduces to a 5×1 vector with 99.7% variance retained.</p>
+      </div>
+    </section>
+
+    <!-- 9. Eigen Decomposition -->
+    <section class="topic-card" id="eigen">
+      <h2>Deriving Eigenpairs from C</h2>
+      <p>The eigen equation $C \cdot v = \lambda v$ rearranges to $(C - \lambda I) \cdot v = 0$. For a non-trivial solution, the matrix must be singular:</p>
+
+      <div class="formula-block">
+        $$\det(C - \lambda I) = 0$$
+        <p class="formula-label">Setting the determinant to zero gives the characteristic polynomial. Its roots are the eigenvalues.</p>
+      </div>
+
+      <h3>For our 2×2 C matrix</h3>
+      <p>Expanding the determinant:</p>
+      <div class="formula-block">
+        $$(8 - \lambda)(336 - \lambda) - (48)(48) = 0 \implies \lambda^2 - 344\lambda + 384 = 0$$
+        $$\lambda = \frac{344 \pm \sqrt{344^2 - 4 \cdot 384}}{2} = \frac{344 \pm 341.76}{2}$$
+        <p class="formula-label">Gives λ₁ = 342.9 and λ₂ = 1.1</p>
+      </div>
+
+      <h3>Finding the Eigenvectors</h3>
+      <p>Substitute each λ back into $(C - \lambda I) \cdot v = 0$ and solve for v. The resulting vector is proportional to the eigenvector — normalize it to unit length by dividing by its magnitude $\|v\| = \sqrt{v_1^2 + v_2^2}$.</p>
+
+      <div class="gotcha">Eigenvectors have arbitrary scale — only direction matters. Normalizing to unit length ensures projections are geometrically clean. Use np.linalg.eigh (not eig) for symmetric covariance matrices — it is faster and numerically more stable.</div>
+    </section>
+
+    <!-- 10. Choosing Components -->
+    <section class="topic-card" id="ncomponents">
+      <h2>How Many Components to Keep</h2>
+
+      <h3>Method 1 — Variance Threshold (95% Rule)</h3>
+      <p>Keep enough components to explain 95% (or 90%) of total variance. Quick and widely used.</p>
+      <div class="gotcha">A component explaining only 3% of variance might carry exactly the signal your model needs. This rule answers the wrong question for downstream tasks.</div>
+
+      <h3>Method 2 — Scree Plot and Elbow</h3>
+      <p>Plot eigenvalues in descending order. Components before the elbow carry signal; after it, noise. Subjective — elbows are often unclear in real data.</p>
+
+      <h3>Method 3 — Kaiser Criterion</h3>
+      <p>Keep only components with eigenvalue > 1. Logic: on standardized data, each original feature contributes eigenvalue of 1. A component below this threshold explains less than a single original feature. Conservative — use as a lower bound, not a final answer.</p>
+
+      <h3>Method 4 — Cross-Validation (Most Rigorous)</h3>
+      <p>Wrap PCA in a Pipeline, grid-search over candidate values of k, use model CV performance as the criterion. This answers the correct question: how many components make the downstream model perform best?</p>
+
+      <h3>Decision Framework</h3>
+      <p>Scree plot + 95% threshold to get a range → Kaiser as a floor → CV over that range → sanity check that reducing further does not significantly hurt performance.</p>
+
+      <div class="gotcha">PCA must always live inside a Pipeline. Fitting PCA on the full dataset before train/test split is data leakage.</div>
+    </section>
+
+    <!-- 11. Autoencoders -->
+    <section class="topic-card" id="autoencoders">
+      <h2>Autoencoders — Non-Linear PCA</h2>
+      <p>A neural network that compresses data to a low-dimensional bottleneck Z and then reconstructs the original input. The bottleneck is the learned dimensionality-reduced representation.</p>
+
+      <h3>Architecture</h3>
+      <p>Input X → [Encoder] → Bottleneck Z → [Decoder] → Reconstructed X̂</p>
+
+      <div class="formula-block">
+        $$\mathcal{L} = \frac{1}{n} \sum_{i=1}^n \|X_i - \hat{X}_i\|^2$$
+        <p class="formula-label">MSE reconstruction loss — network minimizes this, forcing Z to retain maximum useful information</p>
+      </div>
+
+      <h3>Why It Beats PCA for Non-Linear Data</h3>
+      <p>PCA can only find straight-line directions (linear combinations). An autoencoder can learn curved manifolds — finding that data lives on a complex surface in high-dimensional space and unrolling it cleanly.</p>
+
+      <h3>PCA vs Autoencoder</h3>
+      <table>
+        <thead><tr><th></th><th>PCA</th><th>Autoencoder</th></tr></thead>
+        <tbody>
+          <tr><td>Relationship</td><td>Linear only</td><td>Non-linear</td></tr>
+          <tr><td>Interpretability</td><td>Components inspectable</td><td>Bottleneck is a black box</td></tr>
+          <tr><td>Data requirement</td><td>Works on small datasets</td><td>Needs sufficient training data</td></tr>
+          <tr><td>Speed</td><td>Very fast</td><td>Slower — requires training</td></tr>
+          <tr><td>Anomaly detection</td><td>Poor</td><td>Excellent — high reconstruction error = anomaly</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Notable Variants</h3>
+      <ul>
+        <li><strong>VAE (Variational):</strong> encodes to a distribution (mean + variance), not a point — smooth latent space, useful for generative modelling</li>
+        <li><strong>Sparse Autoencoder:</strong> penalizes non-zero bottleneck activations — encourages distinct, interpretable features</li>
+        <li><strong>Denoising Autoencoder:</strong> corrupts input with noise then trains to reconstruct clean version — forces more robust feature learning</li>
+      </ul>
+
+      <div class="gotcha">For tabular ML, PCA is usually the right call. Autoencoders shine when data has genuine non-linear structure — images, audio, sensor signals, text embeddings.</div>
+    </section>
+
+    <!-- Concept Table -->
+    <section class="topic-card" id="concept-table">
+      <h2>All Concepts at a Glance</h2>
+      <table>
+        <thead>
+          <tr><th>Concept</th><th>When to Use</th><th>Quick Note</th><th>Formula?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Log / Box-Cox transform</td><td>Right-skewed continuous features</td><td>Only matters for linear/distance models</td><td>log(x), Box-Cox λ</td></tr>
+          <tr><td>Interaction features</td><td>Linear models needing explicit interactions</td><td>Best from domain knowledge, not brute force</td><td>x1 * x2</td></tr>
+          <tr><td>Target encoding</td><td>High-cardinality categoricals</td><td>Must be done inside CV folds to prevent leakage</td><td>mean(y | category)</td></tr>
+          <tr><td>Cyclical encoding</td><td>Hour, month, day-of-week features</td><td>sin/cos ensures 11pm and 1am are numerically close</td><td>sin(2πt/T)</td></tr>
+          <tr><td>Filter methods</td><td>Fast initial pruning of features</td><td>Miss interaction effects — use as a floor</td><td>Pearson, χ², MI</td></tr>
+          <tr><td>RFE / Wrapper methods</td><td>When interactions matter and compute allows</td><td>Risk of overfitting feature selection — wrap in CV</td><td>Model CV score</td></tr>
+          <tr><td>Lasso / Embedded</td><td>Selection during modelling</td><td>L1 drives coefficients to exactly zero</td><td>L1: Σ|βj|</td></tr>
+          <tr><td>SHAP values</td><td>Global + per-prediction feature attribution</td><td>Gold standard for interpretation</td><td>Shapley values</td></tr>
+          <tr><td>Permutation importance</td><td>Model-agnostic importance</td><td>More reliable than Gini for correlated features</td><td>Δ performance</td></tr>
+          <tr><td>PDP / ICE plots</td><td>Understanding shape of feature-target relationship</td><td>ICE reveals interactions PDP hides</td><td>Marginal expectation</td></tr>
+          <tr><td>Ablation testing</td><td>Confirming a feature truly adds value</td><td>Compare CV scores with/without feature</td><td>ΔAUC / ΔF1</td></tr>
+          <tr><td>PCA</td><td>Correlated continuous features, linear models</td><td>Fit only on training data — inside Pipeline</td><td>C·v = λv</td></tr>
+          <tr><td>Autoencoder</td><td>Non-linear structure, images, signals</td><td>Bottleneck = compressed representation</td><td>MSE reconstruction</td></tr>
+          <tr><td>Kaiser criterion</td><td>Lower bound for PCA component count</td><td>Keep eigenvalues > 1</td><td>λ > 1</td></tr>
+          <tr><td>Explained variance ratio</td><td>Selecting k in PCA</td><td>95% threshold is common starting point</td><td>Σλᵢ / Σλⱼ</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Formula Sheet -->
+    <section class="topic-card" id="formula-sheet">
+      <h2>Formula Reference Sheet</h2>
+
+      <div class="formula-entry">
+        <h4>Covariance Matrix</h4>
+        <div class="formula-display">$$C = \frac{1}{n} X_c^T X_c$$</div>
+        <p><strong>Variables:</strong> Xc = mean-centered data matrix (n×m), C = m×m covariance matrix</p>
+        <p><strong>Used when:</strong> Step 2 of PCA — captures how every feature co-varies with every other</p>
+      </div>
+
+      <div class="formula-entry">
+        <h4>Eigen Equation</h4>
+        <div class="formula-display">$$C \cdot v = \lambda \cdot v \quad \Leftrightarrow \quad \det(C - \lambda I) = 0$$</div>
+        <p><strong>Variables:</strong> v = eigenvector (direction of variance), λ = eigenvalue (amount of variance)</p>
+        <p><strong>Used when:</strong> Finding principal components from the covariance matrix</p>
+      </div>
+
+      <div class="formula-entry">
+        <h4>PCA Projection</h4>
+        <div class="formula-display">$$X_{reduced} = X_c \cdot W, \quad W \in \mathbb{R}^{m \times k}$$</div>
+        <p><strong>Variables:</strong> W = matrix of top k eigenvectors, k = chosen number of components</p>
+        <p><strong>Used when:</strong> Step 5 of PCA — projecting data onto new coordinate axes</p>
+      </div>
+
+      <div class="formula-entry">
+        <h4>Explained Variance Ratio</h4>
+        <div class="formula-display">$$\text{EVR}_k = \frac{\sum_{i=1}^k \lambda_i}{\sum_{j=1}^m \lambda_j}$$</div>
+        <p><strong>Variables:</strong> λᵢ = ith eigenvalue sorted descending, m = total features, k = selected components</p>
+        <p><strong>Used when:</strong> Deciding how many PCA components to retain</p>
+      </div>
+
+      <div class="formula-entry">
+        <h4>Characteristic Polynomial (2×2)</h4>
+        <div class="formula-display">$$(a - \lambda)(d - \lambda) - bc = 0 \implies \lambda^2 - (a+d)\lambda + (ad - bc) = 0$$</div>
+        <p><strong>Variables:</strong> a, d = diagonal entries, b, c = off-diagonal entries of C</p>
+        <p><strong>Used when:</strong> Manually deriving eigenvalues from a 2×2 covariance matrix</p>
+      </div>
+
+      <div class="formula-entry">
+        <h4>Autoencoder Reconstruction Loss</h4>
+        <div class="formula-display">$$\mathcal{L} = \frac{1}{n} \sum_{i=1}^n \| X_i - \hat{X}_i \|^2$$</div>
+        <p><strong>Variables:</strong> X = original input, X̂ = decoder output, n = batch size</p>
+        <p><strong>Used when:</strong> Training an autoencoder — minimizing this forces the bottleneck to retain useful structure</p>
+      </div>
+
+      <div class="formula-entry">
+        <h4>L1 Regularization (Lasso)</h4>
+        <div class="formula-display">$$\mathcal{L}_{lasso} = \text{MSE} + \alpha \sum_{j=1}^m |\beta_j|$$</div>
+        <p><strong>Variables:</strong> βj = feature coefficient, α = regularization strength</p>
+        <p><strong>Used when:</strong> Embedded feature selection — drives irrelevant coefficients to exactly zero</p>
+      </div>
+
+    </section>
+
+    <!-- Code Appendix -->
+    <section class="topic-card" id="code-appendix">
+      <h2>Code Reference</h2>
+
+      <div class="code-entry">
+        <h4>sklearn PCA inside a Pipeline (production-safe)</h4>
+        <pre><code class="language-python">from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.pipeline import Pipeline
+import numpy as np
+
+X = np.random.randn(200, 10)
+
+pipe = Pipeline([
+    ('scaler', StandardScaler()),       # MUST scale before PCA
+    ('pca', PCA(n_components=0.95))     # retain 95% of variance
+])
+X_reduced = pipe.fit_transform(X)
+
+print(pipe['pca'].n_components_)
+print(pipe['pca'].explained_variance_ratio_.cumsum())</code></pre>
+      </div>
+
+      <div class="code-entry">
+        <h4>PCA from scratch (maps directly to math)</h4>
+        <pre><code class="language-python">import numpy as np
+
+def pca_from_scratch(X, k):
+    # Step 1: center → X_c = X - μ
+    X_c = X - X.mean(axis=0)
+
+    # Step 2: covariance matrix → C = (1/n) Xᵀ X
+    C = (X_c.T @ X_c) / len(X_c)
+
+    # Step 3: eigen decomposition → C·v = λ·v
+    eigenvalues, eigenvectors = np.linalg.eigh(C)
+
+    # Step 4: sort descending, pick top k
+    idx = np.argsort(eigenvalues)[::-1]
+    W = eigenvectors[:, idx[:k]]          # W ∈ ℝ^(m×k)
+
+    # Step 5: project → X_reduced = X_c · W
+    return X_c @ W</code></pre>
+      </div>
+
+      <div class="code-entry">
+        <h4>Cross-validation to select number of PCA components</h4>
+        <pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.decomposition import PCA
+from sklearn.model_selection import GridSearchCV
+
+pipe = Pipeline([
+    ('pca', PCA()),
+    ('clf', LogisticRegression())
+])
+
+grid = GridSearchCV(pipe,
+    param_grid={'pca__n_components': [2, 3, 4, 5, 6]},
+    cv=5, scoring='roc_auc'
+)
+grid.fit(X_train, y_train)
+print(grid.best_params_)   # e.g. {'pca__n_components': 4}</code></pre>
+      </div>
+
+      <div class="code-entry">
+        <h4>Autoencoder in PyTorch</h4>
+        <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class Autoencoder(nn.Module):
+    def __init__(self, input_dim, bottleneck_dim):
+        super().__init__()
+
+        self.encoder = nn.Sequential(
+            nn.Linear(input_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, bottleneck_dim)   # → Z (compressed)
+        )
+
+        self.decoder = nn.Sequential(
+            nn.Linear(bottleneck_dim, 64),
+            nn.ReLU(),
+            nn.Linear(64, 128),
+            nn.ReLU(),
+            nn.Linear(128, input_dim)        # → X̂ (reconstructed)
+        )
+
+    def forward(self, x):
+        z = self.encoder(x)
+        x_hat = self.decoder(z)
+        return x_hat, z
+
+model = Autoencoder(input_dim=784, bottleneck_dim=2)
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+for epoch in range(50):
+    x_hat, z = model(X_train)
+    loss = criterion(x_hat, X_train)
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+_, Z = model(X_test)   # Z = compressed representation</code></pre>
+      </div>
+
+      <div class="code-entry">
+        <h4>Permutation importance (model-agnostic)</h4>
+        <pre><code class="language-python">from sklearn.inspection import permutation_importance
+
+result = permutation_importance(
+    model, X_val, y_val,
+    n_repeats=10,
+    random_state=42,
+    scoring='roc_auc'
+)
+
+# Sort by mean importance
+sorted_idx = result.importances_mean.argsort()[::-1]
+for i in sorted_idx:
+    print(f"{feature_names[i]}: {result.importances_mean[i]:.4f} ± {result.importances_std[i]:.4f}")</code></pre>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5">
+    <path d="M8 12V4M4 7l4-4 4 4"/>
+  </svg>
+</button>
+
+<script>
+  hljs.highlightAll();
+
+  renderMathInElement(document.body, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '$', right: '$', display: false }
+    ],
+    throwOnError: false
+  });
+
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.style.display = window.scrollY > 200 ? 'flex' : 'none';
+  });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const tocLinks = document.querySelectorAll('.toc-sidebar a[href^="#"]');
+  const sections = [...tocLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  window.addEventListener('scroll', () => {
+    let current = sections[0];
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s; });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current.id);
+    });
+  }, { passive: true });
+</script>
+
+</body>
+</html>

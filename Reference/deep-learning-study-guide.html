@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Learning Study Guide — MLP to Transformers</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --blue: #58a6ff;
+    --green: #3fb950;
+    --amber: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --teal: #39d353;
+    --primary: #1f6feb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: -apple-system, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+  /* Layout */
+  .layout { display: flex; max-width: 1280px; margin: 0 auto; }
+  .toc-sidebar {
+    width: 240px; min-width: 240px; position: sticky; top: 0; height: 100vh;
+    overflow-y: auto; padding: 2rem 1rem; border-right: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .toc-sidebar h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1rem; }
+  .toc-sidebar a { display: block; padding: 0.3rem 0.5rem; font-size: 0.82rem; color: var(--muted); text-decoration: none; border-radius: 4px; border-left: 2px solid transparent; margin-bottom: 2px; }
+  .toc-sidebar a:hover { color: var(--text); background: var(--surface2); }
+  .toc-sidebar a.active { color: var(--blue); border-left-color: var(--blue); background: rgba(88,166,255,0.08); }
+  .toc-sidebar .toc-group { margin-bottom: 1.2rem; }
+
+  .main-content { flex: 1; padding: 2.5rem 3rem; max-width: 960px; }
+
+  /* Hero */
+  .hero { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .hero h1 { font-size: 2rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+  .hero .subtitle { color: var(--muted); font-size: 1rem; margin-bottom: 1rem; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .badge { padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+  .badge-blue { background: rgba(88,166,255,0.15); color: var(--blue); border: 1px solid rgba(88,166,255,0.3); }
+  .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+  .badge-amber { background: rgba(210,153,34,0.15); color: var(--amber); border: 1px solid rgba(210,153,34,0.3); }
+  .badge-purple { background: rgba(188,140,255,0.15); color: var(--purple); border: 1px solid rgba(188,140,255,0.3); }
+
+  /* Topic cards */
+  .topic-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; }
+  .topic-card h2 { font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .topic-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--blue); margin: 1.2rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .topic-intro { color: var(--muted); font-size: 0.95rem; margin-bottom: 1rem; }
+  .topic-card p { margin-bottom: 0.75rem; font-size: 0.93rem; }
+  .topic-card ul, .topic-card ol { padding-left: 1.4rem; margin-bottom: 0.75rem; font-size: 0.93rem; }
+  .topic-card li { margin-bottom: 0.3rem; }
+
+  /* Tags */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0; }
+  .tag { padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+  .tag-when { background: rgba(88,166,255,0.12); color: var(--blue); }
+  .tag-avoid { background: rgba(248,81,73,0.12); color: var(--red); }
+
+  /* Formula blocks */
+  .formula-block { background: var(--surface2); border-left: 3px solid var(--blue); padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 1rem 0; overflow-x: auto; }
+  .formula-block .formula-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; }
+  .katex-display { margin: 0.5rem 0 !important; }
+
+  /* Gotchas */
+  .gotcha { background: rgba(210,153,34,0.1); border-left: 3px solid var(--amber); padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0; font-size: 0.88rem; color: var(--amber); }
+  .gotcha strong { color: var(--amber); }
+
+  /* Code */
+  pre { margin: 1rem 0; border-radius: 8px; overflow-x: auto; font-size: 0.82rem; }
+  code.inline { background: var(--surface2); padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.85em; font-family: 'SFMono-Regular', Consolas, monospace; color: var(--purple); }
+
+  /* Comparison table */
+  .cmp-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.87rem; }
+  .cmp-table th { background: var(--surface2); color: var(--blue); padding: 0.6rem 0.9rem; text-align: left; border-bottom: 2px solid var(--border); font-weight: 600; }
+  .cmp-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--border); color: var(--text); }
+  .cmp-table tr:hover td { background: var(--surface2); }
+  .yes { color: var(--green); font-weight: 600; }
+  .no  { color: var(--red); }
+
+  /* Formula sheet */
+  #formula-sheet .formula-entry { border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; background: var(--surface); }
+  #formula-sheet .formula-entry h4 { color: var(--blue); margin-bottom: 0.5rem; font-size: 0.95rem; }
+  #formula-sheet .formula-entry p { font-size: 0.85rem; color: var(--muted); margin-top: 0.4rem; }
+
+  /* Code appendix */
+  #code-appendix .code-entry { margin-bottom: 2rem; }
+  #code-appendix .code-entry h4 { color: var(--green); margin-bottom: 0.5rem; font-size: 0.95rem; border-left: 3px solid var(--green); padding-left: 0.75rem; }
+
+  /* Section divider */
+  .section-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin: 3rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+
+  /* Back to top */
+  #back-to-top {
+    position: fixed; bottom: 2rem; right: 2rem;
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--primary); border: none; cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+    color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 100; transition: opacity 0.2s;
+  }
+  #back-to-top:hover { opacity: 0.85; }
+  #back-to-top svg { width: 18px; height: 18px; }
+
+  @media (max-width: 768px) {
+    .toc-sidebar { display: none; }
+    .main-content { padding: 1.5rem; }
+  }
+  @media print {
+    .toc-sidebar, #back-to-top { display: none !important; }
+    .topic-card { break-inside: avoid; border: 1px solid #ccc; }
+    body { background: white; color: black; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR TOC -->
+<nav class="toc-sidebar">
+  <h3>Contents</h3>
+  <div class="toc-group">
+    <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.3rem;padding-left:0.5rem;">NEURAL NETWORKS</div>
+    <a href="#mlp">MLP</a>
+    <a href="#forward-pass">Forward Pass</a>
+    <a href="#relu">ReLU Activation</a>
+    <a href="#backprop">Backpropagation</a>
+    <a href="#adam">Adam Optimizer</a>
+    <a href="#dropout">Dropout</a>
+    <a href="#early-stopping">Early Stopping</a>
+  </div>
+  <div class="toc-group">
+    <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.3rem;padding-left:0.5rem;">CNNs</div>
+    <a href="#cnn-intro">Why CNNs</a>
+    <a href="#convolution">Convolution</a>
+    <a href="#pooling">Pooling</a>
+    <a href="#channels">Channels</a>
+    <a href="#resnet">ResNet / Skip Connections</a>
+    <a href="#transfer">Transfer Learning</a>
+  </div>
+  <div class="toc-group">
+    <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.3rem;padding-left:0.5rem;">SEQUENCES</div>
+    <a href="#rnn">RNN</a>
+    <a href="#lstm">LSTM</a>
+    <a href="#gru">GRU</a>
+  </div>
+  <div class="toc-group">
+    <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.3rem;padding-left:0.5rem;">TRANSFORMERS</div>
+    <a href="#attention">Attention</a>
+    <a href="#transformer-arch">Architecture</a>
+    <a href="#add-norm">Add &amp; Norm</a>
+    <a href="#pos-enc">Positional Encoding</a>
+    <a href="#masked-attn">Masked Attention</a>
+    <a href="#bert-gpt-t5">BERT / GPT / T5</a>
+    <a href="#pretrain">Pre-training &amp; Fine-tuning</a>
+  </div>
+  <div class="toc-group">
+    <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.3rem;padding-left:0.5rem;">REFERENCE</div>
+    <a href="#concept-table">All Concepts</a>
+    <a href="#formula-sheet">Formula Sheet</a>
+    <a href="#code-appendix">Code Appendix</a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Deep Learning Study Guide</h1>
+  <p class="subtitle">MLP &rarr; CNN &rarr; RNN/LSTM/GRU &rarr; Transformers — complete session notes</p>
+  <div class="badge-row">
+    <span class="badge badge-blue">PyTorch</span>
+    <span class="badge badge-green">17 Concepts</span>
+    <span class="badge badge-amber">25+ Formulas</span>
+    <span class="badge badge-purple">Interview Ready</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section-label">Neural Networks — MLP</div>
+
+<!-- MLP -->
+<section class="topic-card" id="mlp">
+  <h2>MLP — Multi-Layer Perceptron</h2>
+  <p class="topic-intro">The foundational feedforward network. Every other architecture builds on these ideas. Best for tabular data where features have no spatial or sequential relationship.</p>
+  <div class="tag-row">
+    <span class="tag tag-when">Tabular data</span>
+    <span class="tag tag-when">Classification</span>
+    <span class="tag tag-when">Regression</span>
+    <span class="tag tag-avoid">Not for images</span>
+    <span class="tag tag-avoid">Not for sequences</span>
+  </div>
+  <h3>Architecture Pattern</h3>
+  <p>Stacked Linear layers with nonlinear activations. Each layer: $z = Wx + b$, then $a = \sigma(z)$. Without activations, all layers collapse to a single linear transformation.</p>
+  <h3>Starting Recipe</h3>
+  <ul>
+    <li>2 hidden layers, funnel pattern: [128, 64]</li>
+    <li>Optimizer: Adam, lr=1e-3</li>
+    <li>Batch size: 32 &nbsp;|&nbsp; Epochs: 1000 with early stopping (patience=10)</li>
+    <li>Dropout(0.3) between layers if overfitting</li>
+  </ul>
+  <div class="gotcha"><strong>Gotcha:</strong> Without activation functions, stacking layers is mathematically identical to one linear layer — $W_3 W_2 W_1 x = W_\text{combined} x$. ReLU is non-negotiable.</div>
+</section>
+
+<!-- FORWARD PASS -->
+<section class="topic-card" id="forward-pass">
+  <h2>Forward Pass</h2>
+  <p class="topic-intro">The computation from input to output. Two operations per layer: linear transformation then nonlinear activation.</p>
+  <div class="formula-block">
+    $$z^{(l)} = W^{(l)} \cdot a^{(l-1)} + b^{(l)}$$
+    $$a^{(l)} = \sigma(z^{(l)})$$
+    <p class="formula-label">$W^{(l)} \in \mathbb{R}^{\text{out} \times \text{in}}$, $a^{(0)} = x$ (input). Each row of $W$ = one neuron's weights.</p>
+  </div>
+  <h3>Weight Matrix Dimensions</h3>
+  <p>Rule: $W^{(l)} \in \mathbb{R}^{d_\text{out} \times d_\text{in}}$. For 8→16→8→1: $W_1$ is (16×8), $W_2$ is (8×16), $W_3$ is (1×8).</p>
+  <div class="formula-block">
+    $$\text{params} = d_\text{out} \times d_\text{in} + d_\text{out}$$
+    <p class="formula-label">Weights + biases per layer.</p>
+  </div>
+</section>
+
+<!-- RELU -->
+<section class="topic-card" id="relu">
+  <h2>ReLU Activation</h2>
+  <p class="topic-intro">The standard nonlinearity. Simple, avoids vanishing gradients, creates sparse activations. Each neuron acts as an on/off switch.</p>
+  <div class="formula-block">
+    $$\text{ReLU}(x) = \max(0, x)$$
+    <p class="formula-label">Kills negative values, passes positives unchanged. Gradient is 1 for x&gt;0, 0 for x&lt;0.</p>
+  </div>
+  <table class="cmp-table">
+    <tr><th>Activation</th><th>Formula</th><th>Gradient issue</th><th>Use when</th></tr>
+    <tr><td>ReLU</td><td>max(0,x)</td><td>Dead neurons if x&lt;0</td><td>Default hidden layers</td></tr>
+    <tr><td>Sigmoid</td><td>1/(1+e⁻ˣ)</td><td>Vanishing for large |x|</td><td>Binary output</td></tr>
+    <tr><td>tanh</td><td>(eˣ-e⁻ˣ)/(eˣ+e⁻ˣ)</td><td>Vanishing for large |x|</td><td>RNN hidden state</td></tr>
+    <tr><td>Softmax</td><td>eˣⁱ/Σeˣʲ</td><td>—</td><td>Multi-class output</td></tr>
+  </table>
+</section>
+
+<!-- BACKPROP -->
+<section class="topic-card" id="backprop">
+  <h2>Backpropagation + Training Loop</h2>
+  <p class="topic-intro">Chain rule applied backward through the network to compute gradients. PyTorch does this automatically with loss.backward().</p>
+  <h3>The 4-Step Loop</h3>
+  <ol>
+    <li><strong>optimizer.zero_grad()</strong> — clear gradients from previous step (PyTorch accumulates)</li>
+    <li><strong>logits = model(x)</strong> — forward pass</li>
+    <li><strong>loss.backward()</strong> — backprop: fills .grad on all W and b</li>
+    <li><strong>optimizer.step()</strong> — update: $W \leftarrow W - \eta \cdot \nabla_W L$</li>
+  </ol>
+  <div class="formula-block">
+    $$W \leftarrow W - \eta \cdot \frac{\partial L}{\partial W}$$
+    <p class="formula-label">Gradient descent update. $\eta$ = learning rate. Move weights opposite to gradient direction.</p>
+  </div>
+  <div class="gotcha"><strong>Gotcha:</strong> Never forget optimizer.zero_grad(). PyTorch accumulates gradients — skipping it adds this step's gradients to last step's, corrupting training.</div>
+</section>
+
+<!-- ADAM -->
+<section class="topic-card" id="adam">
+  <h2>Adam Optimizer</h2>
+  <p class="topic-intro">Adaptive per-weight learning rate with momentum. The default optimizer for almost everything. Converges faster and more reliably than SGD.</p>
+  <div class="formula-block">
+    $$m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t \quad \text{(momentum)}$$
+    $$v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2 \quad \text{(adaptive rate)}$$
+    $$W \leftarrow W - \eta \cdot \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \varepsilon}$$
+    <p class="formula-label">Defaults: $\eta$=1e-3, $\beta_1$=0.9, $\beta_2$=0.999, $\varepsilon$=1e-8. $\hat{m}, \hat{v}$ = bias-corrected estimates.</p>
+  </div>
+  <p>Use <code class="inline">lr=1e-3</code> for MLP/CNN, <code class="inline">lr=1e-4</code> or lower for Transformers.</p>
+</section>
+
+<!-- DROPOUT -->
+<section class="topic-card" id="dropout">
+  <h2>Dropout</h2>
+  <p class="topic-intro">Regularization by randomly zeroing neurons during training. Forces each neuron to learn independently useful features. Prevents co-adaptation.</p>
+  <div class="formula-block">
+    $$\tilde{a} = a \cdot \text{Bernoulli}(p) \;/\; p$$
+    <p class="formula-label">During training: zero fraction (1-p) of neurons, scale survivors by 1/p to preserve expected value. At test time: all neurons active (model.eval() disables automatically).</p>
+  </div>
+  <table class="cmp-table">
+    <tr><th>Location</th><th>Typical rate p (keep)</th></tr>
+    <tr><td>Hidden layers (MLP)</td><td>0.3–0.5</td></tr>
+    <tr><td>Before output layer</td><td>0.1–0.2</td></tr>
+    <tr><td>Conv layers (Dropout2d)</td><td>0.2–0.3</td></tr>
+    <tr><td>Input/Output layer</td><td>Never</td></tr>
+  </table>
+  <div class="gotcha"><strong>Gotcha:</strong> model.train() enables dropout. model.eval() disables it. Always switch modes correctly — forgetting model.eval() at inference gives stochastic, wrong predictions.</div>
+</section>
+
+<!-- EARLY STOPPING -->
+<section class="topic-card" id="early-stopping">
+  <h2>Early Stopping</h2>
+  <p class="topic-intro">Stop training when validation loss stops improving. Prevents overfitting without needing a fixed epoch count. Always restore the best weights, not the final ones.</p>
+  <h3>Algorithm</h3>
+  <ol>
+    <li>Track best_val_loss and a patience counter</li>
+    <li>If val_loss improves by &gt; min_delta: save weights, reset counter</li>
+    <li>Otherwise: increment counter</li>
+    <li>If counter &ge; patience: restore best weights, stop</li>
+  </ol>
+  <p>Set patience=10–20, min_delta=1e-4. Set epochs=1000 and let early stopping decide.</p>
+  <div class="gotcha"><strong>Gotcha:</strong> Monitor val_loss, never train_loss. Restoring best weights (not final) is critical — the model at the stopping point has already degraded.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section-label">CNNs — Convolutional Neural Networks</div>
+
+<!-- CNN INTRO -->
+<section class="topic-card" id="cnn-intro">
+  <h2>Why CNNs for Images</h2>
+  <p class="topic-intro">MLPs throw away spatial structure. A 64×64 image flattened to 12,288 features loses all neighborhood information, and the first weight matrix alone has 6M+ parameters.</p>
+  <h3>Two Problems CNNs Solve</h3>
+  <ul>
+    <li><strong>Translation invariance</strong> — a cat in any corner is still a cat. Weight sharing makes one filter detect the pattern everywhere.</li>
+    <li><strong>Local patterns</strong> — edges, textures, shapes are made of nearby pixels. A 3×3 filter captures this; a fully-connected layer cannot.</li>
+  </ul>
+  <table class="cmp-table">
+    <tr><th></th><th>MLP on Image</th><th>CNN</th></tr>
+    <tr><td>Params (28×28→512)</td><td>400K+</td><td>9 (3×3 kernel)</td></tr>
+    <tr><td>Spatial structure</td><td class="no">Thrown away</td><td class="yes">Preserved</td></tr>
+    <tr><td>Translation invariant</td><td class="no">No</td><td class="yes">Yes</td></tr>
+  </table>
+</section>
+
+<!-- CONVOLUTION -->
+<section class="topic-card" id="convolution">
+  <h2>The Convolution Operation</h2>
+  <p class="topic-intro">Slide a small filter (kernel) across the input. At each position: element-wise multiply the patch by the kernel, sum everything into one number.</p>
+  <div class="formula-block">
+    $$\text{Output}(i,j) = \sum_m \sum_n \text{Input}(i+m,\; j+n) \cdot K(m,n)$$
+    <p class="formula-label">At position (i,j): dot product between kernel K and the patch it covers. Same K reused at every position = weight sharing.</p>
+  </div>
+  <h3>Output Size Formula</h3>
+  <div class="formula-block">
+    $$\text{out} = \left\lfloor \frac{\text{in} + 2p - k}{s} \right\rfloor + 1$$
+    <p class="formula-label">in=input size, p=padding, k=kernel size, s=stride. With k=3, p=1, s=1: out = in (size preserved).</p>
+  </div>
+  <table class="cmp-table">
+    <tr><th>Setting</th><th>Effect</th><th>Typical use</th></tr>
+    <tr><td>padding=1, kernel=3</td><td>Preserves H×W</td><td>Standard hidden conv</td></tr>
+    <tr><td>stride=2</td><td>Halves H and W</td><td>Downsampling (modern alternative to pool)</td></tr>
+    <tr><td>padding=0</td><td>Shrinks output</td><td>Rarely in hidden layers</td></tr>
+  </table>
+</section>
+
+<!-- POOLING -->
+<section class="topic-card" id="pooling">
+  <h2>Pooling</h2>
+  <p class="topic-intro">Spatial downsampling. Takes the max (or average) in each window. No learnable parameters — purely structural. Halves H and W per application.</p>
+  <p><strong>Max Pooling</strong> — keeps the strongest activation per region. "Was this feature detected anywhere here?" Preserves feature presence, discards exact location.</p>
+  <p><strong>Global Average Pooling (GAP)</strong> — collapses each feature map to one number (spatial average). Used at the end of modern networks (ResNet) instead of flatten. Fewer params, acts as regularizer.</p>
+  <table class="cmp-table">
+    <tr><th>Operation</th><th>PyTorch</th><th>Learnable params</th><th>Use</th></tr>
+    <tr><td>MaxPool2d</td><td>nn.MaxPool2d(2, stride=2)</td><td>None</td><td>Hidden layers, standard</td></tr>
+    <tr><td>AvgPool2d</td><td>nn.AvgPool2d(2, stride=2)</td><td>None</td><td>Less common</td></tr>
+    <tr><td>AdaptiveAvgPool</td><td>nn.AdaptiveAvgPool2d((1,1))</td><td>None</td><td>Before classifier head</td></tr>
+  </table>
+</section>
+
+<!-- CHANNELS -->
+<section class="topic-card" id="channels">
+  <h2>Multiple Filters &amp; Channels</h2>
+  <p class="topic-intro">N filters → N feature maps stacked into a 3D tensor. The channel dimension grows as spatial dimensions shrink — trading resolution for semantic richness.</p>
+  <div class="formula-block">
+    $$\text{params per Conv2d} = d_\text{out} \times (k \times k \times d_\text{in}) + d_\text{out}$$
+    <p class="formula-label">out_channels × (kernel² × in_channels) + biases. A layer 64→128 with k=3: 128×(9×64)+128 = 73,856.</p>
+  </div>
+  <h3>Typical Progression</h3>
+  <p>Channels grow, space shrinks: 3 → 64 → 128 → 256 → 512. Space: 224 → 112 → 56 → 28 → 7. Total volume stays roughly constant.</p>
+  <div class="gotcha"><strong>Gotcha:</strong> PyTorch image tensors are always (batch, channels, H, W). Forgetting channel order is the most common shape bug.</div>
+</section>
+
+<!-- RESNET -->
+<section class="topic-card" id="resnet">
+  <h2>ResNet — Skip Connections</h2>
+  <p class="topic-intro">Residual connections let gradients flow directly through deep networks. Without them, a 50-layer net can perform worse than a 20-layer one (vanishing gradients).</p>
+  <div class="formula-block">
+    $$\text{output} = F(x) + x$$
+    <p class="formula-label">Learn the residual F(x) = what needs to change, add the original x back. If F(x)≈0, layer becomes identity. Gradient flows through + directly — no repeated multiplication.</p>
+  </div>
+  <h3>Residual Block Pattern</h3>
+  <pre><code class="language-python">def forward(self, x):
+    residual = x                  # save input
+    out = self.conv1(x)
+    out = self.bn1(out)
+    out = F.relu(out)
+    out = self.conv2(out)
+    out = self.bn2(out)
+    out = out + residual          # skip connection
+    return F.relu(out)            # activate AFTER adding</code></pre>
+  <div class="gotcha"><strong>Gotcha:</strong> If in_channels ≠ out_channels, shapes don't match for +. Fix with a 1×1 conv on the skip path to project dimensions.</div>
+</section>
+
+<!-- TRANSFER LEARNING -->
+<section class="topic-card" id="transfer">
+  <h2>Transfer Learning</h2>
+  <p class="topic-intro">Use a network pretrained on millions of images. Keep conv layers (they already detect edges, textures, shapes), replace the classifier head for your task.</p>
+  <h3>Two Modes</h3>
+  <ul>
+    <li><strong>Feature extraction</strong> — freeze backbone, train head only. Fast, few params.</li>
+    <li><strong>Fine-tuning</strong> — unfreeze all/some layers, train at low lr (1e-5). Slower, better for different domains.</li>
+  </ul>
+  <pre><code class="language-python"># Freeze backbone
+for param in model.backbone.parameters():
+    param.requires_grad = False
+
+# Only pass trainable params to optimizer
+optimizer = torch.optim.Adam(
+    filter(lambda p: p.requires_grad, model.parameters()), lr=1e-3
+)
+
+# Unfreeze for fine-tuning
+for param in model.backbone.parameters():
+    param.requires_grad = True</code></pre>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section-label">Sequences — RNN, LSTM, GRU</div>
+
+<!-- RNN -->
+<section class="topic-card" id="rnn">
+  <h2>RNN — Recurrent Neural Network</h2>
+  <p class="topic-intro">Processes sequences one step at a time, passing a hidden state forward. Same weights at every step — weight sharing across time.</p>
+  <div class="formula-block">
+    $$h_t = \tanh(W_x \cdot x_t + W_h \cdot h_{t-1} + b)$$
+    <p class="formula-label">$W_x$: current input weight. $W_h$: previous hidden state weight. Both shared across all timesteps.</p>
+  </div>
+  <div class="gotcha"><strong>Gotcha — Vanishing Gradients:</strong> Backprop multiplies by $W_h^T$ at every step. If $|W_h| &lt; 1$ the gradient shrinks to zero. RNNs forget long-range dependencies. Solution: LSTM or GRU.</div>
+  <pre><code class="language-python">self.rnn = nn.RNN(input_size=5, hidden_size=32, batch_first=True)
+out, h_n = self.rnn(x)          # out: (batch, seq, hidden)
+last = out[:, -1, :]            # last timestep = sequence summary</code></pre>
+</section>
+
+<!-- LSTM -->
+<section class="topic-card" id="lstm">
+  <h2>LSTM — Long Short-Term Memory</h2>
+  <p class="topic-intro">Two states (hₜ + cₜ), three gates. The cell state cₜ flows via addition — gradients pass cleanly without repeated multiplication. Solves vanishing gradients for long sequences.</p>
+  <div class="formula-block">
+    $$f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f) \quad \text{(forget gate)}$$
+    $$i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i), \quad \tilde{g}_t = \tanh(W_g \cdot [h_{t-1}, x_t] + b_g) \quad \text{(input gate)}$$
+    $$c_t = f_t \odot c_{t-1} + i_t \odot \tilde{g}_t \quad \text{(cell update)}$$
+    $$o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o), \quad h_t = o_t \odot \tanh(c_t) \quad \text{(output gate)}$$
+    <p class="formula-label">$\odot$ = element-wise multiply. $c_t$ flows via + not $\times$ — gradient highway. 4 weight matrices total. Params = $4 \times ((d_\text{in}+d_h) \times d_h + d_h)$.</p>
+  </div>
+  <table class="cmp-table">
+    <tr><th>Gate</th><th>Controls</th><th>Analogy</th></tr>
+    <tr><td>Forget $f_t$</td><td>What to erase from $c_{t-1}$</td><td>Tear out old notebook pages</td></tr>
+    <tr><td>Input $i_t + \tilde{g}_t$</td><td>What new info to write</td><td>Write new notes</td></tr>
+    <tr><td>Output $o_t$</td><td>What to expose as $h_t$</td><td>Which page to show</td></tr>
+  </table>
+  <pre><code class="language-python">self.lstm = nn.LSTM(input_size=5, hidden_size=32, batch_first=True)
+out, (h_n, c_n) = self.lstm(x)  # c_n is LSTM-only (no GRU equivalent)
+last = out[:, -1, :]</code></pre>
+</section>
+
+<!-- GRU -->
+<section class="topic-card" id="gru">
+  <h2>GRU — Gated Recurrent Unit</h2>
+  <p class="topic-intro">Simplified LSTM: one state, two gates, three weight matrices. The update gate does the job of both forget and input gates. Faster than LSTM, matches it on most tasks.</p>
+  <div class="formula-block">
+    $$r_t = \sigma(W_r \cdot [h_{t-1}, x_t] + b_r) \quad \text{(reset gate)}$$
+    $$z_t = \sigma(W_z \cdot [h_{t-1}, x_t] + b_z) \quad \text{(update gate)}$$
+    $$\tilde{h}_t = \tanh(W_h \cdot [r_t \odot h_{t-1},\; x_t] + b_h) \quad \text{(candidate)}$$
+    $$h_t = (1-z_t) \odot h_{t-1} + z_t \odot \tilde{h}_t \quad \text{(interpolation)}$$
+    <p class="formula-label">$(1-z_t)$ and $z_t$ sum to 1 — weighted blend of old and new. Params = $3 \times ((d_\text{in}+d_h) \times d_h + d_h)$.</p>
+  </div>
+  <table class="cmp-table">
+    <tr><th></th><th>RNN</th><th>LSTM</th><th>GRU</th></tr>
+    <tr><td>States</td><td>$h_t$</td><td>$h_t + c_t$</td><td>$h_t$</td></tr>
+    <tr><td>Gates</td><td>None</td><td>3</td><td>2</td></tr>
+    <tr><td>Long-range memory</td><td class="no">Poor</td><td class="yes">Excellent</td><td class="yes">Good</td></tr>
+    <tr><td>Default choice</td><td>—</td><td>Long sequences</td><td class="yes">Most tasks</td></tr>
+  </table>
+  <div class="gotcha"><strong>Gradient clipping for all RNNs:</strong> <code class="inline">torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)</code> — call before optimizer.step(). Prevents exploding gradients from backprop through time.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section-label">Transformers</div>
+
+<!-- ATTENTION -->
+<section class="topic-card" id="attention">
+  <h2>Scaled Dot-Product Attention</h2>
+  <p class="topic-intro">Every token attends directly to every other token in parallel. No sequential bottleneck. Token i can look at token 100 steps away as easily as its neighbor.</p>
+  <div class="formula-block">
+    $$Q = XW^Q, \quad K = XW^K, \quad V = XW^V$$
+    $$\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) \cdot V$$
+    <p class="formula-label">Q="what am I looking for", K="what do I hold", V="what I give if selected". Divide by $\sqrt{d_k}$ to prevent softmax saturation when $d_k$ is large. Complexity: $O(T^2 \cdot d)$.</p>
+  </div>
+  <h3>Multi-Head Attention</h3>
+  <div class="formula-block">
+    $$\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_H) \cdot W^O$$
+    <p class="formula-label">H heads run in parallel, each with own $W^Q_i, W^K_i, W^V_i$. Each head learns a different relationship type. $d_k = d_\text{model}/H$ per head.</p>
+  </div>
+</section>
+
+<!-- TRANSFORMER ARCH -->
+<section class="topic-card" id="transformer-arch">
+  <h2>Transformer Architecture</h2>
+  <p class="topic-intro">Encoder reads input bidirectionally. Decoder generates output causally. Each uses stacked blocks of attention + FFN + Add&amp;Norm.</p>
+  <h3>One Encoder Block</h3>
+  <pre><code class="language-python">x = LayerNorm(x + MultiHeadSelfAttention(x))  # Add & Norm
+x = LayerNorm(x + FFN(x))                     # Add & Norm
+# FFN = Linear(d, 4d) → ReLU → Linear(4d, d)  per token</code></pre>
+  <h3>Original Hyperparameters (Vaswani 2017)</h3>
+  <table class="cmp-table">
+    <tr><th>Param</th><th>Value</th><th>Meaning</th></tr>
+    <tr><td>d_model</td><td>512</td><td>Embedding dimension</td></tr>
+    <tr><td>d_ff</td><td>2048</td><td>FFN inner dim (4× d_model)</td></tr>
+    <tr><td>H (heads)</td><td>8</td><td>d_k = 512/8 = 64 per head</td></tr>
+    <tr><td>N (layers)</td><td>6+6</td><td>Encoder + Decoder blocks</td></tr>
+  </table>
+</section>
+
+<!-- ADD & NORM -->
+<section class="topic-card" id="add-norm">
+  <h2>Add &amp; Norm</h2>
+  <p class="topic-intro">Two operations always applied together after every sublayer: residual connection then LayerNorm. Applied twice per Transformer block.</p>
+  <div class="formula-block">
+    $$\text{output} = \text{LayerNorm}(x + \text{sublayer}(x))$$
+    <p class="formula-label">Add: gradient flows through + unchanged (no vanishing). Norm: stabilizes activations across deep stacks.</p>
+  </div>
+  <h3>LayerNorm Formula</h3>
+  <div class="formula-block">
+    $$\hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2 + \varepsilon}}, \quad y_i = \gamma \hat{x}_i + \beta$$
+    <p class="formula-label">Normalize each token's own feature vector (mean=0, std=1), then apply learned scale $\gamma$ and shift $\beta$. Independent of batch size — unlike BatchNorm.</p>
+  </div>
+  <table class="cmp-table">
+    <tr><th></th><th>BatchNorm</th><th>LayerNorm</th></tr>
+    <tr><td>Normalizes across</td><td>Batch dimension</td><td>Feature dimension</td></tr>
+    <tr><td>Works with batch=1</td><td class="no">No</td><td class="yes">Yes</td></tr>
+    <tr><td>Used in</td><td>CNNs</td><td>Transformers</td></tr>
+  </table>
+</section>
+
+<!-- POSITIONAL ENCODING -->
+<section class="topic-card" id="pos-enc">
+  <h2>Positional Encoding</h2>
+  <p class="topic-intro">Transformers process all tokens in parallel — no inherent sense of order. Add a unique position vector to each token embedding before the first layer.</p>
+  <div class="formula-block">
+    $$PE(\text{pos}, 2i) = \sin\!\left(\frac{\text{pos}}{10000^{2i/d}}\right), \quad PE(\text{pos}, 2i{+}1) = \cos\!\left(\frac{\text{pos}}{10000^{2i/d}}\right)$$
+    <p class="formula-label">Different dimensions oscillate at different frequencies (slow → fast). Together they uniquely fingerprint every position. Final input = token_embedding + PE.</p>
+  </div>
+  <p>In practice, most modern models (BERT, GPT) use <strong>learned</strong> PE: <code class="inline">nn.Embedding(max_seq_len, d_model)</code> trained like any weight.</p>
+</section>
+
+<!-- MASKED ATTENTION -->
+<section class="topic-card" id="masked-attn">
+  <h2>Masked Self-Attention</h2>
+  <p class="topic-intro">Used in the decoder only. Each token can only attend to itself and previous tokens — simulates generation-time constraint where future tokens don't exist yet.</p>
+  <div class="formula-block">
+    $$\text{scores} = \frac{QK^T}{\sqrt{d_k}} + M$$
+    <p class="formula-label">M is upper-triangular matrix of $-\infty$. After softmax: $\text{softmax}(-\infty) = 0$. Future positions are zeroed out.</p>
+  </div>
+  <pre><code class="language-python"># Causal mask: True = block this position
+mask = torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool()
+# Pass to attention: scores.masked_fill(mask, float('-inf'))</code></pre>
+  <table class="cmp-table">
+    <tr><th></th><th>Encoder Self-Attention</th><th>Decoder Self-Attention</th></tr>
+    <tr><td>Mask</td><td>None</td><td>Causal (upper-triangular -∞)</td></tr>
+    <tr><td>Direction</td><td>Bidirectional</td><td>Left-to-right only</td></tr>
+    <tr><td>Models</td><td>BERT</td><td>GPT</td></tr>
+  </table>
+</section>
+
+<!-- BERT GPT T5 -->
+<section class="topic-card" id="bert-gpt-t5">
+  <h2>BERT vs GPT vs T5</h2>
+  <p class="topic-intro">All three share the same Transformer block. They differ in which parts of the architecture are used and how they are trained.</p>
+  <table class="cmp-table">
+    <tr><th></th><th>BERT</th><th>GPT</th><th>T5</th></tr>
+    <tr><td>Architecture</td><td>Encoder only</td><td>Decoder only</td><td>Encoder + Decoder</td></tr>
+    <tr><td>Attention</td><td>Bidirectional</td><td>Causal (masked)</td><td>Enc: bidir, Dec: causal</td></tr>
+    <tr><td>Pre-training</td><td>MLM — predict masked tokens</td><td>CLM — predict next token</td><td>Span corruption</td></tr>
+    <tr><td>Best for</td><td>Classification, NER, Q&amp;A</td><td>Generation, chat, code</td><td>Translation, summarization</td></tr>
+    <tr><td>Examples</td><td>RoBERTa, DeBERTa</td><td>GPT-4, Claude, Llama</td><td>FLAN-T5, BART</td></tr>
+  </table>
+  <h3>Decision Rule</h3>
+  <ul>
+    <li>Understand / classify text → <strong>BERT family</strong></li>
+    <li>Generate text freely → <strong>GPT family</strong></li>
+    <li>Transform one text into another → <strong>T5 / BART</strong></li>
+  </ul>
+  <div class="gotcha"><strong>Key interview Q:</strong> Why can't BERT generate text? It has no decoder — no mechanism to produce tokens sequentially. It was never trained to predict the next token.</div>
+</section>
+
+<!-- PRETRAIN FINETUNE -->
+<section class="topic-card" id="pretrain">
+  <h2>Pre-training vs Fine-tuning</h2>
+  <p class="topic-intro">Train once on billions of tokens (self-supervised, no labels). Then adapt to your task with a small dataset. Fine-tuning takes minutes; pre-training takes weeks.</p>
+  <h3>Three Fine-tuning Modes</h3>
+  <table class="cmp-table">
+    <tr><th>Mode</th><th>What's trained</th><th>Speed</th><th>Use when</th></tr>
+    <tr><td>Feature extraction</td><td>New head only, backbone frozen</td><td>Fastest</td><td>Small data, similar domain</td></tr>
+    <tr><td>LoRA / PEFT</td><td>Tiny A,B matrices (~0.1% params)</td><td>Fast</td><td>Large LLM, limited GPU</td></tr>
+    <tr><td>Full fine-tuning</td><td>All weights</td><td>Slow</td><td>Enough data + GPU</td></tr>
+  </table>
+  <h3>LoRA Formula</h3>
+  <div class="formula-block">
+    $$W' = W + A \cdot B \quad A \in \mathbb{R}^{d \times r},\; B \in \mathbb{R}^{r \times d}$$
+    <p class="formula-label">W is frozen. Only A and B are trained. rank r=8: params = 2×d×r vs d×d. For d=4096: 65K vs 16.7M — 256× fewer.</p>
+  </div>
+  <div class="gotcha"><strong>Catastrophic forgetting:</strong> Full fine-tuning on small data overwrites pre-trained knowledge. Prevent with low lr (1e-5), early stopping, or LoRA/feature extraction.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section-label">Reference</div>
+
+<!-- CONCEPT TABLE -->
+<section class="topic-card" id="concept-table">
+  <h2>All Concepts at a Glance</h2>
+  <table class="cmp-table">
+    <thead><tr><th>Concept</th><th>When to Use</th><th>Key Formula / Rule</th><th>PyTorch</th></tr></thead>
+    <tbody>
+      <tr><td>MLP</td><td>Tabular data</td><td>$z=Wx+b$, $a=\sigma(z)$</td><td>nn.Linear + nn.ReLU</td></tr>
+      <tr><td>ReLU</td><td>All hidden layers (default)</td><td>max(0,x)</td><td>nn.ReLU()</td></tr>
+      <tr><td>Dropout</td><td>Overfitting, any arch</td><td>zero p fraction, scale by 1/p</td><td>nn.Dropout(p=0.3)</td></tr>
+      <tr><td>Adam</td><td>Default optimizer</td><td>adaptive m/√v per weight</td><td>optim.Adam(lr=1e-3)</td></tr>
+      <tr><td>Early Stopping</td><td>All training</td><td>monitor val_loss, patience counter</td><td>custom class</td></tr>
+      <tr><td>Conv2d</td><td>Images, spatial data</td><td>$\sum_m\sum_n \text{In}(i+m,j+n)\cdot K(m,n)$</td><td>nn.Conv2d(in,out,3,padding=1)</td></tr>
+      <tr><td>MaxPool2d</td><td>CNN downsampling</td><td>max per 2×2 window</td><td>nn.MaxPool2d(2,2)</td></tr>
+      <tr><td>BatchNorm</td><td>CNNs</td><td>normalize across batch dim</td><td>nn.BatchNorm2d(c)</td></tr>
+      <tr><td>Skip connection</td><td>Deep networks (&gt;10 layers)</td><td>output = F(x) + x</td><td>out + residual in forward()</td></tr>
+      <tr><td>Transfer learning</td><td>Small dataset + images</td><td>freeze backbone, train head</td><td>requires_grad=False</td></tr>
+      <tr><td>RNN</td><td>Short sequences, baseline</td><td>$h_t = \tanh(W_x x_t + W_h h_{t-1})$</td><td>nn.RNN(batch_first=True)</td></tr>
+      <tr><td>LSTM</td><td>Long sequences</td><td>3 gates + cell state $c_t$</td><td>nn.LSTM → (out, (h_n, c_n))</td></tr>
+      <tr><td>GRU</td><td>Default sequence model</td><td>2 gates, interpolation update</td><td>nn.GRU → (out, h_n)</td></tr>
+      <tr><td>Grad clipping</td><td>All RNNs</td><td>cap gradient norm</td><td>clip_grad_norm_(params, 1.0)</td></tr>
+      <tr><td>Attention</td><td>Sequence tasks, Transformers</td><td>softmax(QKᵀ/√dₖ)·V</td><td>nn.MultiheadAttention</td></tr>
+      <tr><td>LayerNorm</td><td>Transformers</td><td>normalize per token's features</td><td>nn.LayerNorm(d_model)</td></tr>
+      <tr><td>Positional Encoding</td><td>Transformers</td><td>sin/cos or learned Embedding</td><td>nn.Embedding(max_len, d)</td></tr>
+      <tr><td>Causal mask</td><td>GPT-style decoder</td><td>upper-triangular -∞</td><td>torch.triu(..., diagonal=1)</td></tr>
+      <tr><td>LoRA</td><td>LLM fine-tuning, limited GPU</td><td>W' = W + AB, r≪d</td><td>peft library or custom</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- FORMULA SHEET -->
+<section class="topic-card" id="formula-sheet">
+  <h2>Formula Reference Sheet</h2>
+
+  <div class="formula-entry">
+    <h4>Linear Layer (Forward Pass)</h4>
+    <div class="formula-block">$$z = Wx + b, \quad a = \sigma(z)$$</div>
+    <p><strong>Variables:</strong> W ∈ ℝ^(out×in), b ∈ ℝ^out, σ = activation function</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Parameter Count — Linear Layer</h4>
+    <div class="formula-block">$$\text{params} = d_\text{out} \times d_\text{in} + d_\text{out}$$</div>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Gradient Descent Update</h4>
+    <div class="formula-block">$$W \leftarrow W - \eta \cdot \frac{\partial L}{\partial W}$$</div>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Adam Optimizer</h4>
+    <div class="formula-block">$$m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t, \quad v_t = \beta_2 v_{t-1} + (1-\beta_2)g_t^2, \quad W \leftarrow W - \eta\frac{\hat{m}_t}{\sqrt{\hat{v}_t}+\varepsilon}$$</div>
+    <p><strong>Defaults:</strong> η=1e-3, β₁=0.9, β₂=0.999, ε=1e-8</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Convolution Output Size</h4>
+    <div class="formula-block">$$\text{out} = \left\lfloor \frac{\text{in} + 2p - k}{s} \right\rfloor + 1$$</div>
+    <p><strong>Variables:</strong> in=input, p=padding, k=kernel, s=stride</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Conv2d Parameter Count</h4>
+    <div class="formula-block">$$\text{params} = d_\text{out} \times (k^2 \times d_\text{in}) + d_\text{out}$$</div>
+  </div>
+
+  <div class="formula-entry">
+    <h4>RNN Hidden State</h4>
+    <div class="formula-block">$$h_t = \tanh(W_x x_t + W_h h_{t-1} + b)$$</div>
+  </div>
+
+  <div class="formula-entry">
+    <h4>LSTM Cell Update (key equation)</h4>
+    <div class="formula-block">$$c_t = f_t \odot c_{t-1} + i_t \odot \tilde{g}_t, \quad h_t = o_t \odot \tanh(c_t)$$</div>
+    <p><strong>Why it works:</strong> cₜ flows via + not × — gradient highway bypassing vanishing problem</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>GRU Final Update</h4>
+    <div class="formula-block">$$h_t = (1-z_t) \odot h_{t-1} + z_t \odot \tilde{h}_t$$</div>
+    <p>Coefficients sum to 1 — weighted interpolation between old and new state</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>LSTM Parameter Count</h4>
+    <div class="formula-block">$$\text{params} = 4 \times \left((d_\text{in}+d_h) \times d_h + d_h\right)$$</div>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Scaled Dot-Product Attention</h4>
+    <div class="formula-block">$$\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^T}{\sqrt{d_k}}\right) V$$</div>
+    <p><strong>Complexity:</strong> O(T²·d) — quadratic in sequence length</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>LayerNorm</h4>
+    <div class="formula-block">$$\hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2+\varepsilon}}, \quad y_i = \gamma\hat{x}_i + \beta$$</div>
+    <p>Per-token normalization. γ, β are learned parameters.</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Positional Encoding</h4>
+    <div class="formula-block">$$PE(\text{pos},2i) = \sin\!\left(\frac{\text{pos}}{10000^{2i/d}}\right), \quad PE(\text{pos},2i{+}1) = \cos\!\left(\frac{\text{pos}}{10000^{2i/d}}\right)$$</div>
+  </div>
+
+  <div class="formula-entry">
+    <h4>LoRA</h4>
+    <div class="formula-block">$$W' = W + AB, \quad A \in \mathbb{R}^{d \times r},\; B \in \mathbb{R}^{r \times d},\; r \ll d$$</div>
+    <p>W frozen. Only A, B trained. ~256× fewer params for r=8, d=4096.</p>
+  </div>
+</section>
+
+<!-- CODE APPENDIX -->
+<section class="topic-card" id="code-appendix">
+  <h2>Code Reference</h2>
+
+  <div class="code-entry">
+    <h4>Interview MLP — minimal, explainable</h4>
+    <pre><code class="language-python">class MLP(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(8, 16)   # W: (16, 8)
+        self.fc2 = nn.Linear(16, 8)
+        self.fc3 = nn.Linear(8, 2)
+        self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(p=0.3)
+
+    def forward(self, x):
+        x = self.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = self.relu(self.fc2(x))
+        x = self.dropout(x)
+        return self.fc3(x)            # raw logits, no softmax
+
+# 4-step training loop
+optimizer.zero_grad()
+logits = model(X)
+loss   = criterion(logits, y)
+loss.backward()
+optimizer.step()</code></pre>
+  </div>
+
+  <div class="code-entry">
+    <h4>Interview CNN — RGB input, 10 classes</h4>
+    <pre><code class="language-python">class CNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, padding=1)   # 896 params
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)  # 18496 params
+        self.pool  = nn.MaxPool2d(2, stride=2)   # 32→16→8, no params
+        self.fc1   = nn.Linear(64 * 8 * 8, 128)
+        self.fc2   = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))  # (B,3,32,32)→(B,32,16,16)
+        x = self.pool(F.relu(self.conv2(x)))  # (B,32,16,16)→(B,64,8,8)
+        x = x.view(x.size(0), -1)            # flatten: (B,4096)
+        x = F.relu(self.fc1(x))
+        return self.fc2(x)</code></pre>
+  </div>
+
+  <div class="code-entry">
+    <h4>ResNet Block — skip connection</h4>
+    <pre><code class="language-python">class ResidualBlock(nn.Module):
+    def __init__(self, channels):
+        super().__init__()
+        self.conv1 = nn.Conv2d(channels, channels, 3, padding=1)
+        self.bn1   = nn.BatchNorm2d(channels)
+        self.conv2 = nn.Conv2d(channels, channels, 3, padding=1)
+        self.bn2   = nn.BatchNorm2d(channels)
+
+    def forward(self, x):
+        residual = x
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out = out + residual          # skip connection
+        return F.relu(out)</code></pre>
+  </div>
+
+  <div class="code-entry">
+    <h4>RNN / LSTM / GRU — key differences</h4>
+    <pre><code class="language-python"># RNN  — one state
+out, h_n        = self.rnn(x)
+
+# LSTM — two states (c_n is LSTM-only)
+out, (h_n, c_n) = self.lstm(x)
+
+# GRU  — one state (same signature as RNN)
+out, h_n        = self.gru(x)
+
+# Use last timestep for classification
+last = out[:, -1, :]    # (batch, hidden)
+
+# Gradient clipping — always for RNNs
+torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)</code></pre>
+  </div>
+
+  <div class="code-entry">
+    <h4>Scaled Dot-Product Attention — from scratch</h4>
+    <pre><code class="language-python">def scaled_dot_product_attention(Q, K, V, mask=None):
+    d_k    = Q.size(-1)
+    scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(d_k)
+    if mask is not None:
+        scores = scores.masked_fill(mask, float('-inf'))
+    weights = F.softmax(scores, dim=-1)
+    return torch.matmul(weights, V), weights</code></pre>
+  </div>
+
+  <div class="code-entry">
+    <h4>Causal Mask — GPT-style decoder</h4>
+    <pre><code class="language-python">def make_causal_mask(seq_len):
+    # True = block this position (fill with -inf before softmax)
+    return torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool()</code></pre>
+  </div>
+
+  <div class="code-entry">
+    <h4>Transformer Encoder — PyTorch built-in</h4>
+    <pre><code class="language-python">encoder_layer = nn.TransformerEncoderLayer(
+    d_model=512, nhead=8, dim_feedforward=2048,
+    dropout=0.1, batch_first=True
+)
+encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
+# x: (batch, seq, d_model) → out: (batch, seq, d_model)
+out = encoder(x)
+logits = classifier(out[:, 0, :])  # [CLS] token</code></pre>
+  </div>
+
+  <div class="code-entry">
+    <h4>Early Stopping — complete class</h4>
+    <pre><code class="language-python">class EarlyStopping:
+    def __init__(self, patience=10, min_delta=1e-4):
+        self.patience, self.min_delta = patience, min_delta
+        self.counter, self.best_loss, self.best_weights = 0, float('inf'), None
+
+    def step(self, val_loss, model):
+        if val_loss < self.best_loss - self.min_delta:
+            self.best_loss = val_loss
+            self.best_weights = copy.deepcopy(model.state_dict())
+            self.counter = 0
+        else:
+            self.counter += 1
+        return self.counter >= self.patience
+
+    def restore(self, model):
+        model.load_state_dict(self.best_weights)</code></pre>
+  </div>
+
+  <div class="code-entry">
+    <h4>Transfer Learning — freeze / unfreeze</h4>
+    <pre><code class="language-python"># Freeze backbone
+for param in model.backbone.parameters():
+    param.requires_grad = False
+
+# Train only head
+optimizer = torch.optim.Adam(
+    filter(lambda p: p.requires_grad, model.parameters()), lr=1e-3
+)
+
+# Unfreeze for fine-tuning
+for param in model.backbone.parameters():
+    param.requires_grad = True
+# Use lower lr for fine-tuning: 1e-5</code></pre>
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<!-- Back to top -->
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5">
+    <path d="M8 12V4M4 7l4-4 4 4"/>
+  </svg>
+</button>
+
+<script>
+  hljs.highlightAll();
+
+  renderMathInElement(document.body, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '$', right: '$', display: false }
+    ],
+    throwOnError: false
+  });
+
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.style.display = window.scrollY > 200 ? 'flex' : 'none';
+  });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const tocLinks = document.querySelectorAll('.toc-sidebar a[href^="#"]');
+  const sections = [...tocLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  window.addEventListener('scroll', () => {
+    let current = sections[0];
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s; });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current?.id);
+    });
+  }, { passive: true });
+</script>
+</body>
+</html>

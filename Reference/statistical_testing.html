@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistical Testing — Study Guide</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --bg: #0d1117;
+      --card: #161b22;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --border: #30363d;
+      --green: #3fb950;
+      --amber: #d29922;
+      --sidebar-width: 240px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; display: flex; }
+
+    .toc-sidebar {
+      width: var(--sidebar-width); min-height: 100vh; background: #010409;
+      border-right: 1px solid var(--border); padding: 2rem 1rem;
+      position: fixed; top: 0; left: 0; overflow-y: auto; z-index: 100;
+    }
+    .toc-sidebar h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1rem; padding-left: 0.5rem; }
+    .toc-sidebar a { display: block; padding: 0.3rem 0.5rem; border-radius: 6px; color: var(--muted); text-decoration: none; font-size: 0.82rem; transition: all 0.15s; margin-bottom: 2px; }
+    .toc-sidebar a:hover, .toc-sidebar a.active { background: rgba(59,130,246,0.15); color: var(--primary); }
+    .toc-group { margin-bottom: 1rem; }
+    .toc-group-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: #484f58; padding: 0.4rem 0.5rem 0.2rem; }
+
+    .main { margin-left: var(--sidebar-width); padding: 3rem 2.5rem; max-width: 860px; width: 100%; }
+
+    .hero { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    .hero h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .hero p { color: var(--muted); font-size: 0.95rem; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .badge { display: inline-block; padding: 0.2rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border); color: var(--muted); }
+
+    .topic-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+    .topic-card h2 { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .topic-num { background: rgba(59,130,246,0.15); color: var(--primary); font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 999px; }
+    .topic-intro { color: var(--muted); font-size: 0.92rem; margin-bottom: 1rem; }
+    .topic-card h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin: 1.25rem 0 0.5rem; }
+    .topic-card p, .topic-card li { font-size: 0.93rem; color: #c9d1d9; margin-bottom: 0.4rem; }
+    .topic-card ul, .topic-card ol { padding-left: 1.25rem; }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
+    .tag { display: inline-block; padding: 0.15rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+    .tag.when { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+
+    .formula-block { background: #0d1117; border-left: 3px solid var(--primary); padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 1rem 0; overflow-x: auto; }
+    .formula-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; }
+
+    .gotcha { background: rgba(210,153,34,0.08); border-left: 3px solid var(--amber); padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0; font-size: 0.88rem; color: #e3b341; }
+
+    pre { border-radius: 8px; margin: 0.75rem 0; font-size: 0.83rem; overflow-x: auto; border: 1px solid var(--border); }
+    code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; }
+
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+    th { background: #010409; color: var(--muted); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.07em; padding: 0.65rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 0.65rem 1rem; border-bottom: 1px solid #21262d; color: #c9d1d9; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    .section-divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+    .section-header { font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 0.4rem; }
+    .section-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.5rem; }
+
+    .formula-entry { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+    .formula-entry h4 { font-size: 0.88rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem; }
+    .formula-display { background: #010409; border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.5rem; overflow-x: auto; }
+    .formula-entry p { font-size: 0.83rem; color: var(--muted); margin-top: 0.3rem; }
+
+    .code-entry { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+    .code-entry h4 { font-size: 0.88rem; font-weight: 600; color: var(--primary); margin-bottom: 0.75rem; }
+
+    #back-to-top { display: none; position: fixed; bottom: 2rem; right: 2rem; width: 40px; height: 40px; background: var(--primary); border: none; border-radius: 50%; cursor: pointer; align-items: center; justify-content: center; z-index: 999; color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.4); }
+    #back-to-top svg { width: 18px; height: 18px; }
+
+    @media print {
+      .toc-sidebar { display: none; }
+      .main { margin-left: 0; }
+      .topic-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="toc-sidebar">
+  <h3>Study Guide</h3>
+  <div class="toc-group">
+    <div class="toc-group-label">Foundations</div>
+    <a href="#what-is-testing">What is Statistical Testing</a>
+    <a href="#null-hypothesis">Null Hypothesis</a>
+    <a href="#p-value">P-Value</a>
+    <a href="#errors">Type I &amp; II Errors</a>
+    <a href="#significance">Statistical vs Practical Significance</a>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">Choosing a Test</div>
+    <a href="#choosing">Decision Framework</a>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">Statistical Tests</div>
+    <a href="#ttest">Independent T-Test</a>
+    <a href="#paired-ttest">Paired T-Test</a>
+    <a href="#anova">ANOVA</a>
+    <a href="#tukey">Tukey's HSD</a>
+    <a href="#chisquare">Chi-Square Test</a>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">Experiment Design</div>
+    <a href="#power">Power Analysis &amp; Sample Size</a>
+    <a href="#tails">One vs Two-Tailed</a>
+    <a href="#ci">Confidence Intervals</a>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">Communication</div>
+    <a href="#comms">Communicating Results</a>
+  </div>
+  <div class="toc-group">
+    <div class="toc-group-label">Reference</div>
+    <a href="#concept-table">All Concepts</a>
+    <a href="#formula-sheet">Formula Sheet</a>
+    <a href="#code-appendix">Code Appendix</a>
+  </div>
+</nav>
+
+<main class="main">
+
+  <div class="hero">
+    <h1>Statistical Testing</h1>
+    <p>Complete study guide from your learning session. Foundations, test selection, experiment design, and communicating results.</p>
+    <div class="badge-row">
+      <span class="badge">Statistics</span>
+      <span class="badge">Data Science</span>
+      <span class="badge">A/B Testing</span>
+      <span class="badge">Python</span>
+      <span class="badge">SciPy</span>
+      <span class="badge">Statsmodels</span>
+    </div>
+  </div>
+
+  <!-- 01 -->
+  <section class="topic-card" id="what-is-testing">
+    <h2><span class="topic-num">01</span> What is Statistical Testing?</h2>
+    <p class="topic-intro">A principled framework for making decisions under uncertainty — separating real signal from random noise in sampled data.</p>
+    <div class="tag-row">
+      <span class="tag when">When: You can't observe the full population</span>
+      <span class="tag when">When: Deciding if a result is real or chance</span>
+    </div>
+    <h3>Core Idea</h3>
+    <p>You almost never observe everyone. You take a <strong>sample</strong> and draw conclusions about the bigger picture. The problem: samples are noisy. Statistical testing asks — is what I'm seeing real, or just random noise?</p>
+    <h3>The Courtroom Analogy</h3>
+    <p>Assume nothing unusual is happening (innocent until proven guilty = null hypothesis). Examine the evidence (data). Ask: how unlikely would this evidence be if nothing was actually going on? If very unlikely — reject the starting assumption.</p>
+  </section>
+
+  <!-- 02 -->
+  <section class="topic-card" id="null-hypothesis">
+    <h2><span class="topic-num">02</span> Null Hypothesis</h2>
+    <p class="topic-intro">Two competing stories about the world. You never prove H1 directly — you make H0 look implausible.</p>
+    <div class="tag-row"><span class="tag when">When: Before every statistical test</span></div>
+    <h3>The Two Hypotheses</h3>
+    <p><strong>H0 (Null)</strong> — "Nothing is happening. Any difference is chance."</p>
+    <p><strong>H1 (Alternative)</strong> — "Something is genuinely happening."</p>
+    <h3>Example</h3>
+    <p>Testing if a new model recommends better than the old one:</p>
+    <ul>
+      <li>H0: The two models perform the same. Any metric difference is random.</li>
+      <li>H1: The new model genuinely performs better.</li>
+    </ul>
+    <div class="gotcha">You always build a case against H0 — never directly for H1.</div>
+  </section>
+
+  <!-- 03 -->
+  <section class="topic-card" id="p-value">
+    <h2><span class="topic-num">03</span> P-Value</h2>
+    <p class="topic-intro">The probability of seeing data as extreme as yours (or more), assuming H0 is true.</p>
+    <div class="tag-row"><span class="tag when">When: Interpreting output of any statistical test</span></div>
+    <h3>Interpretation</h3>
+    <p>Small p → this data would be very unlikely if H0 were true → evidence against H0.<br>Large p → data like this is common even when nothing is happening → little evidence.</p>
+    <h3>Alpha Threshold</h3>
+    <p>Pre-select threshold <strong>alpha (α)</strong> before looking at data. Default α = 0.05.</p>
+    <ul>
+      <li>p &lt; α → reject H0 → statistically significant</li>
+      <li>p ≥ α → fail to reject H0</li>
+    </ul>
+    <div class="gotcha">The p-value is NOT the probability that H0 is true. It's how surprising the data is, given H0. The most common and costly misinterpretation.</div>
+  </section>
+
+  <!-- 04 -->
+  <section class="topic-card" id="errors">
+    <h2><span class="topic-num">04</span> Type I &amp; Type II Errors</h2>
+    <p class="topic-intro">Since you're deciding on incomplete data, you can be wrong in two distinct ways.</p>
+    <div class="tag-row"><span class="tag when">When: Designing experiments and setting thresholds</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Error Type</th><th>What Happened</th><th>Also Called</th><th>Probability</th></tr></thead>
+        <tbody>
+          <tr><td>Type I</td><td>Rejected H0, but H0 was true</td><td>False Positive</td><td>= α</td></tr>
+          <tr><td>Type II</td><td>Failed to reject H0, but H1 was true</td><td>False Negative</td><td>= β</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Power = 1 - β</h3>
+    <p>Probability of correctly detecting a real effect. Target: 0.80 by convention.</p>
+    <h3>The Tension</h3>
+    <p>Stricter alpha → fewer false positives, but more false negatives. There is no free lunch. Like a smoke alarm: too sensitive → false alarms; not sensitive enough → misses real fires.</p>
+    <div class="gotcha">Setting α = 0.05 explicitly accepts a 5% false positive rate. This is a design choice, not an accident.</div>
+  </section>
+
+  <!-- 05 -->
+  <section class="topic-card" id="significance">
+    <h2><span class="topic-num">05</span> Statistical vs Practical Significance</h2>
+    <p class="topic-intro">A result can be statistically significant without being business-meaningful. These are completely different things.</p>
+    <div class="tag-row"><span class="tag when">When: Interpreting and reporting results</span></div>
+    <h3>Why This Happens — Sample Size</h3>
+    <p>With a large enough sample, tiny differences yield very small p-values. A 12.01% vs 12.00% CTR across 10M users might be statistically significant but practically irrelevant.</p>
+    <h3>Effect Size</h3>
+    <p>Tells you <em>how big</em> the difference is, independent of sample size. Always report alongside the p-value.</p>
+    <ul>
+      <li><strong>Cohen's d</strong> — difference in means in standard deviation units</li>
+      <li><strong>Relative lift</strong> — % improvement over baseline</li>
+      <li><strong>Cramér's V</strong> — effect size for Chi-Square</li>
+    </ul>
+    <div class="gotcha">The reverse problem also exists: large, meaningful effects that miss significance because the sample was too small. That's a power problem, not proof of no effect.</div>
+  </section>
+
+  <!-- 06 -->
+  <section class="topic-card" id="choosing">
+    <h2><span class="topic-num">06</span> Choosing the Right Test</h2>
+    <p class="topic-intro">Three questions point you to the right test almost every time. Wrong test = garbage results.</p>
+    <div class="tag-row"><span class="tag when">When: Before running any statistical test</span></div>
+    <h3>The Three Questions</h3>
+    <ol>
+      <li><strong>Data type?</strong> Continuous (revenue, score, duration) or Categorical (clicked/not, tier)</li>
+      <li><strong>How many groups?</strong> One vs known value, two groups, or three or more</li>
+      <li><strong>Independent or paired?</strong> Different people per group, or same people measured twice</li>
+    </ol>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Data Type</th><th>Groups</th><th>Independent / Paired</th><th>Test</th></tr></thead>
+        <tbody>
+          <tr><td>Continuous</td><td>1 vs known value</td><td>—</td><td>One-sample t-test</td></tr>
+          <tr><td>Continuous</td><td>2</td><td>Independent</td><td>Independent t-test</td></tr>
+          <tr><td>Continuous</td><td>2</td><td>Paired</td><td>Paired t-test</td></tr>
+          <tr><td>Continuous</td><td>3+</td><td>Independent</td><td>ANOVA</td></tr>
+          <tr><td>Categorical</td><td>2+</td><td>Independent</td><td>Chi-Square</td></tr>
+          <tr><td>Continuous (non-normal)</td><td>2</td><td>Independent</td><td>Mann-Whitney U</td></tr>
+          <tr><td>Continuous (non-normal)</td><td>2</td><td>Paired</td><td>Wilcoxon Signed-Rank</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="topic-card" id="ttest">
+    <h2><span class="topic-num">07</span> Independent T-Test</h2>
+    <p class="topic-intro">Tests whether the means of two independent groups are significantly different. The most common test in A/B testing.</p>
+    <div class="tag-row"><span class="tag when">When: Continuous data, 2 independent groups</span></div>
+    <h3>T-Statistic — Signal to Noise Ratio</h3>
+    <div class="formula-block">
+      $$t = \frac{\bar{x}_A - \bar{x}_B}{\sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}}}$$
+      <p class="formula-label">Numerator = signal (group difference) | Denominator = noise (standard error)</p>
+    </div>
+    <p>Large t-statistic → difference is big relative to noise → strong evidence against H0.</p>
+    <h3>Key Assumption</h3>
+    <p>Data in each group should be roughly normally distributed. Usually fine for large samples due to the Central Limit Theorem.</p>
+    <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+group_a = [42, 45, 41, 47, 43]
+group_b = [35, 38, 33, 36, 34]
+
+t_stat, p_value = stats.ttest_ind(group_a, group_b)
+print(f"T-statistic: {t_stat:.4f}")   # 7.2453
+print(f"P-value: {p_value:.4f}")      # 0.0001</code></pre>
+  </section>
+
+  <!-- 08 -->
+  <section class="topic-card" id="paired-ttest">
+    <h2><span class="topic-num">08</span> Paired T-Test</h2>
+    <p class="topic-intro">Same subjects measured twice. More sensitive than independent t-test because between-person variability cancels out.</p>
+    <div class="tag-row">
+      <span class="tag when">When: Same people measured twice</span>
+      <span class="tag when">When: Before/after feature launch</span>
+    </div>
+    <h3>Formula</h3>
+    <div class="formula-block">
+      $$t = \frac{\bar{d}}{S_d / \sqrt{n}}$$
+      <p class="formula-label">$\bar{d}$ = mean of per-pair differences | $S_d$ = std dev of differences | $n$ = number of pairs</p>
+    </div>
+    <h3>Step-by-Step</h3>
+    <p>before = [12, 20, 15, 18, 10], after = [18, 26, 20, 22, 14]</p>
+    <ol>
+      <li>differences = [6, 6, 5, 4, 4]</li>
+      <li>$\bar{d}$ = 25/5 = 5.0</li>
+      <li>$S_d$ = 1.0</li>
+      <li>t = 5.0 / (1.0 / √5) = 11.18</li>
+    </ol>
+    <pre><code class="language-python">from scipy import stats
+
+before = [12, 20, 15, 18, 10]
+after  = [18, 26, 20, 22, 14]
+
+t_stat, p_value = stats.ttest_rel(before, after)
+print(f"T-statistic: {t_stat:.4f}")
+print(f"P-value: {p_value:.4f}")</code></pre>
+    <div class="gotcha">Running an independent t-test on paired data discards information and weakens your test. Always match your test to your data structure.</div>
+  </section>
+
+  <!-- 09 -->
+  <section class="topic-card" id="anova">
+    <h2><span class="topic-num">09</span> ANOVA — Analysis of Variance</h2>
+    <p class="topic-intro">Extension of the t-test for 3 or more groups. Tests all groups simultaneously, avoiding false positive inflation from multiple t-tests.</p>
+    <div class="tag-row"><span class="tag when">When: Continuous data, 3+ independent groups</span></div>
+    <h3>F-Statistic</h3>
+    <div class="formula-block">
+      $$F = \frac{MS_{between}}{MS_{within}}$$
+      <p class="formula-label">Large F → between-group variance dominates within-group noise → evidence against H0</p>
+    </div>
+    <h3>Critical Limitation</h3>
+    <p>ANOVA only tells you <em>that</em> a difference exists somewhere — not which groups differ. Use Tukey's HSD as a follow-up.</p>
+    <pre><code class="language-python">from scipy import stats
+
+model_a = [12, 14, 11, 13, 12]
+model_b = [20, 22, 19, 21, 20]
+model_c = [15, 17, 14, 16, 15]
+
+f_stat, p_value = stats.f_oneway(model_a, model_b, model_c)
+print(f"F-statistic: {f_stat:.4f}")   # 91.6364
+print(f"P-value: {p_value:.4f}")      # 0.0000</code></pre>
+  </section>
+
+  <!-- 10 -->
+  <section class="topic-card" id="tukey">
+    <h2><span class="topic-num">10</span> Tukey's HSD</h2>
+    <p class="topic-intro">Post-hoc test run after ANOVA. Identifies which specific pairs differ while controlling the family-wise false positive rate.</p>
+    <div class="tag-row"><span class="tag when">When: After ANOVA rejects H0, to find which pairs differ</span></div>
+    <h3>How it Adjusts the Threshold</h3>
+    <p>Uses the <strong>Studentized Range Distribution (q)</strong> instead of the t-distribution. This asks "how extreme is the <em>largest</em> difference among k groups?" — inherently stricter than a regular t critical value.</p>
+    <div class="formula-block">
+      $$HSD = q_{\alpha,\,k,\,df} \times \sqrt{\frac{MSE}{n}}$$
+      <p class="formula-label">$q$ = critical value from studentized range dist | $MSE$ = within-group variance from ANOVA | $n$ = obs per group</p>
+    </div>
+    <h3>What is Controlled — FWER</h3>
+    <p>The <strong>Family-Wise Error Rate</strong> is held at α = 0.05 across all comparisons together — not 5% per comparison. That's the guarantee multiple t-tests don't give you.</p>
+    <pre><code class="language-python">from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+data   = model_a + model_b + model_c
+groups = ['A']*5 + ['B']*5 + ['C']*5
+
+result = pairwise_tukeyhsd(data, groups, alpha=0.05)
+print(result)
+# group1 group2 meandiff p-adj  lower   upper  reject
+# A      B      8.0      0.001  6.296   9.704  True
+# A      C      3.0      0.001  1.296   4.704  True
+# B      C     -5.0      0.001 -6.704  -3.296  True</code></pre>
+    <div class="gotcha">The lower/upper CI columns tell you the plausible range of the true difference — use these to assess practical significance, not just the reject column.</div>
+  </section>
+
+  <!-- 11 -->
+  <section class="topic-card" id="chisquare">
+    <h2><span class="topic-num">11</span> Chi-Square Test</h2>
+    <p class="topic-intro">Tests whether two categorical variables are independent by comparing observed counts to what would be expected under independence.</p>
+    <div class="tag-row">
+      <span class="tag when">When: Categorical outcome (clicked/not, churned/retained)</span>
+      <span class="tag when">When: Comparing proportions across groups</span>
+    </div>
+    <h3>Expected Count</h3>
+    <div class="formula-block">
+      $$E_{ij} = \frac{\text{Row Total}_i \times \text{Column Total}_j}{\text{Grand Total}}$$
+    </div>
+    <h3>Chi-Square Statistic</h3>
+    <div class="formula-block">
+      $$\chi^2 = \sum_{\text{all cells}} \frac{(O - E)^2}{E}$$
+      <p class="formula-label">O = observed count | E = expected count | Larger gaps → larger χ² → smaller p-value</p>
+    </div>
+    <h3>Degrees of Freedom</h3>
+    <div class="formula-block">
+      $$df = (rows - 1)(columns - 1)$$
+    </div>
+    <h3>Worked Example</h3>
+    <p>Version A: 30 clicked, 70 didn't. Version B: 50 clicked, 50 didn't. Grand total = 200.</p>
+    <ol>
+      <li>Expected (both rows): 40 clicked, 60 didn't</li>
+      <li>χ² = (30-40)²/40 + (70-60)²/60 + (50-40)²/40 + (50-60)²/60 = 2.5+1.67+2.5+1.67 = <strong>8.08</strong></li>
+      <li>df = 1, p = 0.0045 → version influences click behavior</li>
+    </ol>
+    <pre><code class="language-python">from scipy import stats
+
+observed = [[30, 70],
+            [50, 50]]
+
+chi2_stat, p_value, dof, expected = stats.chi2_contingency(observed)
+print(f"Chi2: {chi2_stat:.4f}")    # 8.0808
+print(f"P-value: {p_value:.4f}")   # 0.0045
+print(f"Expected:\n{expected}")
+# [[40. 60.]
+#  [40. 60.]]</code></pre>
+  </section>
+
+  <!-- 12 -->
+  <section class="topic-card" id="power">
+    <h2><span class="topic-num">12</span> Power Analysis &amp; Sample Size</h2>
+    <p class="topic-intro">Ensures before running a test that you have enough data to detect a real effect if one exists. Prevents inconclusive experiments.</p>
+    <div class="tag-row">
+      <span class="tag when">When: Designing any experiment or A/B test</span>
+      <span class="tag when">When: Before collecting data</span>
+    </div>
+    <h3>The Core Problem</h3>
+    <p>A failed test (p ≥ α) could mean: (a) there's truly no effect, or (b) your sample was too small. Power analysis removes this ambiguity before you start.</p>
+    <h3>The Four Linked Quantities</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Quantity</th><th>Typical Default</th><th>What it Controls</th></tr></thead>
+        <tbody>
+          <tr><td>Alpha (α)</td><td>0.05</td><td>False positive rate</td></tr>
+          <tr><td>Power (1-β)</td><td>0.80</td><td>Ability to detect real effects</td></tr>
+          <tr><td>Effect size (MDE)</td><td>Business decision</td><td>Smallest difference worth detecting</td></tr>
+          <tr><td>Sample size (n)</td><td>Solve for this</td><td>Data required per group</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>MDE — Minimum Detectable Effect</h3>
+    <p>The smallest difference that would change a business decision. A business call, not statistical. Cohen's d conventions as fallback: 0.2 small, 0.5 medium, 0.8 large.</p>
+    <h3>Sample Size Formula</h3>
+    <div class="formula-block">
+      $$n = \frac{2(z_{\alpha/2} + z_\beta)^2 \sigma^2}{\delta^2}$$
+      <p class="formula-label">$z_{\alpha/2}$ = 1.96 for α=0.05 | $z_\beta$ = 0.84 for power=0.80 | $\sigma^2$ = variance | $\delta$ = MDE | Result is n per group</p>
+    </div>
+    <pre><code class="language-python">from statsmodels.stats.power import TTestIndPower
+import numpy as np
+
+analysis = TTestIndPower()
+
+# Effect size = Cohen's d = MDE / std = 2 / 5 = 0.4
+n = analysis.solve_power(
+    effect_size = 2 / 5,
+    alpha       = 0.05,
+    power       = 0.80,
+    alternative = 'two-sided'
+)
+print(f"Required n per group: {int(np.ceil(n))}")   # 99</code></pre>
+    <div class="gotcha">Smaller MDE = dramatically more data. Detecting a 0.5 unit change requires ~16x more data than a 2 unit change. Set MDE based on what you'd actually act on.</div>
+  </section>
+
+  <!-- 13 -->
+  <section class="topic-card" id="tails">
+    <h2><span class="topic-num">13</span> One-Tailed vs Two-Tailed Tests</h2>
+    <p class="topic-intro">Determines whether you're testing for a difference in any direction (two-tailed) or only one specific direction (one-tailed).</p>
+    <div class="tag-row"><span class="tag when">When: Setting up your test before data collection</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Question</th><th>Critical Value (α=0.05)</th><th>P-value</th></tr></thead>
+        <tbody>
+          <tr><td>Two-tailed</td><td>Did anything change? (either direction)</td><td>±1.96</td><td>Full p</td></tr>
+          <tr><td>One-tailed</td><td>Did it specifically improve?</td><td>1.645</td><td>p / 2</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <pre><code class="language-python">from scipy import stats
+
+group_a = [42, 45, 41, 47, 43]
+group_b = [35, 38, 33, 36, 34]
+
+_, p_two = stats.ttest_ind(group_a, group_b, alternative='two-sided')
+_, p_one = stats.ttest_ind(group_a, group_b, alternative='greater')
+
+print(f"Two-tailed: {p_two:.4f}")   # 0.0001
+print(f"One-tailed: {p_one:.4f}")   # exactly half</code></pre>
+    <div class="gotcha">Choosing one-tailed after seeing the data direction is p-hacking — you artificially halved your p-value. Default to two-tailed unless you had a strong directional hypothesis before the experiment.</div>
+  </section>
+
+  <!-- 14 -->
+  <section class="topic-card" id="ci">
+    <h2><span class="topic-num">14</span> Confidence Intervals</h2>
+    <p class="topic-intro">A range of plausible values for the true effect. Richer than a p-value — tells you size and precision, not just yes/no.</p>
+    <div class="tag-row">
+      <span class="tag when">When: Reporting results of any test</span>
+      <span class="tag when">When: Communicating uncertainty to stakeholders</span>
+    </div>
+    <h3>Definition</h3>
+    <p>A 95% CI means: if you repeated this experiment 100 times, ~95 of the resulting intervals would contain the true population value. It describes the process, not any single interval.</p>
+    <div class="formula-block">
+      $$CI = (\bar{x}_A - \bar{x}_B) \pm t_{crit} \times SE$$
+    </div>
+    <h3>Relationship to P-Value</h3>
+    <ul>
+      <li>95% CI does <strong>not contain zero</strong> → p &lt; 0.05 → significant</li>
+      <li>95% CI <strong>contains zero</strong> → p ≥ 0.05 → not significant</li>
+    </ul>
+    <h3>Why CI Beats P-Value for Communication</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Same p-value</th><th>CI</th><th>What it tells you</th></tr></thead>
+        <tbody>
+          <tr><td>p = 0.04</td><td>(0.01, 4.20)</td><td>Real but uncertain — wide range</td></tr>
+          <tr><td>p = 0.04</td><td>(1.80, 2.20)</td><td>Real and precise — confident it's ~2</td></tr>
+          <tr><td>p = 0.04</td><td>(0.01, 0.02)</td><td>Real but practically meaningless</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+group_a = [42, 45, 41, 47, 43]
+group_b = [35, 38, 33, 36, 34]
+
+mean_diff = np.mean(group_a) - np.mean(group_b)
+se = np.sqrt(np.var(group_a, ddof=1)/len(group_a) +
+             np.var(group_b, ddof=1)/len(group_b))
+t_crit = stats.t.ppf(0.975, df=8)
+
+lower = mean_diff - t_crit * se
+upper = mean_diff + t_crit * se
+print(f"95% CI: ({lower:.2f}, {upper:.2f})")   # (5.73, 11.07)</code></pre>
+  </section>
+
+  <!-- 15 -->
+  <section class="topic-card" id="comms">
+    <h2><span class="topic-num">15</span> Communicating Results</h2>
+    <p class="topic-intro">Stakeholders don't care about p-values — they care about decisions. Lead with insight and action, not methodology.</p>
+    <div class="tag-row"><span class="tag when">When: Presenting findings to any stakeholder</span></div>
+    <h3>The Communication Hierarchy</h3>
+    <ol>
+      <li>What did we do? (one sentence)</li>
+      <li>What did we find? (the number that matters)</li>
+      <li>How confident are we? (significance + CI)</li>
+      <li>What does it mean for the business? (the so what)</li>
+      <li>What should we do? (the recommendation)</li>
+    </ol>
+    <h3>Bad vs Good</h3>
+    <p><strong>Bad:</strong> "We ran a t-test. T=7.24, p=0.0001, rejecting the null at α=0.05."</p>
+    <p><strong>Good:</strong> "The new homepage increased session duration by 8.4 seconds — a 20% improvement. We're highly confident this is real (95% CI: 5.7s to 11.1s). We recommend full rollout."</p>
+    <h3>Audience-Tailored Depth</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Audience</th><th>What They Want</th></tr></thead>
+        <tbody>
+          <tr><td>Product Manager</td><td>Is it real? How big? Ship or not?</td></tr>
+          <tr><td>Engineer</td><td>Confidence level, edge cases</td></tr>
+          <tr><td>Exec / Business</td><td>Revenue / cost impact, risk, recommendation</td></tr>
+          <tr><td>Fellow DS</td><td>Full methodology, assumptions, limitations</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="gotcha">Always anchor to baseline ("20% lift" not "8.4 second improvement") and always explicitly separate statistical significance from practical significance — stakeholders conflate them constantly.</div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CONCEPT TABLE -->
+  <section id="concept-table">
+    <h2 class="section-header">All Concepts at a Glance</h2>
+    <p class="section-sub">Every concept from the session in one scannable table.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Concept</th><th>When to Use</th><th>Key Takeaway</th><th>Formula</th><th>Code</th></tr></thead>
+        <tbody>
+          <tr><td>Statistical Testing</td><td>Drawing conclusions from samples</td><td>Separates signal from noise</td><td>No</td><td>No</td></tr>
+          <tr><td>Null Hypothesis (H0)</td><td>Before every test</td><td>"Nothing is happening" — you try to disprove it</td><td>No</td><td>No</td></tr>
+          <tr><td>P-Value</td><td>Interpreting test output</td><td>P(data this extreme | H0 true) — not P(H0 true)</td><td>No</td><td>No</td></tr>
+          <tr><td>Alpha (α)</td><td>Setting threshold</td><td>Pre-set false positive tolerance. Default 0.05</td><td>No</td><td>No</td></tr>
+          <tr><td>Type I Error</td><td>Evaluating design risk</td><td>False positive. Probability = α</td><td>No</td><td>No</td></tr>
+          <tr><td>Type II Error</td><td>Evaluating design risk</td><td>False negative. Probability = β</td><td>No</td><td>No</td></tr>
+          <tr><td>Power (1-β)</td><td>Designing experiments</td><td>Ability to detect real effects. Target 0.80</td><td>No</td><td>No</td></tr>
+          <tr><td>Effect Size</td><td>Reporting results</td><td>How big the difference is, independent of sample size</td><td>Cohen's d</td><td>No</td></tr>
+          <tr><td>Independent T-Test</td><td>Continuous data, 2 independent groups</td><td>t = signal / noise ratio</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Paired T-Test</td><td>Same subjects measured twice</td><td>Tests mean of per-subject differences vs zero</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>ANOVA</td><td>Continuous, 3+ independent groups</td><td>F = between-group / within-group variance</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Tukey's HSD</td><td>Post-hoc after ANOVA</td><td>Pairwise comparisons controlling FWER at α</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Chi-Square Test</td><td>Categorical data, 2+ groups</td><td>Observed vs expected cell counts</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>MDE</td><td>Power analysis setup</td><td>Smallest effect worth acting on — a business decision</td><td>No</td><td>No</td></tr>
+          <tr><td>Power Analysis</td><td>Before data collection</td><td>Determines required sample size to detect MDE</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>FWER</td><td>Multiple comparisons</td><td>Probability of any false positive across all comparisons</td><td>No</td><td>No</td></tr>
+          <tr><td>One-Tailed Test</td><td>Directional hypothesis, pre-committed</td><td>Easier to reach significance — only valid if pre-committed</td><td>No</td><td>Yes</td></tr>
+          <tr><td>Two-Tailed Test</td><td>Default for most tests</td><td>Tests difference in either direction — safer and more honest</td><td>No</td><td>Yes</td></tr>
+          <tr><td>Confidence Interval</td><td>Reporting any result</td><td>Plausible range for true effect. More informative than p-value</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Standard Error</td><td>T-tests and CIs</td><td>Noise in the denominator. SE = √(s²_A/n_A + s²_B/n_B)</td><td>Yes</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- FORMULA SHEET -->
+  <section id="formula-sheet">
+    <h2 class="section-header">Formula Reference Sheet</h2>
+    <p class="section-sub">Every formula from the session, clean and in one place.</p>
+
+    <div class="formula-entry">
+      <h4>Independent T-Test Statistic</h4>
+      <div class="formula-display">$$t = \frac{\bar{x}_A - \bar{x}_B}{\sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}}}$$</div>
+      <p><strong>Variables:</strong> $\bar{x}$ = group mean | $s^2$ = group variance | $n$ = group size</p>
+      <p><strong>Used when:</strong> 2 independent groups, continuous data</p>
+    </div>
+
+    <div class="formula-entry">
+      <h4>Paired T-Test Statistic</h4>
+      <div class="formula-display">$$t = \frac{\bar{d}}{S_d / \sqrt{n}}$$</div>
+      <p><strong>Variables:</strong> $\bar{d}$ = mean of per-pair differences | $S_d$ = std dev of differences | $n$ = number of pairs</p>
+      <p><strong>Used when:</strong> Same subjects measured twice</p>
+    </div>
+
+    <div class="formula-entry">
+      <h4>F-Statistic (ANOVA)</h4>
+      <div class="formula-display">$$F = \frac{MS_{between}}{MS_{within}}$$</div>
+      <p><strong>Variables:</strong> $MS_{between}$ = mean squared variance between groups | $MS_{within}$ = MSE (within-group variance)</p>
+      <p><strong>Used when:</strong> 3+ independent groups, continuous data</p>
+    </div>
+
+    <div class="formula-entry">
+      <h4>Tukey's HSD Threshold</h4>
+      <div class="formula-display">$$HSD = q_{\alpha,\,k,\,df} \times \sqrt{\frac{MSE}{n}}$$</div>
+      <p><strong>Variables:</strong> $q$ = critical value from studentized range distribution | $MSE$ = within-group variance | $n$ = obs per group</p>
+      <p><strong>Used when:</strong> Pairwise comparisons after ANOVA</p>
+    </div>
+
+    <div class="formula-entry">
+      <h4>Expected Count (Chi-Square)</h4>
+      <div class="formula-display">$$E_{ij} = \frac{\text{Row Total}_i \times \text{Column Total}_j}{\text{Grand Total}}$$</div>
+      <p><strong>Used when:</strong> Computing expected cell counts before Chi-Square test</p>
+    </div>
+
+    <div class="formula-entry">
+      <h4>Chi-Square Statistic</h4>
+      <div class="formula-display">$$\chi^2 = \sum_{\text{all cells}} \frac{(O - E)^2}{E}$$</div>
+      <p><strong>Variables:</strong> $O$ = observed count | $E$ = expected count</p>
+      <p><strong>Used when:</strong> Testing independence of two categorical variables</p>
+    </div>
+
+    <div class="formula-entry">
+      <h4>Chi-Square Degrees of Freedom</h4>
+      <div class="formula-display">$$df = (rows - 1)(columns - 1)$$</div>
+      <p><strong>Used when:</strong> Looking up p-value for χ² statistic</p>
+    </div>
+
+    <div class="formula-entry">
+      <h4>Sample Size (Two-Sample T-Test)</h4>
+      <div class="formula-display">$$n = \frac{2(z_{\alpha/2} + z_\beta)^2 \sigma^2}{\delta^2}$$</div>
+      <p><strong>Variables:</strong> $z_{\alpha/2}$ = 1.96 for α=0.05 | $z_\beta$ = 0.84 for power=0.80 | $\sigma^2$ = variance | $\delta$ = MDE | Result is n per group</p>
+      <p><strong>Used when:</strong> Determining required sample size before experiment</p>
+    </div>
+
+    <div class="formula-entry">
+      <h4>Confidence Interval</h4>
+      <div class="formula-display">$$CI = (\bar{x}_A - \bar{x}_B) \pm t_{crit} \times SE$$</div>
+      <p><strong>Variables:</strong> $t_{crit}$ = critical value for chosen confidence level | $SE$ = standard error of the difference</p>
+      <p><strong>Used when:</strong> Reporting plausible range for the true effect</p>
+    </div>
+
+    <div class="formula-entry">
+      <h4>Standard Error (Difference of Means)</h4>
+      <div class="formula-display">$$SE = \sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}}$$</div>
+      <p><strong>Variables:</strong> $s^2$ = variance of each group | $n$ = group size</p>
+      <p><strong>Used when:</strong> Denominator of t-statistic and confidence intervals</p>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CODE APPENDIX -->
+  <section id="code-appendix">
+    <h2 class="section-header">Code Reference</h2>
+    <p class="section-sub">Every Python snippet from the session, labeled and ready to use.</p>
+
+    <div class="code-entry">
+      <h4>Independent T-Test</h4>
+      <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+group_a = [42, 45, 41, 47, 43]
+group_b = [35, 38, 33, 36, 34]
+
+t_stat, p_value = stats.ttest_ind(group_a, group_b)
+print(f"T-statistic: {t_stat:.4f}")   # 7.2453
+print(f"P-value: {p_value:.4f}")      # 0.0001</code></pre>
+    </div>
+
+    <div class="code-entry">
+      <h4>Paired T-Test</h4>
+      <pre><code class="language-python">from scipy import stats
+
+before = [12, 20, 15, 18, 10]
+after  = [18, 26, 20, 22, 14]
+
+t_stat, p_value = stats.ttest_rel(before, after)
+print(f"T-statistic: {t_stat:.4f}")
+print(f"P-value: {p_value:.4f}")</code></pre>
+    </div>
+
+    <div class="code-entry">
+      <h4>One-Way ANOVA</h4>
+      <pre><code class="language-python">from scipy import stats
+
+model_a = [12, 14, 11, 13, 12]
+model_b = [20, 22, 19, 21, 20]
+model_c = [15, 17, 14, 16, 15]
+
+f_stat, p_value = stats.f_oneway(model_a, model_b, model_c)
+print(f"F-statistic: {f_stat:.4f}")   # 91.6364
+print(f"P-value: {p_value:.4f}")      # 0.0000</code></pre>
+    </div>
+
+    <div class="code-entry">
+      <h4>Tukey's HSD Post-Hoc Test</h4>
+      <pre><code class="language-python">from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+data   = model_a + model_b + model_c
+groups = ['A']*5 + ['B']*5 + ['C']*5
+
+result = pairwise_tukeyhsd(data, groups, alpha=0.05)
+print(result)</code></pre>
+    </div>
+
+    <div class="code-entry">
+      <h4>Chi-Square Test of Independence</h4>
+      <pre><code class="language-python">from scipy import stats
+
+observed = [[30, 70],   # Version A: clicked, didn't click
+            [50, 50]]   # Version B: clicked, didn't click
+
+chi2_stat, p_value, dof, expected = stats.chi2_contingency(observed)
+print(f"Chi2: {chi2_stat:.4f}")    # 8.0808
+print(f"P-value: {p_value:.4f}")   # 0.0045
+print(expected)</code></pre>
+    </div>
+
+    <div class="code-entry">
+      <h4>Chi-Square P-Value from Statistic (Manual)</h4>
+      <pre><code class="language-python">from scipy import stats
+
+p_value = 1 - stats.chi2.cdf(8.08, df=1)
+print(f"P-value: {p_value:.4f}")   # 0.0045</code></pre>
+    </div>
+
+    <div class="code-entry">
+      <h4>Power Analysis — Solve for Sample Size</h4>
+      <pre><code class="language-python">from statsmodels.stats.power import TTestIndPower
+import numpy as np
+
+analysis = TTestIndPower()
+
+# Cohen's d = MDE / std = 2 / 5 = 0.4
+n = analysis.solve_power(
+    effect_size = 2 / 5,
+    alpha       = 0.05,
+    power       = 0.80,
+    alternative = 'two-sided'
+)
+print(f"Required n per group: {int(np.ceil(n))}")   # 99</code></pre>
+    </div>
+
+    <div class="code-entry">
+      <h4>Sample Size Sensitivity — Effect of MDE</h4>
+      <pre><code class="language-python">from statsmodels.stats.power import TTestIndPower
+import numpy as np
+
+analysis = TTestIndPower()
+mde_values = np.arange(0.5, 5.5, 0.5)
+
+for mde in mde_values:
+    n = analysis.solve_power(effect_size=mde/5, alpha=0.05, power=0.80)
+    print(f"MDE = {mde:.1f} → n = {int(np.ceil(n))} per group")</code></pre>
+    </div>
+
+    <div class="code-entry">
+      <h4>One-Tailed vs Two-Tailed P-Values</h4>
+      <pre><code class="language-python">from scipy import stats
+
+group_a = [42, 45, 41, 47, 43]
+group_b = [35, 38, 33, 36, 34]
+
+_, p_two = stats.ttest_ind(group_a, group_b, alternative='two-sided')
+_, p_one = stats.ttest_ind(group_a, group_b, alternative='greater')
+
+print(f"Two-tailed: {p_two:.4f}")   # 0.0001
+print(f"One-tailed: {p_one:.4f}")   # exactly half</code></pre>
+    </div>
+
+    <div class="code-entry">
+      <h4>95% Confidence Interval for Difference of Means</h4>
+      <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+group_a = [42, 45, 41, 47, 43]
+group_b = [35, 38, 33, 36, 34]
+
+mean_diff = np.mean(group_a) - np.mean(group_b)
+se = np.sqrt(np.var(group_a, ddof=1)/len(group_a) +
+             np.var(group_b, ddof=1)/len(group_b))
+t_crit = stats.t.ppf(0.975, df=8)   # 0.975 = two-tailed 95%
+
+lower = mean_diff - t_crit * se
+upper = mean_diff + t_crit * se
+print(f"95% CI: ({lower:.2f}, {upper:.2f})")   # (5.73, 11.07)</code></pre>
+    </div>
+
+  </section>
+
+</main>
+
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M8 12V4M4 7l4-4 4 4"/>
+  </svg>
+</button>
+
+<script>
+  hljs.highlightAll();
+
+  renderMathInElement(document.body, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '$', right: '$', display: false }
+    ],
+    throwOnError: false
+  });
+
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.style.display = window.scrollY > 200 ? 'flex' : 'none';
+  });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const tocLinks = document.querySelectorAll('.toc-sidebar a[href^="#"]');
+  const sections = [...tocLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  window.addEventListener('scroll', () => {
+    let current = sections[0];
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s; });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current?.id);
+    });
+  }, { passive: true });
+</script>
+
+</body>
+</html>

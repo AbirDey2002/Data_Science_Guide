@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Study Guide — Model Training & From-Scratch Models</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --card2: #1c2128;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --primary: #58a6ff;
+  --green: #3fb950;
+  --amber: #d29922;
+  --red: #f85149;
+  --purple: #bc8cff;
+  --teal: #39d3c3;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.layout {
+  display: flex;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ── SIDEBAR ── */
+.toc-sidebar {
+  width: 260px;
+  min-width: 260px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 2rem 1rem 2rem 1.5rem;
+  border-right: 1px solid var(--border);
+  background: var(--card);
+}
+
+.toc-sidebar h3 {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.toc-sidebar .toc-part {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+  margin: 1.2rem 0 0.4rem 0;
+}
+
+.toc-sidebar a {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.toc-sidebar a:hover,
+.toc-sidebar a.active {
+  color: var(--text);
+  background: rgba(88,166,255,0.08);
+  border-left-color: var(--primary);
+}
+
+/* ── MAIN CONTENT ── */
+.main-content {
+  flex: 1;
+  padding: 2.5rem 3rem;
+  min-width: 0;
+}
+
+/* ── HERO ── */
+.hero {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.hero .subtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.badge-blue  { color: var(--primary); border-color: var(--primary); background: rgba(88,166,255,0.08); }
+.badge-green { color: var(--green);   border-color: var(--green);   background: rgba(63,185,80,0.08); }
+.badge-purple{ color: var(--purple);  border-color: var(--purple);  background: rgba(188,140,255,0.08); }
+.badge-teal  { color: var(--teal);    border-color: var(--teal);    background: rgba(57,211,195,0.08); }
+
+/* ── PART HEADER ── */
+.part-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 3rem 0 1.5rem 0;
+  padding: 1.2rem 1.5rem;
+  background: linear-gradient(135deg, rgba(88,166,255,0.08), rgba(188,140,255,0.04));
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+}
+
+.part-header h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.part-header p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+/* ── TOPIC CARD ── */
+.topic-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.topic-card h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.topic-card h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 1rem 0 0.4rem 0;
+}
+
+.topic-intro {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+/* tags */
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0; }
+.tag { display: inline-block; padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+.tag-when    { background: rgba(88,166,255,0.12); color: var(--primary); }
+.tag-avoid   { background: rgba(248,81,73,0.10);  color: var(--red); }
+.tag-tip     { background: rgba(63,185,80,0.10);  color: var(--green); }
+
+/* formula */
+.formula-block {
+  background: var(--card2);
+  border-left: 3px solid var(--primary);
+  padding: 0.9rem 1.2rem;
+  border-radius: 0 6px 6px 0;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+}
+
+.formula-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* gotcha */
+.gotcha {
+  background: rgba(210,153,34,0.08);
+  border-left: 3px solid var(--amber);
+  padding: 0.6rem 1rem;
+  border-radius: 0 6px 6px 0;
+  margin: 0.75rem 0;
+  font-size: 0.88rem;
+  color: #e3b341;
+}
+
+/* key points list */
+.key-list {
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.key-list li { margin: 0.3rem 0; }
+
+/* comparison table */
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin: 0.75rem 0;
+}
+
+.comp-table th {
+  background: var(--card2);
+  color: var(--muted);
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.comp-table td {
+  padding: 0.45rem 0.75rem;
+  border-bottom: 1px solid rgba(48,54,61,0.5);
+  vertical-align: top;
+}
+
+.comp-table tr:hover td { background: rgba(88,166,255,0.03); }
+
+/* two-col */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+.col-box {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+}
+
+.col-box h4 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+/* code */
+pre {
+  margin: 0.75rem 0;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  overflow-x: auto;
+}
+
+pre code { border-radius: 6px; }
+
+/* section divider */
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 2.5rem 0;
+}
+
+/* concept master table */
+#concept-table { margin-top: 3rem; }
+#concept-table h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* formula sheet */
+#formula-sheet { margin-top: 3rem; }
+#formula-sheet h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.formula-entry {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.formula-entry h4 {
+  color: var(--primary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.formula-entry p {
+  font-size: 0.83rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+/* back to top */
+#back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 40px;
+  height: 40px;
+  background: var(--primary);
+  color: var(--bg);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: opacity 0.2s;
+}
+
+#back-to-top svg { width: 18px; height: 18px; }
+
+@media print {
+  .toc-sidebar { display: none; }
+  .main-content { padding: 1rem; }
+  .topic-card { break-inside: avoid; box-shadow: none; }
+}
+
+@media (max-width: 768px) {
+  .toc-sidebar { display: none; }
+  .main-content { padding: 1.5rem; }
+  .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ── SIDEBAR ── -->
+<nav class="toc-sidebar">
+  <h3>Contents</h3>
+
+  <div class="toc-part">Part 1 — Model Training</div>
+  <a href="#why-train">Why We Train</a>
+  <a href="#bias-variance">Bias-Variance Tradeoff</a>
+  <a href="#loss-functions">Loss Functions</a>
+  <a href="#gradient-descent">Gradient Descent</a>
+  <a href="#regularisation">Regularisation</a>
+  <a href="#splits-cv">Train/Val/Test + CV</a>
+  <a href="#environment">Where We Train</a>
+  <a href="#data-leakage">Data Leakage</a>
+  <a href="#model-types">Model Types</a>
+  <a href="#evaluation">Evaluation Metrics</a>
+  <a href="#hyperparameter">Hyperparameter Tuning</a>
+  <a href="#linear-ridge-lasso">Linear vs Ridge vs Lasso</a>
+  <a href="#l1-l2-math">L1 vs L2 Math</a>
+
+  <div class="toc-part">Part 2 — From Scratch</div>
+  <a href="#scratch-linear">Linear Regression</a>
+  <a href="#scratch-logistic">Logistic Regression</a>
+  <a href="#scratch-knn">KNN</a>
+  <a href="#scratch-tree">Decision Tree</a>
+  <a href="#scratch-naive">Naive Bayes</a>
+  <a href="#scratch-summary">All Models Summary</a>
+  <a href="#formula-sheet">Formula Sheet</a>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="main-content">
+
+<!-- HERO -->
+<div class="hero">
+  <h1>ML Study Guide</h1>
+  <p class="subtitle">Complete notes from your model training session — everything covered, nothing missed.</p>
+  <div class="badge-row">
+    <span class="badge badge-blue">Model Training</span>
+    <span class="badge badge-blue">Gradient Descent</span>
+    <span class="badge badge-blue">Loss Functions</span>
+    <span class="badge badge-green">Regularisation</span>
+    <span class="badge badge-green">Cross Validation</span>
+    <span class="badge badge-purple">Linear Regression</span>
+    <span class="badge badge-purple">Logistic Regression</span>
+    <span class="badge badge-purple">Decision Tree</span>
+    <span class="badge badge-purple">KNN</span>
+    <span class="badge badge-purple">Naive Bayes</span>
+    <span class="badge badge-teal">From Scratch</span>
+    <span class="badge badge-teal">OOP + NumPy</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!--  PART 1                                         -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="part-header">
+  <div>
+    <h2>Part 1 — Model Training, Theory & Concepts</h2>
+    <p>Why we train, loss functions, optimisers, regularisation, evaluation, hyperparameter tuning, and the full sklearn workflow.</p>
+  </div>
+</div>
+
+<!-- WHY WE TRAIN -->
+<section class="topic-card" id="why-train">
+  <h2>Why We Train</h2>
+  <p class="topic-intro">Training is the process of finding the best mathematical function that maps inputs X to outputs y — automatically from data, rather than hand-coding rules.</p>
+
+  <h3>Core Idea</h3>
+  <ul class="key-list">
+    <li>Model training = finding parameters <strong>θ</strong> such that <code>f(X) ≈ y</code></li>
+    <li>Parameters are learned by minimising a <strong>loss function</strong></li>
+    <li>The real goal is <strong>generalisation</strong> — performing well on unseen data, not memorising training data</li>
+    <li>Model choice = choosing what shape of function to search over (line, tree, etc.)</li>
+  </ul>
+
+  <h3>Three Pillars</h3>
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Generalisation</h4>
+      Train so model works on data it has never seen. Not memorisation.
+    </div>
+    <div class="col-box">
+      <h4>Bias-Variance Tradeoff</h4>
+      Central tension between underfitting and overfitting.
+    </div>
+  </div>
+  <div class="col-box" style="margin-top:0.5rem">
+    <h4>Loss Minimisation</h4>
+    Training mechanically = minimising a number (loss) that measures wrongness.
+  </div>
+
+  <h3>Training Loop (Mental Model)</h3>
+  <pre><code class="language-text">X (features) → [ Model θ ] → ŷ (prediction)
+                                    ↕
+                               y (truth)
+                          → Loss = how wrong?
+                          → Adjust θ, repeat</code></pre>
+</section>
+
+<!-- BIAS VARIANCE -->
+<section class="topic-card" id="bias-variance">
+  <h2>Bias-Variance Tradeoff</h2>
+  <p class="topic-intro">Every model's error decomposes into three parts. Understanding this decomposition drives almost every ML decision.</p>
+
+  <div class="formula-block">
+    $$\text{Total Error} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Noise}$$
+  </div>
+
+  <h3>Definitions</h3>
+  <table class="comp-table">
+    <thead><tr><th>Term</th><th>Meaning</th><th>Symptom</th><th>Called</th></tr></thead>
+    <tbody>
+      <tr><td>Bias</td><td>Error from wrong assumptions — model too simple</td><td>Bad on train AND test</td><td>Underfitting</td></tr>
+      <tr><td>Variance</td><td>Error from sensitivity to training data — model too complex</td><td>Good on train, bad on test</td><td>Overfitting</td></tr>
+      <tr><td>Irreducible Noise</td><td>Random noise baked into data — cannot be removed</td><td>Irreducible floor</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h3>The Trade-off</h3>
+  <pre><code class="language-text">Simple model  → High Bias,   Low Variance   (underfits)
+Complex model → Low Bias,    High Variance  (overfits)
+Sweet spot    → bottom of U-shaped total error curve</code></pre>
+
+  <h3>Practical Diagnostic</h3>
+  <div class="two-col">
+    <div class="col-box">
+      <h4>High Bias</h4>
+      Model bad on TRAINING data → try more complex model, add features
+    </div>
+    <div class="col-box">
+      <h4>High Variance</h4>
+      Model bad on TEST data only → regularise, simplify, get more data
+    </div>
+  </div>
+
+  <div class="gotcha">More data reduces variance but does NOT fix bias. If the model is structurally wrong, more data won't help.</div>
+</section>
+
+<!-- LOSS FUNCTIONS -->
+<section class="topic-card" id="loss-functions">
+  <h2>Loss Functions</h2>
+  <p class="topic-intro">A loss function converts model wrongness into a single differentiable number. Training minimises this number. Choosing the wrong loss means optimising for the wrong thing.</p>
+
+  <h3>Regression Losses</h3>
+  <table class="comp-table">
+    <thead><tr><th>Loss</th><th>Formula</th><th>Key Property</th><th>Use When</th></tr></thead>
+    <tbody>
+      <tr><td>MSE</td><td>$(1/n)\sum(y-\hat{y})^2$</td><td>Squares errors — punishes large errors heavily</td><td>Large errors are truly bad; no outliers</td></tr>
+      <tr><td>MAE</td><td>$(1/n)\sum|y-\hat{y}|$</td><td>Absolute errors — robust to outliers</td><td>Outliers present</td></tr>
+      <tr><td>Huber</td><td>MSE for small errors, MAE for large</td><td>Best of both — smooth + robust</td><td>Want robustness AND smooth gradients</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Classification Losses</h3>
+  <table class="comp-table">
+    <thead><tr><th>Loss</th><th>Formula</th><th>Key Property</th><th>Use When</th></tr></thead>
+    <tbody>
+      <tr><td>Log Loss (BCE)</td><td>$-(1/n)\sum[y\log\hat{y}+(1-y)\log(1-\hat{y})]$</td><td>Massively penalises confident wrong predictions</td><td>Binary classification — almost always</td></tr>
+    </tbody>
+  </table>
+
+  <div class="gotcha">Loss function vs Evaluation Metric — different things. You train with Log Loss but report Accuracy or F1 to stakeholders. Never confuse these.</div>
+
+  <h3>Loss vs Metric</h3>
+  <table class="comp-table">
+    <thead><tr><th></th><th>Loss Function</th><th>Evaluation Metric</th></tr></thead>
+    <tbody>
+      <tr><td>Purpose</td><td>Drives training (must be differentiable)</td><td>Measures real-world performance</td></tr>
+      <tr><td>Examples</td><td>MSE, Log Loss, Huber</td><td>RMSE, Accuracy, F1, AUC</td></tr>
+      <tr><td>Used when</td><td>During training loop</td><td>After training, to judge model</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- GRADIENT DESCENT -->
+<section class="topic-card" id="gradient-descent">
+  <h2>Gradient Descent</h2>
+  <p class="topic-intro">The algorithm that minimises the loss by iteratively nudging weights in the direction that reduces error. The "engine" that makes training work.</p>
+
+  <h3>The Update Rule</h3>
+  <div class="formula-block">
+    $$\theta = \theta - \alpha \cdot \nabla L(\theta)$$
+    <p class="formula-label">θ = weights | α = learning rate | ∇L = gradient of loss</p>
+  </div>
+
+  <h3>Learning Rate</h3>
+  <pre><code class="language-text">α too large  → overshoots minimum → loss bounces / explodes
+α too small  → training takes forever
+α just right → steady descent to minimum
+Typical values: 0.01, 0.001, 0.0001</code></pre>
+
+  <h3>Three Flavours</h3>
+  <table class="comp-table">
+    <thead><tr><th>Type</th><th>Data per Update</th><th>Property</th><th>Used?</th></tr></thead>
+    <tbody>
+      <tr><td>Batch GD</td><td>Full dataset</td><td>Accurate gradient, very slow</td><td>Rarely</td></tr>
+      <tr><td>Stochastic GD</td><td>1 sample</td><td>Fast, noisy gradient</td><td>Sometimes</td></tr>
+      <tr><td>Mini-Batch GD</td><td>32–256 samples</td><td>Balance of speed + accuracy</td><td>Standard</td></tr>
+    </tbody>
+  </table>
+
+  <h3>One Training Loop</h3>
+  <pre><code class="language-text">1. Initialise weights randomly (θ)
+2. For each epoch:
+      For each mini-batch:
+          a. Forward pass  → compute ŷ
+          b. Compute loss  → L(y, ŷ)
+          c. Backward pass → compute gradients ∇L
+          d. Update weights → θ = θ - α∇L
+3. Repeat until loss stops improving</code></pre>
+
+  <div class="gotcha">Local minima exist but are less of a problem in practice than they sound — mini-batch noise and modern optimisers help escape them.</div>
+
+  <h3>Sigmoid Derivative — Why ŷ(1-ŷ)</h3>
+  <div class="formula-block">
+    $$\frac{d\sigma}{dz} = \sigma(z)(1 - \sigma(z)) = \hat{y}(1-\hat{y})$$
+    <p class="formula-label">Derived via chain rule on $(1+e^{-z})^{-1}$. Largest at ŷ=0.5, vanishes at extremes — seed of the vanishing gradient problem.</p>
+  </div>
+
+  <h3>Log Loss Gradient — The Beautiful Cancellation</h3>
+  <div class="formula-block">
+    $$\frac{\partial L}{\partial \theta_j} = \frac{1}{n}\sum(\hat{y}_i - y_i) \cdot x_{ij}$$
+    <p class="formula-label">Chain rule: ∂L/∂ŷ × ∂ŷ/∂z × ∂z/∂θ — the sigmoid and log loss cancel to just (ŷ - y)×x</p>
+  </div>
+</section>
+
+<!-- REGULARISATION -->
+<section class="topic-card" id="regularisation">
+  <h2>Regularisation — Fixing Overfitting</h2>
+  <p class="topic-intro">Any technique that penalises model complexity to prevent overfitting. Adds a penalty term to the loss so the model balances fitting data vs staying simple.</p>
+
+  <div class="formula-block">
+    $$\text{New Loss} = \text{Original Loss} + \lambda \cdot \text{Complexity Penalty}$$
+    <p class="formula-label">λ (lambda) controls how hard complexity is penalised</p>
+  </div>
+
+  <h3>L1 vs L2</h3>
+  <table class="comp-table">
+    <thead><tr><th></th><th>L2 — Ridge</th><th>L1 — Lasso</th><th>Elastic Net</th></tr></thead>
+    <tbody>
+      <tr><td>Penalty</td><td>$\lambda\sum\theta^2$</td><td>$\lambda\sum|\theta|$</td><td>Both combined</td></tr>
+      <tr><td>Gradient</td><td>$2\lambda\theta$ — shrinks proportionally</td><td>$\lambda \cdot \text{sign}(\theta)$ — fixed step</td><td>—</td></tr>
+      <tr><td>Effect</td><td>Weights small but never zero</td><td>Some weights exactly zero</td><td>Both effects</td></tr>
+      <tr><td>Feature selection</td><td>No</td><td>Yes — automatic</td><td>Yes</td></tr>
+      <tr><td>Use when</td><td>Many correlated features</td><td>Many irrelevant features</td><td>Unsure which</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Why L1 Can Zero Out Weights but L2 Cannot</h3>
+  <div class="two-col">
+    <div class="col-box">
+      <h4>L2 Update</h4>
+      <code>θ = θ × (1 - 2αλ)</code><br><br>
+      Multiplies θ by fraction of itself each step. Push gets weaker as θ → 0. Asymptotically approaches zero, never reaches it. Geometrically: circle constraint — no corners.
+    </div>
+    <div class="col-box">
+      <h4>L1 Update</h4>
+      <code>θ = θ - α·λ·sign(θ)</code><br><br>
+      Subtracts a FIXED constant regardless of size of θ. When θ is tiny, still subtracts the same amount — blows through zero. Geometrically: diamond constraint — corners sit on axes.
+    </div>
+  </div>
+
+  <h3>λ (Regularisation Strength)</h3>
+  <pre><code class="language-text">λ = 0        → no regularisation → free to overfit
+λ very large → model too simple → underfits
+λ just right → balanced ✅
+Note: sklearn uses C = 1/λ — so high C = less regularisation</code></pre>
+
+  <h3>Other Regularisation Techniques</h3>
+  <ul class="key-list">
+    <li><strong>Early Stopping</strong> — stop training when validation loss starts rising</li>
+    <li><strong>Dropout</strong> — randomly zero out neurons during training (neural nets)</li>
+    <li><strong>Cross-Validation</strong> — more honest generalisation estimate</li>
+  </ul>
+
+  <div class="gotcha">Never regularise the bias term (θ₀ / intercept). Only regularise feature weights. In Ridge's normal equation: set I[0,0] = 0 before adding λI.</div>
+</section>
+
+<!-- TRAIN VAL TEST + CV -->
+<section class="topic-card" id="splits-cv">
+  <h2>Train / Validation / Test Splits + Cross-Validation</h2>
+  <p class="topic-intro">Proper evaluation requires held-out data the model never saw. Two train/test is not enough — you need three sets or cross-validation to avoid leaking test information into decisions.</p>
+
+  <h3>Three-Way Split</h3>
+  <pre><code class="language-text">Full Dataset
+├── Training Set   (60-70%)  → model learns from this
+├── Validation Set (15-20%)  → tune hyperparameters on this
+└── Test Set       (15-20%)  → FINAL evaluation — touched ONCE only</code></pre>
+
+  <div class="gotcha">The Golden Rule: Touch the test set exactly once, at the very end. Never tune based on it. Tuning on test = data leakage.</div>
+
+  <h3>K-Fold Cross-Validation</h3>
+  <p class="topic-intro" style="margin-bottom:0.5rem">Rotate which fold is validation set k times. Average the k scores for a stable, trustworthy estimate. Operates entirely within training data — test set stays locked.</p>
+
+  <pre><code class="language-python">from sklearn.model_selection import cross_val_score, KFold
+
+# Classification (auto-stratified)
+cv_scores = cross_val_score(model, X_train, y_train, cv=5, scoring='roc_auc')
+
+# Regression
+cv_rmse = cross_val_score(model, X_train, y_train, cv=5,
+                          scoring='neg_root_mean_squared_error')
+rmse = -cv_rmse.mean()   # flip sign back — sklearn negates for maximisation
+
+print(f"Mean: {cv_scores.mean():.3f}  Std: {cv_scores.std():.3f}")</code></pre>
+
+  <h3>Reading CV Results</h3>
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Low Std — Good</h4>
+      Stable across folds. Model is reliable and generalises well.
+    </div>
+    <div class="col-box">
+      <h4>High Std — Warning</h4>
+      Unstable — sensitive to which data it sees. High variance signal.
+    </div>
+  </div>
+
+  <h3>Why neg_ prefix in sklearn scoring?</h3>
+  <p style="font-size:0.88rem;color:var(--muted);margin-top:0.5rem">sklearn always maximises. RMSE/MAE are errors (minimise). Negating converts minimisation to maximisation. Always flip sign back when reading results.</p>
+
+  <h3>Stratified K-Fold</h3>
+  <p style="font-size:0.88rem;color:var(--muted);margin-top:0.5rem">For classification — ensures each fold has the same class ratio. sklearn uses this automatically for classifiers. For regression, plain KFold is used.</p>
+</section>
+
+<!-- DATA LEAKAGE -->
+<section class="topic-card" id="data-leakage">
+  <h2>Data Leakage — Critical Warning</h2>
+  <p class="topic-intro">When information from the test set (or future) leaks into training or preprocessing, producing falsely optimistic results that fail in production.</p>
+
+  <h3>Most Common Leakage Mistake</h3>
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Wrong — Leakage</h4>
+      <pre style="margin:0"><code class="language-python">scaler.fit_transform(X)  # full dataset
+# test set statistics leak into scaler</code></pre>
+    </div>
+    <div class="col-box">
+      <h4>Correct — No Leakage</h4>
+      <pre style="margin:0"><code class="language-python">scaler.fit_transform(X_train)  # train only
+scaler.transform(X_test)       # apply same</code></pre>
+    </div>
+  </div>
+
+  <h3>Pipeline — The Safe Pattern</h3>
+  <pre><code class="language-python">from sklearn.pipeline import Pipeline
+
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('model',  LogisticRegression())
+])
+
+pipe.fit(X_train, y_train)
+pipe.score(X_test, y_test)  # ALWAYS score through pipeline, not model directly</code></pre>
+
+  <div class="gotcha">Calling model.score(X_test) directly bypasses the pipeline's scaler — passing raw unscaled data to a model trained on scaled data. Always use pipe.score(), never model.score().</div>
+
+  <h3>Other Leakage Sources</h3>
+  <ul class="key-list">
+    <li>Fitting encoders, imputers, or any preprocessor on full data before splitting</li>
+    <li>Using future data as features (time-series)</li>
+    <li>Tuning hyperparameters by repeatedly checking test set</li>
+  </ul>
+</section>
+
+<!-- WHERE WE TRAIN -->
+<section class="topic-card" id="environment">
+  <h2>Where We Train — Tools & Environment</h2>
+
+  <h3>The Sklearn Interface</h3>
+  <pre><code class="language-python">model.fit(X_train, y_train)   # train
+model.predict(X_test)          # predict classes
+model.predict_proba(X_test)    # predict probabilities
+model.score(X_test, y_test)    # evaluate</code></pre>
+  <p style="font-size:0.85rem;color:var(--muted);margin-top:0.4rem">Same three methods for every model — Linear Regression, Random Forest, SVM. Learn once, use everywhere.</p>
+
+  <h3>Environment Decision</h3>
+  <table class="comp-table">
+    <thead><tr><th>Situation</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>Learning / exploring</td><td>Jupyter locally or Google Colab</td></tr>
+      <tr><td>Dataset fits in memory, training &lt; 30 mins</td><td>Local Jupyter</td></tr>
+      <tr><td>Free GPU (deep learning)</td><td>Google Colab or Kaggle</td></tr>
+      <tr><td>Team / production</td><td>Cloud platform + git</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Full Training Template</h3>
+  <pre><code class="language-python">from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)
+
+pipe = Pipeline([('scaler', StandardScaler()), ('model', LogisticRegression())])
+
+cv_scores = cross_val_score(pipe, X_train, y_train, cv=5, scoring='roc_auc')
+print(f"CV: {cv_scores.mean():.3f} ± {cv_scores.std():.3f}")
+
+pipe.fit(X_train, y_train)
+print(classification_report(y_test, pipe.predict(X_test)))</code></pre>
+</section>
+
+<!-- MODEL TYPES -->
+<section class="topic-card" id="model-types">
+  <h2>Model Types — When to Use Each</h2>
+
+  <h3>Classification Models</h3>
+  <table class="comp-table">
+    <thead><tr><th>Model</th><th>Boundary</th><th>Best For</th><th>Avoid When</th></tr></thead>
+    <tbody>
+      <tr><td>Logistic Regression</td><td>Linear</td><td>Baseline, interpretable, regulated industries</td><td>Complex non-linear patterns</td></tr>
+      <tr><td>Decision Tree</td><td>Non-linear</td><td>Interpretability required</td><td>Used alone — overfits badly</td></tr>
+      <tr><td>Random Forest</td><td>Non-linear</td><td>Tabular data, robust baseline</td><td>Need interpretability</td></tr>
+      <tr><td>XGBoost</td><td>Non-linear</td><td>Best performance on tabular data</td><td>Very small datasets</td></tr>
+      <tr><td>SVM</td><td>Max margin</td><td>High-dim data, text classification</td><td>Large datasets (slow)</td></tr>
+      <tr><td>KNN</td><td>Distance</td><td>Small datasets, recommendation</td><td>Large datasets (slow prediction)</td></tr>
+      <tr><td>Naive Bayes</td><td>Probabilistic</td><td>Text, spam, fast baseline</td><td>Correlated features</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Regression Models</h3>
+  <table class="comp-table">
+    <thead><tr><th>Model</th><th>Use When</th></tr></thead>
+    <tbody>
+      <tr><td>Linear / Ridge / Lasso</td><td>Linear relationships, interpretability needed</td></tr>
+      <tr><td>Elastic Net</td><td>Unsure between L1/L2</td></tr>
+      <tr><td>Polynomial Regression</td><td>Curved relationships</td></tr>
+      <tr><td>Random Forest Regressor</td><td>Non-linear tabular regression</td></tr>
+      <tr><td>XGBoost Regressor</td><td>Best performance on tabular regression</td></tr>
+      <tr><td>SVR</td><td>Non-linear, small datasets</td></tr>
+      <tr><td>Quantile Regression</td><td>Predict intervals, not just point estimates</td></tr>
+      <tr><td>Poisson Regression</td><td>Count data (clicks, accidents)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Practitioner Ranking (Tabular Data)</h3>
+  <pre><code class="language-text">1. XGBoost / LightGBM     → wins most often
+2. Random Forest           → robust, reliable, less tuning
+3. Logistic / Linear Reg   → always your interpretable baseline
+4. SVM                     → niche use cases
+5. KNN / Naive Bayes       → specific scenarios</code></pre>
+</section>
+
+<!-- EVALUATION METRICS -->
+<section class="topic-card" id="evaluation">
+  <h2>Evaluation Metrics</h2>
+  <p class="topic-intro">Accuracy alone is dangerous with imbalanced classes. Always pick the metric aligned with your actual business goal.</p>
+
+  <h3>The Confusion Matrix</h3>
+  <pre><code class="language-text">                    Predicted
+                  Positive  Negative
+Actual  Positive │   TP   │   FN   │
+        Negative │   FP   │   TN   │
+
+TP = True Positive  | TN = True Negative
+FP = False Positive (Type I)  | FN = False Negative (Type II)</code></pre>
+
+  <h3>Classification Metrics</h3>
+  <table class="comp-table">
+    <thead><tr><th>Metric</th><th>Formula</th><th>Use When</th></tr></thead>
+    <tbody>
+      <tr><td>Accuracy</td><td>(TP+TN)/(TP+TN+FP+FN)</td><td>Balanced classes, equal error cost</td></tr>
+      <tr><td>Precision</td><td>TP/(TP+FP)</td><td>False positives costly (spam filter)</td></tr>
+      <tr><td>Recall</td><td>TP/(TP+FN)</td><td>False negatives costly (cancer screening)</td></tr>
+      <tr><td>F1 Score</td><td>2×(P×R)/(P+R)</td><td>Imbalanced classes, balance P and R</td></tr>
+      <tr><td>AUC-ROC</td><td>Area under ROC curve</td><td>Compare models regardless of threshold</td></tr>
+    </tbody>
+  </table>
+
+  <div class="gotcha">Precision and Recall always trade off. Being more aggressive catches more positives (Recall↑) but causes more false alarms (Precision↓). Your business problem decides which matters more.</div>
+
+  <h3>Regression Metrics</h3>
+  <table class="comp-table">
+    <thead><tr><th>Metric</th><th>Formula</th><th>Use When</th></tr></thead>
+    <tbody>
+      <tr><td>RMSE</td><td>$\sqrt{\text{mean}(y-\hat{y})^2}$</td><td>General purpose — same units as target</td></tr>
+      <tr><td>MAE</td><td>$\text{mean}(|y-\hat{y}|)$</td><td>Outliers present — more robust</td></tr>
+      <tr><td>R²</td><td>$1 - SS_{res}/SS_{tot}$</td><td>Explain variance — stakeholder communication</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Reading RMSE</h3>
+  <pre><code class="language-text">RMSE is in same units as target (e.g. dollars for salary)
+Always contextualise: RMSE / mean(y) × 100 = % error
+Compare to baseline: np.sqrt(np.mean((y_train - y_train.mean())**2))
+If model RMSE > baseline RMSE → model is worse than predicting mean ❌</code></pre>
+
+  <h3>R² Interpretation</h3>
+  <pre><code class="language-text">R² = 1.0  → perfect prediction
+R² = 0.0  → no better than predicting the mean
+R² < 0.0  → worse than predicting the mean (model is broken)</code></pre>
+</section>
+
+<!-- HYPERPARAMETER TUNING -->
+<section class="topic-card" id="hyperparameter">
+  <h2>Hyperparameter Tuning</h2>
+  <p class="topic-intro">Parameters learned by the model (weights) vs parameters set by you before training (hyperparameters). Tuning systematically finds the best configuration.</p>
+
+  <h3>Grid vs Random Search</h3>
+  <table class="comp-table">
+    <thead><tr><th></th><th>GridSearchCV</th><th>RandomizedSearchCV</th></tr></thead>
+    <tbody>
+      <tr><td>Strategy</td><td>Try every combination</td><td>Sample n random combinations</td></tr>
+      <tr><td>Coverage</td><td>Fixed uniform grid</td><td>Broader space exploration</td></tr>
+      <tr><td>Speed</td><td>Slow — combinations explode</td><td>Fast — fixed n_iter</td></tr>
+      <tr><td>Use when</td><td>&lt;4 params, small ranges</td><td>≥4 params, wide ranges</td></tr>
+    </tbody>
+  </table>
+
+  <pre><code class="language-python">from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+
+param_dist = {
+    'model__max_depth':    randint(3, 20),
+    'model__n_estimators': randint(50, 500),
+}
+
+search = RandomizedSearchCV(pipe, param_dist, n_iter=50, cv=5,
+                             scoring='roc_auc', n_jobs=-1, random_state=42)
+search.fit(X_train, y_train)
+print(search.best_params_)
+print(search.best_score_)</code></pre>
+
+  <h3>Full Tuning Workflow</h3>
+  <pre><code class="language-text">1. Train with defaults → establish baseline
+2. RandomizedSearch with wide ranges → explore broadly
+3. GridSearch in promising region → zoom in
+4. Retrain best model on ALL training data
+5. Evaluate ONCE on test set → final number</code></pre>
+
+  <div class="gotcha">Pipeline + GridSearch is the production pattern. Use 'step_name__param_name' syntax for pipeline parameters. This prevents leakage during CV.</div>
+
+  <h3>Key Hyperparameters Per Model</h3>
+  <table class="comp-table">
+    <thead><tr><th>Model</th><th>Key Hyperparameters</th></tr></thead>
+    <tbody>
+      <tr><td>Logistic Regression</td><td>C, penalty, solver, max_iter</td></tr>
+      <tr><td>Ridge / Lasso</td><td>alpha (= λ)</td></tr>
+      <tr><td>Random Forest</td><td>n_estimators, max_depth, min_samples_split, max_features</td></tr>
+      <tr><td>XGBoost</td><td>learning_rate, max_depth, n_estimators, subsample, colsample_bytree</td></tr>
+      <tr><td>SVM</td><td>C, kernel, gamma</td></tr>
+      <tr><td>KNN</td><td>n_neighbors, metric</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- LINEAR RIDGE LASSO -->
+<section class="topic-card" id="linear-ridge-lasso">
+  <h2>Linear Regression vs Ridge vs Lasso</h2>
+  <p class="topic-intro">All three fit the same straight line ŷ = θ₀ + θ₁x₁ + ... The ONLY difference is what they minimise during training.</p>
+
+  <table class="comp-table">
+    <thead><tr><th></th><th>Linear Regression</th><th>Ridge (L2)</th><th>Lasso (L1)</th></tr></thead>
+    <tbody>
+      <tr><td>Loss</td><td>$\sum(y-\hat{y})^2$</td><td>$\sum(y-\hat{y})^2 + \lambda\sum\theta^2$</td><td>$\sum(y-\hat{y})^2 + \lambda\sum|\theta|$</td></tr>
+      <tr><td>Penalty</td><td>None</td><td>Squared weights</td><td>Absolute weights</td></tr>
+      <tr><td>Weights</td><td>Unconstrained</td><td>Shrunk, never zero</td><td>Some exactly zero</td></tr>
+      <tr><td>Feature selection</td><td>No</td><td>No</td><td>Yes — automatic</td></tr>
+      <tr><td>Hyperparameter</td><td>None</td><td>alpha (λ)</td><td>alpha (λ)</td></tr>
+      <tr><td>Use when</td><td>Few clean features, baseline</td><td>Many correlated features</td><td>Many irrelevant features</td></tr>
+    </tbody>
+  </table>
+
+  <div class="gotcha">All three are the same model — same line equation. Only the loss function changes. Ridge and Lasso are Linear Regression with a penalty added.</div>
+</section>
+
+<!-- L1 L2 MATH -->
+<section class="topic-card" id="l1-l2-math">
+  <h2>Why L1 Zeros Weights But L2 Cannot — The Math</h2>
+
+  <div class="two-col">
+    <div class="col-box">
+      <h4>L2 Gradient → proportional push</h4>
+      Penalty gradient = $2\lambda\theta$<br><br>
+      Update: $\theta = \theta(1 - 2\alpha\lambda)$<br><br>
+      As θ → 0, push gets weaker. Asymptotically approaches zero.
+    </div>
+    <div class="col-box">
+      <h4>L1 Gradient → fixed step</h4>
+      Penalty gradient = $\lambda \cdot \text{sign}(\theta)$<br><br>
+      Update: $\theta = \theta - \alpha\lambda\cdot\text{sign}(\theta)$<br><br>
+      Fixed constant subtracted regardless of θ size. Crosses zero.
+    </div>
+  </div>
+
+  <h3>Geometric Intuition</h3>
+  <pre><code class="language-text">L2 constraint region → CIRCLE  (smooth, no corners)
+  → loss contours touch circle at a smooth point → both weights non-zero
+
+L1 constraint region → DIAMOND (sharp corners on the axes)
+  → loss contours likely hit a corner → one weight = exactly zero</code></pre>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!--  PART 2 — FROM SCRATCH                          -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="part-header">
+  <div>
+    <h2>Part 2 — Models Built From Scratch</h2>
+    <p>OOP + NumPy implementations of all five interview-critical models — every line explained.</p>
+  </div>
+</div>
+
+<!-- FROM SCRATCH — LINEAR REGRESSION -->
+<section class="topic-card" id="scratch-linear">
+  <h2>Linear Regression — From Scratch</h2>
+  <p class="topic-intro">Finds θ that minimises MSE. Two methods: Normal Equation (direct, one shot) and Gradient Descent (iterative).</p>
+
+  <h3>Normal Equation</h3>
+  <div class="formula-block">
+    $$\theta = (X^TX)^{-1}X^Ty$$
+    <p class="formula-label">Direct closed-form solution. O(p³) — breaks for large p. Fails if XᵀX is not invertible.</p>
+  </div>
+
+  <h3>Gradient of MSE</h3>
+  <div class="formula-block">
+    $$\frac{\partial \text{MSE}}{\partial \theta_0} = \frac{-2}{n}\sum(y - \hat{y}) \qquad \frac{\partial \text{MSE}}{\partial \theta_1} = \frac{-2}{n}\sum(y-\hat{y}) \cdot x$$
+  </div>
+
+  <pre><code class="language-python">class LinearRegression:
+    def __init__(self, learning_rate=0.01, n_iterations=1000):
+        self.learning_rate = learning_rate
+        self.n_iterations  = n_iterations
+        self.theta_0 = None   # intercept
+        self.theta_1 = None   # slope
+        self.loss_history = []
+
+    def fit(self, X, y):
+        n = X.shape[0]
+        self.theta_0 = 0.0
+        self.theta_1 = 0.0
+
+        for i in range(self.n_iterations):
+            y_hat        = self.theta_0 + self.theta_1 * X   # forward pass
+            errors       = y - y_hat                          # residuals
+            loss         = (errors ** 2).mean()               # MSE
+            self.loss_history.append(loss)
+
+            grad_0 = (-2 / n) * errors.sum()                  # ∂MSE/∂θ₀
+            grad_1 = (-2 / n) * (errors * X).sum()            # ∂MSE/∂θ₁
+
+            self.theta_0 = self.theta_0 - self.learning_rate * grad_0
+            self.theta_1 = self.theta_1 - self.learning_rate * grad_1
+
+    def predict(self, X):
+        return self.theta_0 + self.theta_1 * X
+
+    def score(self, X, y):
+        y_hat  = self.predict(X)
+        ss_res = ((y - y_hat) ** 2).sum()
+        ss_tot = ((y - y.mean()) ** 2).sum()
+        return 1 - (ss_res / ss_tot)   # R²</code></pre>
+
+  <div class="gotcha">Ridge extension: add 2*lambda*theta to grad_1 (not grad_0 — never regularise the bias). For Normal Equation: add λI with I[0,0]=0.</div>
+
+  <h3>Interview Checklist</h3>
+  <ul class="key-list">
+    <li>Prepend bias column of 1s (matrix version)</li>
+    <li>Know Normal Equation and when it breaks (&gt;10k features)</li>
+    <li>Gradient formula: (−2/n) × errors.sum() for θ₀</li>
+    <li>Track loss history — shows understanding of training loop</li>
+    <li>score() returns R², not just fit()</li>
+  </ul>
+</section>
+
+<!-- FROM SCRATCH — LOGISTIC REGRESSION -->
+<section class="topic-card" id="scratch-logistic">
+  <h2>Logistic Regression — From Scratch</h2>
+  <p class="topic-intro">Classification model (despite the name). Squashes linear output through sigmoid to get probability. Minimises Log Loss via gradient descent.</p>
+
+  <h3>Key Formulas</h3>
+  <div class="formula-block">
+    $$z = \theta_0 + \theta_1x_1 + \theta_2x_2 \quad \hat{y} = \sigma(z) = \frac{1}{1+e^{-z}}$$
+    $$L = -\frac{1}{n}\sum[y\log\hat{y} + (1-y)\log(1-\hat{y})]$$
+    $$\frac{\partial L}{\partial \theta_j} = \frac{1}{n}\sum(\hat{y}_i - y_i) \cdot x_{ij}$$
+  </div>
+
+  <pre><code class="language-python">class LogisticRegression:
+    def __init__(self, learning_rate=0.1, n_iterations=1000):
+        self.learning_rate = learning_rate
+        self.n_iterations  = n_iterations
+        self.theta_0 = None
+        self.theta   = None   # one weight per feature
+        self.loss_history = []
+
+    def _sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))   # squash z → (0,1)
+
+    def fit(self, X, y):
+        n_samples, n_features = X.shape[0], X.shape[1]
+        self.theta_0 = 0.0
+        self.theta   = np.zeros(n_features)   # [0.0, 0.0] for 2 features
+
+        for i in range(self.n_iterations):
+            z     = self.theta_0 + np.dot(X, self.theta)   # linear combination
+            y_hat = self._sigmoid(z)                         # probabilities
+
+            term_1 = y * np.log(y_hat)                       # log loss
+            term_0 = (1 - y) * np.log(1 - y_hat)
+            loss   = -1 * (term_1 + term_0).mean()
+            self.loss_history.append(loss)
+
+            errors  = y_hat - y                              # (ŷ - y)
+            grad_0  = (1 / n_samples) * errors.sum()         # ∂L/∂θ₀
+            grad_th = (1 / n_samples) * np.dot(X.T, errors)  # ∂L/∂θⱼ
+
+            self.theta_0 = self.theta_0 - self.learning_rate * grad_0
+            self.theta   = self.theta   - self.learning_rate * grad_th
+
+    def predict_proba(self, X):
+        z = self.theta_0 + np.dot(X, self.theta)
+        return self._sigmoid(z)
+
+    def predict(self, X, threshold=0.5):
+        return (self.predict_proba(X) >= threshold).astype(int)
+
+    def score(self, X, y):
+        return (self.predict(X) == y).sum() / len(y)</code></pre>
+
+  <h3>Key Differences vs Linear Regression</h3>
+  <table class="comp-table">
+    <thead><tr><th></th><th>Linear Regression</th><th>Logistic Regression</th></tr></thead>
+    <tbody>
+      <tr><td>Forward pass</td><td>θ₀ + θ₁x</td><td>sigmoid(θ₀ + Xθ)</td></tr>
+      <tr><td>Loss</td><td>MSE</td><td>Log Loss</td></tr>
+      <tr><td>Gradient sign</td><td>-2/n</td><td>+1/n</td></tr>
+      <tr><td>Output</td><td>continuous number</td><td>probability → class</td></tr>
+    </tbody>
+  </table>
+
+  <div class="gotcha">Starting Log Loss is always 0.693 (-log(0.5)) when weights initialised to zero — maximum uncertainty. It can only go down from there.</div>
+</section>
+
+<!-- FROM SCRATCH — KNN -->
+<section class="topic-card" id="scratch-knn">
+  <h2>KNN — From Scratch</h2>
+  <p class="topic-intro">Lazy learner — no training. Memorises data. At prediction time, finds K nearest neighbours and takes a majority vote (classification) or average (regression).</p>
+
+  <h3>Euclidean Distance</h3>
+  <div class="formula-block">
+    $$d(a, b) = \sqrt{\sum_i (a_i - b_i)^2}$$
+  </div>
+
+  <pre><code class="language-python">class KNN:
+    def __init__(self, k=3):
+        self.k       = k
+        self.X_train = None
+        self.y_train = None
+
+    def fit(self, X, y):
+        self.X_train = X   # just memorise — no training
+        self.y_train = y
+
+    def _euclidean_distance(self, point_a, point_b):
+        difference = point_a - point_b      # element-wise subtract
+        squared    = difference ** 2         # square each diff
+        summed     = squared.sum()           # sum all
+        return np.sqrt(summed)               # square root
+
+    def _predict_one(self, x):
+        distances = []
+        for i in range(len(self.X_train)):
+            dist = self._euclidean_distance(x, self.X_train[i])
+            distances.append((dist, i))
+
+        distances.sort(key=lambda pair: pair[0])   # sort nearest first
+        k_nearest = distances[:self.k]              # take K closest
+
+        k_labels   = [self.y_train[idx] for dist, idx in k_nearest]
+        k_labels   = np.array(k_labels)
+
+        n_class_1  = (k_labels == 1).sum()
+        n_class_0  = (k_labels == 0).sum()
+        return 1 if n_class_1 > n_class_0 else 0   # majority vote
+
+    def predict(self, X):
+        return np.array([self._predict_one(X[i]) for i in range(len(X))])
+
+    def score(self, X, y):
+        return (self.predict(X) == y).sum() / len(y)</code></pre>
+
+  <h3>K Trade-off</h3>
+  <pre><code class="language-text">K = 1   → nearest only → very sensitive → overfits
+K = n   → all vote → always predicts majority class → underfits
+Small K → low bias,  high variance
+Large K → high bias, low variance</code></pre>
+
+  <div class="gotcha">Scaling is CRITICAL for KNN. Distance is meaningless if features are on different scales. A salary feature will completely dominate hours studied without normalisation.</div>
+
+  <h3>Interview Checklist</h3>
+  <ul class="key-list">
+    <li>fit() just memorises — no weight learning</li>
+    <li>Euclidean distance formula from scratch</li>
+    <li>Sort distances, pick K smallest</li>
+    <li>Majority vote (classification) or mean (regression)</li>
+    <li>Prediction is O(n) — slow for large datasets</li>
+    <li>Always scale before KNN</li>
+  </ul>
+</section>
+
+<!-- FROM SCRATCH — DECISION TREE -->
+<section class="topic-card" id="scratch-tree">
+  <h2>Decision Tree — From Scratch</h2>
+  <p class="topic-intro">Recursively splits data using the feature+threshold that maximises Information Gain. Builds a binary tree of decisions until base cases are hit.</p>
+
+  <h3>Entropy & Information Gain</h3>
+  <div class="formula-block">
+    $$H = -\sum p_i \log_2(p_i)$$
+    $$IG = H(\text{parent}) - \frac{n_L}{n}H(\text{left}) - \frac{n_R}{n}H(\text{right})$$
+    <p class="formula-label">H=0 → perfectly pure. H=1 → maximum disorder (50/50). Pick split with highest IG.</p>
+  </div>
+
+  <pre><code class="language-python">class Node:
+    def __init__(self):
+        self.feature_index = None   # which feature to split on
+        self.threshold     = None   # split value
+        self.left          = None   # left child (≤ threshold)
+        self.right         = None   # right child (> threshold)
+        self.prediction    = None   # set if leaf node
+
+    def is_leaf(self):
+        return self.prediction is not None
+
+class DecisionTree:
+    def __init__(self, max_depth=3, min_samples_split=2):
+        self.max_depth         = max_depth
+        self.min_samples_split = min_samples_split
+        self.root              = None
+
+    def _entropy(self, y):
+        n = len(y)
+        if n == 0: return 0
+        p_1 = (y == 1).sum() / n
+        p_0 = (y == 0).sum() / n
+        if p_1 == 0 or p_0 == 0: return 0.0
+        return -(p_0 * np.log2(p_0)) - (p_1 * np.log2(p_1))
+
+    def _information_gain(self, y_parent, y_left, y_right):
+        h_parent = self._entropy(y_parent)
+        n = len(y_parent)
+        if len(y_left) == 0 or len(y_right) == 0: return 0
+        h_children = (len(y_left)/n * self._entropy(y_left) +
+                      len(y_right)/n * self._entropy(y_right))
+        return h_parent - h_children
+
+    def _best_split(self, X, y):
+        best_ig, best_feat, best_thresh = -1, None, None
+        for feat_idx in range(X.shape[1]):
+            for threshold in np.unique(X[:, feat_idx]):
+                left_mask  = X[:, feat_idx] <= threshold
+                right_mask = X[:, feat_idx] >  threshold
+                ig = self._information_gain(y, y[left_mask], y[right_mask])
+                if ig > best_ig:
+                    best_ig, best_feat, best_thresh = ig, feat_idx, threshold
+        return best_feat, best_thresh, best_ig
+
+    def _build_tree(self, X, y, depth):
+        # Base cases
+        if self._entropy(y) == 0:               # pure node
+            leaf = Node(); leaf.prediction = int(y[0]); return leaf
+        if depth >= self.max_depth:              # max depth
+            leaf = Node()
+            leaf.prediction = 1 if (y==1).sum() > (y==0).sum() else 0
+            return leaf
+        if len(y) < self.min_samples_split:      # too few samples
+            leaf = Node()
+            leaf.prediction = 1 if (y==1).sum() > (y==0).sum() else 0
+            return leaf
+
+        best_feat, best_thresh, best_ig = self._best_split(X, y)
+        if best_ig == 0:
+            leaf = Node()
+            leaf.prediction = 1 if (y==1).sum() > (y==0).sum() else 0
+            return leaf
+
+        node = Node()
+        node.feature_index = best_feat
+        node.threshold     = best_thresh
+        left_mask  = X[:, best_feat] <= best_thresh
+        right_mask = X[:, best_feat] >  best_thresh
+        node.left  = self._build_tree(X[left_mask],  y[left_mask],  depth+1)
+        node.right = self._build_tree(X[right_mask], y[right_mask], depth+1)
+        return node
+
+    def fit(self, X, y):
+        self.root = self._build_tree(X, y, depth=0)
+
+    def _predict_one(self, x, node):
+        if node.is_leaf(): return node.prediction
+        if x[node.feature_index] <= node.threshold:
+            return self._predict_one(x, node.left)
+        return self._predict_one(x, node.right)
+
+    def predict(self, X):
+        return np.array([self._predict_one(X[i], self.root) for i in range(len(X))])
+
+    def score(self, X, y):
+        return (self.predict(X) == y).sum() / len(y)</code></pre>
+
+  <h3>Three Base Cases (Must Know)</h3>
+  <div class="two-col">
+    <div class="col-box"><h4>1. Pure Node</h4>All samples same class → leaf, predict that class</div>
+    <div class="col-box"><h4>2. Max Depth</h4>Reached limit → leaf, predict majority class</div>
+  </div>
+  <div class="col-box" style="margin-top:0.5rem"><h4>3. Too Few Samples</h4>Below min_samples_split → leaf, predict majority class</div>
+
+  <div class="gotcha">Gini is default in sklearn (not entropy). Same concept, different formula: Gini = 1 - Σpᵢ². Slightly faster (no log). Results nearly identical in practice.</div>
+</section>
+
+<!-- FROM SCRATCH — NAIVE BAYES -->
+<section class="topic-card" id="scratch-naive">
+  <h2>Naive Bayes — From Scratch</h2>
+  <p class="topic-intro">Uses Bayes theorem directly. No gradient descent. fit() computes priors, means, variances per class. predict() applies Gaussian PDF per feature and picks highest posterior.</p>
+
+  <h3>Bayes Theorem</h3>
+  <div class="formula-block">
+    $$P(\text{class}|\text{features}) \propto P(\text{features}|\text{class}) \times P(\text{class})$$
+    <p class="formula-label">Posterior ∝ Likelihood × Prior. Evidence P(features) is same for all classes — ignored when comparing.</p>
+  </div>
+
+  <h3>Gaussian PDF</h3>
+  <div class="formula-block">
+    $$P(x_j|\text{class}) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\!\left(-\frac{(x_j - \mu)^2}{2\sigma^2}\right)$$
+    <p class="formula-label">μ and σ² are learned per feature per class during fit()</p>
+  </div>
+
+  <pre><code class="language-python">class GaussianNaiveBayes:
+    def __init__(self):
+        self.classes   = None
+        self.priors    = {}   # P(class)
+        self.means     = {}   # mean per feature per class
+        self.variances = {}   # variance per feature per class
+
+    def fit(self, X, y):
+        n_samples     = X.shape[0]
+        self.classes  = np.unique(y)
+        for c in self.classes:
+            class_mask       = (y == c)
+            X_class          = X[class_mask]
+            self.priors[c]   = X_class.shape[0] / n_samples   # P(class)
+            self.means[c]    = X_class.mean(axis=0)            # mean per feature
+            self.variances[c]= X_class.var(axis=0)             # var per feature
+
+    def _gaussian_pdf(self, x_value, mean, variance):
+        variance    = variance + 1e-9                           # avoid div/0
+        coefficient = 1 / np.sqrt(2 * np.pi * variance)
+        exponent    = np.exp(-((x_value - mean) ** 2) / (2 * variance))
+        return coefficient * exponent
+
+    def _predict_one(self, x):
+        posteriors = {}
+        for c in self.classes:
+            prior      = self.priors[c]
+            likelihood = 1.0
+            for feat_idx in range(len(x)):
+                prob        = self._gaussian_pdf(x[feat_idx],
+                                                  self.means[c][feat_idx],
+                                                  self.variances[c][feat_idx])
+                likelihood  = likelihood * prob   # independence assumption
+            posteriors[c] = likelihood * prior
+
+        return max(posteriors, key=lambda c: posteriors[c])   # highest posterior
+
+    def predict(self, X):
+        return np.array([self._predict_one(X[i]) for i in range(len(X))])
+
+    def score(self, X, y):
+        return (self.predict(X) == y).sum() / len(y)</code></pre>
+
+  <div class="gotcha">Multiplying many small probabilities causes numerical underflow (→ 0). In production, use log probabilities: log_posterior = log(prior) + Σlog(feature_probs). Always mention this in interviews.</div>
+
+  <h3>The Naive Assumption</h3>
+  <p style="font-size:0.88rem;color:var(--muted);margin-top:0.5rem">P(x₁, x₂ | class) = P(x₁|class) × P(x₂|class) — features assumed independent given class. Almost never literally true but works surprisingly well in practice, especially for text.</p>
+</section>
+
+<!-- ALL MODELS SUMMARY -->
+<section class="topic-card" id="scratch-summary">
+  <h2>All 5 From-Scratch Models — The Pattern</h2>
+
+  <table class="comp-table">
+    <thead><tr><th>Model</th><th>fit()</th><th>predict()</th><th>Training?</th><th>Key Math</th></tr></thead>
+    <tbody>
+      <tr><td>Linear Regression</td><td>Gradient descent on MSE</td><td>θ₀ + θ₁×X</td><td>Yes — iterative</td><td>∂MSE/∂θ = (-2/n)×errors×X</td></tr>
+      <tr><td>Logistic Regression</td><td>Gradient descent on Log Loss</td><td>sigmoid(θ₀+Xθ) → threshold</td><td>Yes — iterative</td><td>∂L/∂θ = (1/n)×(ŷ-y)×X</td></tr>
+      <tr><td>KNN</td><td>Memorise X, y</td><td>Distances → sort → vote/mean</td><td>No — lazy</td><td>d = √Σ(aᵢ-bᵢ)²</td></tr>
+      <tr><td>Decision Tree</td><td>Recursive best splits</td><td>Walk tree from root → leaf</td><td>Yes — recursive</td><td>IG = H(parent) - weighted H(children)</td></tr>
+      <tr><td>Naive Bayes</td><td>Compute priors/means/vars</td><td>Gaussian PDF → posterior → argmax</td><td>Yes — one pass</td><td>P(class|x) ∝ Likelihood × Prior</td></tr>
+    </tbody>
+  </table>
+
+  <div class="gotcha">Every model follows the same sklearn interface: fit(), predict(), score(). This is the pattern you replicate when building from scratch.</div>
+
+  <h3>Interview Tier Summary</h3>
+  <table class="comp-table">
+    <thead><tr><th>Tier</th><th>Models</th><th>Expectation</th></tr></thead>
+    <tbody>
+      <tr><td>Tier 1 — Certain</td><td>Linear Reg, Logistic Reg, Decision Tree, KNN, Naive Bayes</td><td>Full from-scratch NumPy code in 20-30 mins</td></tr>
+      <tr><td>Tier 2 — Conceptual</td><td>Random Forest, XGBoost, SVM, Ridge/Lasso</td><td>Walk through algorithm step-by-step</td></tr>
+      <tr><td>Tier 3 — Know Math</td><td>XGBoost internals, SVM dual problem, Neural Nets</td><td>Explain the math — unlikely to code</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ════════════════════════ -->
+<!-- FORMULA SHEET           -->
+<!-- ════════════════════════ -->
+<section id="formula-sheet">
+  <h2>Formula Reference Sheet</h2>
+
+  <div class="formula-entry">
+    <h4>Total Error Decomposition</h4>
+    <div>$$\text{Total Error} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Noise}$$</div>
+    <p><strong>Used when:</strong> Diagnosing underfitting vs overfitting</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>MSE — Mean Squared Error</h4>
+    <div>$$\text{MSE} = \frac{1}{n}\sum_{i=1}^n (y_i - \hat{y}_i)^2$$</div>
+    <p><strong>Used when:</strong> Regression loss; large errors are costly</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Log Loss — Binary Cross-Entropy</h4>
+    <div>$$L = -\frac{1}{n}\sum[y_i\log\hat{y}_i + (1-y_i)\log(1-\hat{y}_i)]$$</div>
+    <p><strong>Used when:</strong> Binary classification training loss</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Gradient Descent Update</h4>
+    <div>$$\theta = \theta - \alpha \cdot \nabla L(\theta)$$</div>
+    <p><strong>Variables:</strong> θ=weights, α=learning rate, ∇L=gradient of loss</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Sigmoid Function</h4>
+    <div>$$\sigma(z) = \frac{1}{1+e^{-z}} \qquad \frac{d\sigma}{dz} = \sigma(z)(1-\sigma(z)) = \hat{y}(1-\hat{y})$$</div>
+    <p><strong>Used when:</strong> Logistic regression forward pass; squashes any number to (0,1)</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Ridge Penalty (L2)</h4>
+    <div>$$\text{Loss} = \text{MSE} + \lambda\sum\theta_j^2$$</div>
+    <p><strong>Variables:</strong> λ=regularisation strength. In sklearn: alpha=λ, C=1/λ</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Lasso Penalty (L1)</h4>
+    <div>$$\text{Loss} = \text{MSE} + \lambda\sum|\theta_j|$$</div>
+    <p><strong>Variables:</strong> Fixed-step gradient sign(θ) pushes weights to exactly zero</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Normal Equation</h4>
+    <div>$$\theta = (X^TX)^{-1}X^Ty$$</div>
+    <p><strong>Used when:</strong> Small feature count — direct closed-form solution, no iterations</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>R² — Coefficient of Determination</h4>
+    <div>$$R^2 = 1 - \frac{SS_{res}}{SS_{tot}} = 1 - \frac{\sum(y-\hat{y})^2}{\sum(y-\bar{y})^2}$$</div>
+    <p><strong>Used when:</strong> Evaluating regression models. 1=perfect, 0=predicts mean, &lt;0=broken</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Entropy</h4>
+    <div>$$H = -\sum_i p_i \log_2(p_i)$$</div>
+    <p><strong>Used when:</strong> Decision tree split criterion. 0=pure, 1=maximum disorder</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Information Gain</h4>
+    <div>$$IG = H(\text{parent}) - \frac{n_L}{n}H(\text{left}) - \frac{n_R}{n}H(\text{right})$$</div>
+    <p><strong>Used when:</strong> Choosing best split in Decision Tree — maximise IG</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Euclidean Distance (KNN)</h4>
+    <div>$$d(a,b) = \sqrt{\sum_i(a_i - b_i)^2}$$</div>
+    <p><strong>Used when:</strong> KNN — finding nearest neighbours</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Bayes Theorem (Naive Bayes)</h4>
+    <div>$$P(\text{class}|\mathbf{x}) \propto P(\mathbf{x}|\text{class}) \times P(\text{class}) = \prod_j P(x_j|\text{class}) \times P(\text{class})$$</div>
+    <p><strong>Used when:</strong> Naive Bayes prediction — pick class with highest posterior</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Gaussian PDF (Naive Bayes)</h4>
+    <div>$$P(x_j|\text{class}) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\!\left(-\frac{(x_j-\mu)^2}{2\sigma^2}\right)$$</div>
+    <p><strong>Variables:</strong> μ=mean of feature j in class, σ²=variance of feature j in class</p>
+  </div>
+
+  <div class="formula-entry">
+    <h4>Precision, Recall, F1</h4>
+    <div>$$\text{Precision} = \frac{TP}{TP+FP} \quad \text{Recall} = \frac{TP}{TP+FN} \quad F1 = \frac{2 \times P \times R}{P + R}$$</div>
+    <p><strong>Used when:</strong> Classification with imbalanced classes or asymmetric error costs</p>
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<!-- BACK TO TOP -->
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5">
+    <path d="M8 12V4M4 7l4-4 4 4"/>
+  </svg>
+</button>
+
+<script>
+  hljs.highlightAll();
+
+  renderMathInElement(document.body, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '$',  right: '$',  display: false }
+    ],
+    throwOnError: false
+  });
+
+  const btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    btn.style.display = window.scrollY > 200 ? 'flex' : 'none';
+  });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const tocLinks = document.querySelectorAll('.toc-sidebar a[href^="#"]');
+  const sections = [...tocLinks]
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+
+  window.addEventListener('scroll', () => {
+    let current = sections[0];
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s; });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current.id);
+    });
+  }, { passive: true });
+</script>
+
+</body>
+</html>
