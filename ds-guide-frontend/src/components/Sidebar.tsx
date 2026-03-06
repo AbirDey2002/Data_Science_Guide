@@ -207,6 +207,24 @@ const SECTION_MAP: Record<string, { id: string; label: string }[]> = {
     { id: 'code-appendix', label: 'Code Appendix' },
     { id: 'interview-qa', label: 'Interview Q&A' },
   ],
+  '/data-science/zs-case-study': [
+    { id: 'problem', label: 'Problem Statement' },
+    { id: 'pipeline', label: 'Full Pipeline' },
+    { id: 'eda', label: 'EDA + Visit Tiers' },
+    { id: 'rfm', label: 'RFM Segmentation' },
+    { id: 'pilot', label: 'Pilot Experiment' },
+    { id: 'model-io', label: 'Model Inputs & Output' },
+    { id: 'loss', label: 'Loss Function' },
+    { id: 'optimizer', label: 'Optimizer (GBM)' },
+    { id: 'eval', label: 'Evaluation Metrics' },
+    { id: 'features', label: 'Feature Importance' },
+    { id: 'scoring', label: 'Combo Scoring (180K)' },
+    { id: 'budget', label: 'Budget Assignment' },
+    { id: 'results', label: 'Key Results' },
+    { id: 'limitations', label: 'Limitations' },
+    { id: 'formulas', label: 'Formula Sheet' },
+    { id: 'concepts', label: 'All Concepts' },
+  ],
 };
 
 const NAV_ITEMS = [
@@ -223,6 +241,7 @@ const NAV_ITEMS = [
   { name: 'Onboarding EA Project', href: '/data-science/projects/onboarding-ea' },
   { name: 'Pixel Perfect Project', href: '/data-science/projects/pixel-perfect' },
   { name: 'TCG Project', href: '/data-science/projects/tcg' },
+  { name: 'ZS Case Study', href: '/data-science/zs-case-study' },
 ];
 
 export default function Sidebar() {
