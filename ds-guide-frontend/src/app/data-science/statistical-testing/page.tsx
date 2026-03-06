@@ -85,9 +85,62 @@ export default function StatisticalTestingPage() {
                 </div>
             </section>
 
+            <section className="card" id="ztest">
+                <h2 className="card-title">Z-Test (Means &amp; Proportions)</h2>
+                <p className="card-subtitle">The Student's T-Test is the foundational continuous statistical evaluation engineered specifically for comparing the underlying probabilistic means of strictly two isolated, independent datasets. Explicitly rejecting the naive assumption that simple raw mean differences functionally map to universal truth, it elegantly solves interpreting whether a calculated numerical delta is a legitimate structural shift or a mere artifact produced by aggressive intra-group variance inside small sample boundaries. Computationally, it computes precisely how many fundamental standard errors the two independent means reside apart strictly employing {String.raw`$t = (\mu_1 - \mu_2) / (s / \sqrt{n})$`}.</p>
+                <div className="badge-container">
+                    <span className="badge badge-blue">Continuous &amp; Categorical data</span>
+                    <span className="badge badge-blue">Massive use in Conversion A/B Testing</span>
+                </div>
+
+                <h3>1. One-Sample Z-Test (Means)</h3>
+                <p>Used specifically when you have a massive sample size and definitively know the population standard deviation.</p>
+                <div className="math-block">
+                    {String.raw`$$z = \frac{\bar{x} - \mu}{\frac{\sigma}{\sqrt{n}}}$$`}
+                </div>
+                <p>Numerator = difference from population mean | Denominator = standard error of the mean</p>
+
+                <pre><code className="language-python">{`from statsmodels.stats.weightstats import ztest
+import numpy as np
+
+sample_data = [42, 45, 41, 47, 43, 44, 46, 48, 39, 40] * 4  # Large sample size required
+population_mean_hypothesized = 40.0
+
+z_stat, p_value = ztest(sample_data, value=population_mean_hypothesized)
+print(f"Z-statistic: {z_stat:.4f}")
+print(f"P-value: {p_value:.4f}")`}</code></pre>
+
+                <hr style={{ margin: '2rem 0', borderColor: 'var(--color-border)' }} />
+
+                <h3>2. Two-Sample Z-Test for Proportions (A/B Testing)</h3>
+                <p>This is arguably the <strong>most heavily used Z-test in modern industry</strong>. It is explicitly utilized to fundamentally compare strictly binary conversion rates (e.g., Click-Through Rate, Conversion Rate) between an A and B variant.</p>
+
+                <div className="math-block">{String.raw`$$z = \frac{\hat{p}_1 - \hat{p}_2}{\sqrt{\hat{p}(1-\hat{p})(\frac{1}{n_1} + \frac{1}{n_2})}}$$`}</div>
+                <p>Where {String.raw`$\hat{p}$`} is the strictly pooled proportion of combined total successes across both identical variants.</p>
+
+                <pre><code className="language-python">{`from statsmodels.stats.proportion import proportions_ztest
+import numpy as np
+
+# Variant A: 50 conversions out of 1000 visitors (5.0%)
+# Variant B: 80 conversions out of 1000 visitors (8.0%)
+successes = np.array([50, 80])
+trials = np.array([1000, 1000])
+
+# Run the 2-sample proportions Z-test
+z_stat, p_value = proportions_ztest(count=successes, nobs=trials)
+
+print(f"Z-statistic: {z_stat:.4f}")
+print(f"P-value: {p_value:.4f}")
+
+if p_value < 0.05:
+    print("Variant B is statistically significantly different from Variant A.")
+else:
+    print("No statistically significant difference detected.")`}</code></pre>
+            </section>
+
             <section className="card" id="ttest">
                 <h2 className="card-title">Independent T-Test</h2>
-                <p className="card-subtitle">Tests whether the means of two independent groups are significantly different. The most common test in A/B testing.</p>
+                <p className="card-subtitle">The Independent T-Test is the absolute industry standard statistical test for evaluating the objective difference strictly between two fully independent group means. Entirely superseding the legacy Z-Test (which requires practically impossible a-priori knowledge of true population variance), it comprehensively solves estimating structural significance using only isolated sample variance. Computationally, it achieves this by precisely penalizing the resulting test-statistic using the progressively heavier tails of the Student's T-distribution correlated to smaller sample degrees of freedom, acting universally as the undisputed fundamental backbone of continuous metric A/B testing.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Continuous data</span>
                     <span className="badge badge-blue">2 independent groups</span>
@@ -112,7 +165,7 @@ print(f"P-value: {p_value:.4f}")                        # Probability we'd see t
 
             <section className="card" id="anova">
                 <h2 className="card-title">ANOVA &amp; Tukey's HSD</h2>
-                <p className="card-subtitle">Extension of the t-test for 3 or more independent groups. Tests all groups simultaneously to avoid false positive inflation from multiple comparisons.</p>
+                <p className="card-subtitle">ANOVA (Analysis of Variance) explicitly acts as a powerful statistical omnibus designed strictly to identify structural significance among the continuous means of three or more disjoint groups. Actively replacing the highly dangerous protocol of compounding sequential pair-wise T-Tests, it definitively solves the fatal explosion of the Family-wise Error Rate (False Positives) practically guaranteed by repeated modular testing. Mathematically, it operates by meticulously comparing the explicit variance identified <em>between</em> differing groups logically against the base isolated variance natively found <em>within</em> those exact groups utilizing an absolute F-statistic ratio.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Continuous data</span>
                     <span className="badge badge-blue">3+ independent groups</span>
@@ -158,7 +211,7 @@ else:
 
             <section className="card" id="chisquare">
                 <h2 className="card-title">Chi-Square Test</h2>
-                <p className="card-subtitle">Tests whether two categorical variables are independent.</p>
+                <p className="card-subtitle">Hypothesis Testing provides the formal mathematical framework necessary to categorically accept or statistically reject assumptions made about systemic data behaviors. Bypassing the critically flawed practice of casually eyeballing differences to confirm subjective bias, it decisively solves the psychological anomaly of perceiving structural patterns strictly within random statistical noise (Apophenia). It technically executes this by mathematically generating a test statistic specifically utilizing sample variance, rigorously computing a final p-value that explicitly determines the absolute probability of the Null Hypothesis matching reality.</p>
                 <div className="math-block">
                     {String.raw`$$\chi^2 = \sum \frac{(O - E)^2}{E}, \quad E_{ij} = \frac{\text{Row Total}_i \times \text{Column Total}_j}{\text{Grand Total}}$$`}
                 </div>
@@ -176,7 +229,7 @@ print(f"P-value: {p_value:.4f}")                            # If < 0.05, variabl
 
             <section className="card" id="power">
                 <h2 className="card-title">Power Analysis &amp; Experiment Design</h2>
-                <p className="card-subtitle">Ensures before running an experiment that you have enough data to detect a real effect.</p>
+                <p className="card-subtitle">Power Analysis represents a strict mathematical pre-computation designed solely to calculate exactly how much data is fundamentally required to detect a legitimate business effect. Entirely preventing the incredibly expensive mistake of executing an experiment only to inevitably realize the sample size was too mathematically weak to prove significance (resulting in a severe Type II Error False Negative), it definitively calculates the minimum required participant count (n). Functionally, it relies on locking down an expected Minimum Detectable Effect (MDE), an acceptable Alpha threshold (typically 0.05), and robust Statistical Power (typically 0.80) prior to collecting any real-world data.</p>
                 <ul>
                     <li><strong>Alpha (α)</strong>: False positive rate (typically 0.05)</li>
                     <li><strong>Power (1-β)</strong>: Ability to detect real effects (typically 0.80)</li>

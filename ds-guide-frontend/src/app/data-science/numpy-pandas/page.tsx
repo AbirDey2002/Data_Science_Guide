@@ -48,7 +48,7 @@ export default function NumpyPandasPage() {
             {/* Why */}
             <section className="card" id="why">
                 <h2 className="card-title">Why NumPy &amp; Pandas?</h2>
-                <p className="card-subtitle">Python lists are slow for numeric work — each element carries object overhead. NumPy fixes this with typed, contiguous memory. Pandas adds labeled, structured tables on top of NumPy.</p>
+                <p className="card-subtitle">NumPy is the foundational core mathematical library driving all high-performance numerical computing in Python. Radically replacing standard Python lists—which are dynamically typed, stored haphazardly across memory with massive object overhead, and catastrophically slow for math—NumPy explicitly solves this by providing a C-compiled, statically typed n-dimensional array logically stored in dense contiguous memory blocks. It fundamentally serves as the underpinning engine of Pandas, Scikit-Learn, and all Deep Learning tensors.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: any numerical computation</span>
                     <span className="badge badge-blue">When: tabular / real-world data</span>
@@ -66,7 +66,7 @@ jupyter notebook`}</code></pre>
             {/* NumPy Arrays */}
             <section className="card" id="numpy-arrays">
                 <h2 className="card-title">NumPy Import &amp; ndarray</h2>
-                <p className="card-subtitle">The <code>ndarray</code> is NumPy's core object — an n-dimensional array of a fixed type stored in contiguous memory. Every element shares the same dtype, enabling fast C-level operations.</p>
+                <p className="card-subtitle">An ndarray is the core homogeneous data structure natively powering NumPy. Entirely replacing incredibly slow nested Python lists, it explicitly solves the extreme bottleneck of multi-dimensional indexing and looping by structurally storing elements of a single fixed <code>dtype</code> strictly adjacent to each other in RAM (contiguous memory), allowing CPU caching to operate at peak optimal efficiency. It is the absolute standard requirement for structurally storing dense matrices, image tensors, or large generic numerical datasets.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: numeric arrays, matrices</span>
                     <span className="badge badge-green">How: np.array([...])</span>
@@ -94,7 +94,7 @@ print(m.shape)                                  # '(2, 3)' - Matrix geometry is 
             {/* Vectorized Ops */}
             <section className="card" id="vectorized">
                 <h2 className="card-title">Vectorized Operations</h2>
-                <p className="card-subtitle">Vectorization applies an operation to every element of an array in one compiled C call — no Python loop needed. This is 10–100× faster than equivalent list comprehensions.</p>
+                <p className="card-subtitle">Vectorization is the rigorous mathematical paradigm of applying singular operations uniformly across entire arrays simultaneously instead of relying on explicit iteration. Discarding standard Python <code>for</code> loops entirely, it forcefully solves the extreme interpreter overhead logically incurred by evaluating arbitrary types iteratively on every single loop cycle. It achieves this by mathematically delegating the entire iterative loop down into highly optimized pre-compiled native C code, making it the mandatory requirement when performing arithmetic or filtering across datasets.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: math on arrays</span>
                     <span className="badge badge-blue">When: replacing loops</span>
@@ -126,7 +126,7 @@ a[a > 25]                                       # Mask array with [False, False,
             {/* Converting Pandas ↔ NumPy */}
             <section className="card" id="convert">
                 <h2 className="card-title">Converting Between Pandas &amp; NumPy</h2>
-                <p className="card-subtitle">Pandas Series and DataFrame columns can be converted to NumPy arrays for use in statistical functions like SciPy tests.</p>
+                <p className="card-subtitle">NumPy integration seamlessly dictates the critical interoperability required explicitly between high-level Pandas dataframes and low-level mathematical engines. Rejecting the incredibly hazardous requirement of manual data extraction or format conversion, it natively solves the fundamental architectural reliance statistical libraries (like Scikit-Learn or SciPy) have strictly on raw unlabelled matrices, fundamentally achieved by accessing the underlying structural NumPy array directly via <code>df.values</code> or <code>series.to_numpy()</code> prior to modeling.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: passing data to scipy/statsmodels</span>
                 </div>
@@ -152,7 +152,7 @@ age = df["age"].dropna().tolist()               # Temporarily drop missing value
             {/* DataFrames */}
             <section className="card" id="dataframes">
                 <h2 className="card-title">DataFrames &amp; Series</h2>
-                <p className="card-subtitle">A Series is a labeled 1D column. A DataFrame is a table of Series sharing the same index — like a spreadsheet in memory.</p>
+                <p className="card-subtitle">Pandas DataFrames are high-level labeled structural data formats explicitly built entirely on top of NumPy. Fundamentally replacing raw 2D arrays or clunky Excel spreadsheets, they elegantly solve the fact that native NumPy mathematically lacks column names, row index labels, and the explicit ability to hold heterogeneous mixed data types cleanly. A DataFrame is architecturally just a dictionary of independent 1D Series objects that are all mathematically forced to explicitly share the exact same row index alignment, acting as the undisputed king of EDA and manipulation.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: structured tabular data</span>
                     <span className="badge badge-green">How: pd.DataFrame(&#123;...&#125;)</span>
@@ -185,7 +185,7 @@ df.loc[df["age"] > 28]                          # Conditional Location: Extract 
             {/* Cleaning */}
             <section className="card" id="cleaning">
                 <h2 className="card-title">Data Cleaning</h2>
-                <p className="card-subtitle">Real data always has nulls, wrong types, duplicates, and inconsistencies. Cleaning is unavoidable — it makes up roughly 80% of real analysis work.</p>
+                <p className="card-subtitle">Data cleaning represents the aggressive standardization and correction of brutally raw real-world data immediately post-loading. Reversing the disastrous assumption that any data is theoretically flawless out of the box, it systematically solves fatal null values crashing models, duplicated rows illegally skewing critical metrics, and profoundly incorrect internal data types actively breaking downstream logic. It executes this perfectly using highly vectorized Pandas functions like <code>.isna()</code>, <code>.fillna()</code>, and <code>pd.to_datetime()</code> globally across the set.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: before any analysis</span>
                 </div>
@@ -218,7 +218,7 @@ df["seniority"] = np.where(df["age"] > 30,      # Vectorized IF statement
             {/* GroupBy */}
             <section className="card" id="groupby">
                 <h2 className="card-title">Grouping &amp; Aggregation</h2>
-                <p className="card-subtitle">GroupBy splits a DataFrame by a category, applies an aggregation function to each group, and combines the results — answering questions like "average salary per department."</p>
+                <p className="card-subtitle">Groupby aggregation actively implements the Split-Apply-Combine methodology precisely required for categorical aggregation. Bypassing the agonizing process of writing complex nested loops and arbitrary dictionaries just to aggregate structural counts, it cleanly solves the urgent demand to calculate rapid descriptive statistics strictly segmented by discrete categories. It elegantly operates by splitting data natively by unique keys, dynamically vector-applying a mathematical function (mean, sum), and actively concatenating them right back into a dense informative dataframe.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: summarizing by category</span>
                     <span className="badge badge-blue">When: equivalent to SQL GROUP BY</span>
@@ -252,7 +252,7 @@ result = df.groupby("department")["salary"].mean().reset_index() # Converts Grou
             {/* Stats Map */}
             <section className="card" id="stats-map">
                 <h2 className="card-title">Statistical Testing — The Map</h2>
-                <p className="card-subtitle">Statistical tests answer: "Could this pattern I'm seeing be random chance?" They produce a p-value — the probability of the observed data if the null hypothesis were true.</p>
+                <p className="card-subtitle">Hypothesis Testing provides the formal mathematical procedures required to definitively accept or logically reject assumptions about data. Replacing the hazardous act of casually eyeballing bar charts to assume observed differences are inherently real, it strictly solves the human bias of seeing patterns in totally random statistical noise (Apophenia). It technically executes this by calculating a rigorous test statistic based directly on sample variance, deriving a p-value to determine the strict mathematical probability of the Null Hypothesis relative to Alpha {String.raw`$(\alpha)$`}.</p>
                 <h3>Hypothesis Framework</h3>
                 <ul>
                     <li><strong>H₀ (Null)</strong> — nothing is going on, any difference is noise</li>
@@ -282,7 +282,7 @@ result = df.groupby("department")["salary"].mean().reset_index() # Converts Grou
             {/* T-Test */}
             <section className="card" id="np-ttest">
                 <h2 className="card-title">The T-Test</h2>
-                <p className="card-subtitle">Tests whether the means of two groups are significantly different. The t-statistic measures how many standard errors apart the two means are, relative to the noise within each group.</p>
+                <p className="card-subtitle">The Student's T-Test is a fundamental statistical test explicitly designed for rigorously comparing the means of precisely two isolated groups. Definitively rejecting the assumption that raw mean differences inherently indicate significance, it solves the challenge of assessing whether an observed difference is structurally real or merely a byproduct of small sample sizes and massive in-group variance. It computationally executes this by calculating exactly how many standard errors apart the two means reside via {String.raw`$t = (\mu_1 - \mu_2) / (s / \sqrt{n})$`} using native <code>scipy.stats</code> algorithms.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: comparing 2 group means</span>
                     <span className="badge badge-blue">When: same measurement, different groups</span>
@@ -317,7 +317,7 @@ t_stat, p_value = stats.ttest_ind(age, salary, nan_policy="omit") # Instructs sc
             {/* ANOVA */}
             <section className="card" id="np-anova">
                 <h2 className="card-title">ANOVA + Tukey's HSD</h2>
-                <p className="card-subtitle">ANOVA tests whether at least one of 3+ group means is significantly different. It tells you <em>something</em> differs — but not which groups. Tukey's HSD follows up by testing every pairwise comparison while controlling false positives.</p>
+                <p className="card-subtitle">ANOVA (Analysis of Variance) operates as a powerful omnibus test designed natively for comparing the means of strictly three or more logical groups simultaneously. Abandoning the dangerous practice of repeatedly running multiple isolated T-Tests, it distinctly solves the compounding False Positive rate (Family-wise Error Rate) explicitly caused by such iteration. It determines significance logically by structurally comparing the aggregate variance computed <strong>between</strong> independent groups against the baseline variance contained natively <strong>within</strong> them via an F-statistic.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: 3+ group means to compare</span>
                     <span className="badge badge-blue">When: need to know which specific groups differ</span>
@@ -364,7 +364,7 @@ else:
             {/* Correlation */}
             <section className="card" id="correlation">
                 <h2 className="card-title">Correlation (Pearson)</h2>
-                <p className="card-subtitle">Correlation asks: "when one variable goes up, does the other tend to go up too?" It's the right tool when you have two continuous numeric variables — not two separate groups.</p>
+                <p className="card-subtitle">Pearson Correlation provides a tightly normalized metric structurally evaluating the strictly linear geometric relationship bridging two distinct continuous vectors. Evolving beyond subjective scatterplot eyeballing, it completely resolves the impossibility of identically quantifying exactly how strongly two separate numeric features logically move together without relying on raw visual interpretations. Operating strictly on a scale from -1 to 1, it explicitly measures normalized covariance, acting as a crucial prerequisite for identifying severe structural multicollinearity prior to predictive modeling.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">When: two continuous variables (e.g. age vs salary)</span>
                     <span className="badge badge-blue">When: testing linear relationship</span>

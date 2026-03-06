@@ -47,7 +47,7 @@ export default function MLModelsPage() {
             {/* WHY WE TRAIN */}
             <section className="card" id="why-train">
                 <h2 className="card-title">Why We Train</h2>
-                <p className="card-subtitle">"When I train an ML model, my goal is to find the optimal mathematical function that maps inputs X to outputs y automatically from the data, rather than trying to hand-code fragile business rules."</p>
+                <p className="card-subtitle">Machine Learning is the explicit mathematical optimization of mapping inputs {String.raw`$X$`} to outputs {String.raw`$y$`} without programming explicit rules. It natively replaces fragile, hard-coded if/else business logic by learning associative patterns directly from historical data to generalize to unseen examples, making it the mandatory choice for predicting outcomes or classifying entities at scale.</p>
                 <ul>
                     <li>Model training = finding parameters <strong>θ</strong> such that <code>f(X) ≈ y</code></li>
                     <li>Parameters are learned by minimising a <strong>loss function</strong></li>
@@ -64,7 +64,7 @@ export default function MLModelsPage() {
             {/* BIAS-VARIANCE */}
             <section className="card" id="bias-variance">
                 <h2 className="card-title">Bias-Variance Tradeoff</h2>
-                <p className="card-subtitle">"I always keep the Bias-Variance tradeoff in mind because every model's error decomposes into these parts. It fundamentally drives my decisions on whether to collect more data, add regularization, or switch algorithms."</p>
+                <p className="card-subtitle">The Bias-Variance Tradeoff represents the fundamental tension between a model's simplicity and its ability to capture complex training data. Replacing the dangerous assumption that 100% training accuracy strictly means a perfect model, it solves catastrophically bad generalization on new, unseen data by mathematically decomposing total error into Bias (underfitting) and Variance (overfitting) to natively guide regularisation.</p>
                 <div className="math-block">
                     {String.raw`$$\text{Total Error} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Noise}$$`}
                 </div>
@@ -83,10 +83,11 @@ export default function MLModelsPage() {
 
             {/* LOSS FUNCTIONS */}
             <section className="card" id="loss-functions">
-                <h2 className="card-title">Loss Functions</h2>
-                <p className="card-subtitle">"To evaluate how badly my model is performing during training, I use a loss function. It converts the model's wrongness into a single differentiable scalar that I can then actively minimize."</p>
-                <h3>Regression Losses</h3>
-                <div className="table-wrapper">
+                <h2 className="card-title">Loss Functions &amp; Explicit Derivatives</h2>
+                <p className="card-subtitle">A loss function is the singular scalar metric defining exactly how mathematically "wrong" the current model is. Required intrinsically for every single training cycle, it replaces merely guessing if a model is "good" by systematically comparing predictions {String.raw`$\hat{y}$`} against actuals {String.raw`$y$`}, aggregating a completely differentiable penalty score that directly enables structural improvement.</p>
+
+                <h3>1. Regression Losses</h3>
+                <div className="table-wrapper" style={{ marginBottom: '1.5rem' }}>
                     <table>
                         <thead><tr><th>Loss</th><th>Formula</th><th>Use When</th></tr></thead>
                         <tbody>
@@ -96,17 +97,30 @@ export default function MLModelsPage() {
                         </tbody>
                     </table>
                 </div>
-                <h3>Classification Loss</h3>
+
+                <h4>Mean Squared Error Derivative (Chain Rule)</h4>
+                <p>When computing how structurally "wrong" a Linear Regression model is, the MSE squares the error. By applying the chain rule, differentiating a squared function drops the exponent, converting the continuous error cleanly into a proportional linear gradient:</p>
+                <div className="math-block">{String.raw`$$\frac{\partial \text{MSE}}{\partial \hat{y}_i} = \frac{2}{n}(\hat{y}_i - y_i)$$`}</div>
+
+                <hr style={{ margin: '2rem 0', borderColor: 'var(--color-border)' }} />
+
+                <h3>2. Classification Loss (Log Loss)</h3>
                 <div className="math-block">
                     {String.raw`$$L = -\frac{1}{n}\sum[y\log\hat{y} + (1-y)\log(1-\hat{y})]$$`}
                 </div>
-                <div className="callout"><strong>Gotcha</strong><p>Loss function vs Evaluation Metric — different things. Train with Log Loss but report Accuracy or F1 to stakeholders.</p></div>
+
+                <h4>Log Loss Derivative (Chain Rule w/ Sigmoid)</h4>
+                <p>In Logistic regression, Log Loss brutally penalizes confident but incorrect probabilities. However, the true mathematical elegance happens when you differentiate Log Loss chained specifically with a Sigmoid activation ({String.raw`$\hat{y} = \sigma(z)$`}). The complex logarithmic quotient fractions perfectly cancel out against the Sigmoid derivative, resulting in a single flawlessly simple gradient:</p>
+                <div className="math-block">{String.raw`$$\frac{\partial \text{Log Loss}}{\partial z_i} = \hat{y}_i - y_i$$`}</div>
+                <p>The parameter weights receive back a completely 1-to-1 linear error precisely calculating how wildly disproportionally close or far the output was from the absolute truth boundaries of 0 or 1.</p>
+
+                <div className="callout" style={{ marginTop: '1.5rem' }}><strong>Gotcha:</strong><p>Loss function vs Evaluation Metric — different things. Train with Log Loss but report Accuracy or F1 to stakeholders.</p></div>
             </section>
 
             {/* GRADIENT DESCENT */}
             <section className="card" id="gradient-descent">
                 <h2 className="card-title">Gradient Descent</h2>
-                <p className="card-subtitle">"To actually minimize the loss, I use Gradient Descent. It iteratively calculates the gradients of the loss with respect to my weights, gently nudging the network in the direction that reduces the overall error."</p>
+                <p className="card-subtitle">Gradient descent is the algorithm completely responsible for physically updating model parameters to heavily minimize the loss. Instead of randomly adjusting or guessing mathematical weights, it navigates massive, highly non-convex parameter spaces to definitively find the optimal structural minimum by iteratively calculating gradients (the strict local slope of the error) and stepping mathematically downwards.</p>
                 <div className="math-block">
                     {String.raw`$$\theta = \theta - \alpha \cdot \nabla L(\theta)$$`}
                 </div>
@@ -126,7 +140,7 @@ export default function MLModelsPage() {
             {/* REGULARISATION */}
             <section className="card" id="regularisation">
                 <h2 className="card-title">Regularisation — Fixing Overfitting</h2>
-                <p className="card-subtitle">"Whenever my model starts overfitting the training data, I apply Regularization. By adding an L1 or L2 penalty term directly to my loss function, I force the model to stay simple and generalize better."</p>
+                <p className="card-subtitle">Regularisation is a mathematical penalty deliberately applied to a model to strictly constrain its computational complexity whenever cross-validation structurally shows high variance. Rather than letting a model aggressively fit the training data completely perfectly, it solves extreme overfitting by explicitly adding L1 (Lasso) or L2 (Ridge) equations directly to the loss function to penalize extreme coefficient sizes.</p>
                 <div className="math-block">
                     {String.raw`$$\text{New Loss} = \text{Original Loss} + \lambda \cdot \text{Complexity Penalty}$$`}
                 </div>
@@ -161,7 +175,7 @@ print(f"Mean: {cv_scores.mean():.3f}  Std: {cv_scores.std():.3f}")  # Print the 
             {/* DATA LEAKAGE */}
             <section className="card" id="data-leakage">
                 <h2 className="card-title">Data Leakage — Pipeline is the Fix</h2>
-                <p className="card-subtitle">"I'm extremely careful about Data Leakage. If any information from my test set accidentally influences the training preprocessing (like scaling before splitting), the model produces falsely optimistic, completely useless results."</p>
+                <p className="card-subtitle">Data leakage is the catastrophic operational failure where data from outside the training set inappropriately influences the model during generic preprocessing like scaling or imputing. It explicitly solves creating a violently over-optimistic model that looks flawless in Jupyter but collapses in production by strictly sourcing all mathematical parameters solely from the isolated training split completely before applying them blindly to the test set.</p>
                 <pre><code className="language-python">{`# ❌ WRONG — leakage
 scaler.fit_transform(X)       # Calculates mean/var on the ENTIRE dataset, accidentally leaking test info into training
 
@@ -238,7 +252,7 @@ print(search.best_score_)                               # Output the winning val
             {/* LINEAR REGRESSION */}
             <section className="card" id="scratch-linear">
                 <h2 className="card-title">Linear Regression</h2>
-                <p className="card-subtitle">"Whenever I have an early-stage regression problem, I start with Linear Regression. I find the weights that mathematically minimize the Mean Squared Error, prioritizing maximum interpretability for stakeholders."</p>
+                <p className="card-subtitle">Linear regression is the foundational parametric algorithm explicitly for modeling linear relationships to predict strictly continuous targets. Replacing the baseline of merely guessing a flat average, it natively finds the mathematically optimal structured 'line of best fit' across n-dimensional space by using Ordinary Least Squares (OLS) to fundamentally minimize the aggregate sum of squared residuals. It is the mandatory starting point for regression engineering tasks demanding maximum algebraic transparency and clean interpretability for stakeholders.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Regression</span>
                     <span className="badge badge-green">Continuous target</span>
@@ -265,11 +279,11 @@ print(search.best_score_)                               # Output the winning val
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>{String.raw`$\hat{y} = \theta^T X$`} — computes a weighted sum of input features.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Mean Squared Error (MSE)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Mean Squared Error (MSE):</strong> It heavily penalizes large errors by squaring them. By chain rule, differentiating the square simplifies to {String.raw`$2(y_{pred} - y_{true})$`}, producing a linear gradient directly proportional to the magnitude of the error. This is what the loss does with the output—it converts continuous error into a clean proportional feedback signal to correct the weights.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Ordinary Least Squares (Closed-form Matrix Inversion) or Gradient Descent</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Ordinary Least Squares (OLS) / Gradient Descent:</strong> OLS is used for small datasets because it finds the exact global minimum in one step mathematically. If the matrix is too large to invert, Gradient Descent effectively walks down the smooth, bowl-shaped MSE curve step-by-step.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Continuous unbounded scalar {String.raw`$\in (-\infty, \infty)$`}</span>
@@ -331,7 +345,7 @@ print(f"Test R²:   {r2_score(y_test, y_pred):.3f}")         # Explain the perce
             {/* LOGISTIC REGRESSION */}
             <section className="card" id="scratch-logistic">
                 <h2 className="card-title">Logistic Regression</h2>
-                <p className="card-subtitle">"For my baseline classification tasks, I use Logistic Regression. By squashing a raw linear output through a Sigmoid activation, I get a strictly bounded, highly interpretable probability that minimizes Log Loss."</p>
+                <p className="card-subtitle">Logistic regression is the foundational parametric algorithm explicitly intended for probabilistic binary classification. It explicitly solves the inability of standard linear regression to bound chaotic outputs by squeezing a raw linear equation exactly through a logistic (sigmoid) mathematical activation, heavily minimizing Log Loss to strictly ensure output probabilities fall between 0 and 1. It is exactly what you deploy when baseline binary classification logic inherently demands simple, purely linear feature importance coefficients.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Classification</span>
                     <span className="badge badge-green">Binary / Multiclass</span>
@@ -358,11 +372,11 @@ print(f"Test R²:   {r2_score(y_test, y_pred):.3f}")         # Explain the perce
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>{String.raw`$\hat{y} = \sigma(\theta^T X) = \frac{1}{1 + e^{-\theta^T X}}$`} — squashes linear combination through a Sigmoid (or Softmax) function.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Binary Cross-Entropy (Log-Loss)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Binary Cross-Entropy (Log-Loss):</strong> It heavily penalizes confident but wrong probabilistic outputs. With the chain rule, taking the derivative of BCE with the Sigmoid activation beautifully simplifies to {String.raw`$p_i - y_i$`}. With the output, it calculates exactly how far the predicted probability is from 1 or 0, yielding a perfect linear gradient.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Gradient Descent or L-BFGS</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Gradient Descent or L-BFGS:</strong> Used to iteratively adjust the weights because there is no closed-form solution for Logistic Regression. L-BFGS approximates the second derivative (Hessian) to reach the minimum much faster than standard SGD.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Probability map {String.raw`$\in [0, 1]$`} per class</span>
@@ -425,7 +439,7 @@ print(f"AUC: {roc_auc_score(y_test, y_prob):.3f}")          # Score the receiver
             {/* KNN */}
             <section className="card" id="scratch-knn">
                 <h2 className="card-title">K-Nearest Neighbours (KNN)</h2>
-                <p className="card-subtitle">"When dealing with highly irregular but locally consistent decision boundaries, I might try KNN. Because it calculates Euclidean distances to take a majority vote, I absolutely must scale my features first, otherwise the largest scale dominates the distance."</p>
+                <p className="card-subtitle">K-Nearest Neighbours is a natively non-parametric, distance-based algorithm relying entirely on local data geometry rather than assuming global mathematical formulas. It effectively solves highly irregular, deeply fragmented local decision boundaries by storing the entire raw training set natively in memory, calculating pure Euclidean distance identically to all points, and taking a strict majority vote (or average) of the K closest local neighbors. It excels on smaller, heavily dense clustered datasets where native feature boundaries logically defy clean linear algebraic separation.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Classification / Regression</span>
                     <span className="badge badge-green">Distance-based</span>
@@ -452,11 +466,11 @@ print(f"AUC: {roc_auc_score(y_test, y_prob):.3f}")          # Score the receiver
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>{String.raw`$d(p, q) = \sqrt{\sum(p_i - q_i)^2}$`} — calculates Euclidean (or Manhattan) distance to all points, picking the top K closest.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>None (Lazy learner, no training required)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>None (Lazy learner):</strong> KNN does not compute a loss or use the chain rule because there are no parameters to update. It simply stores the data and outputs the majority class or mean at inference time based on distance.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>None (Memorises the dataset)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>None:</strong> There is no optimization process; it merely queries the memorized dataset (often optimized via KD-Trees or Ball Trees for search speed).</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Majority class vote (Classification) or mean of K nearest neighbors (Regression)</span>
@@ -506,7 +520,7 @@ print(classification_report(y_test, pipe.predict(X_test))) # Print strict evalua
             {/* DECISION TREE */}
             <section className="card" id="scratch-tree">
                 <h2 className="card-title">Decision Tree</h2>
-                <p className="card-subtitle">"To capture non-linear relationships without scaling, I rely on Decision Trees. I use an algorithm that recursively splits my data, always choosing the feature and threshold that strictly maximizes Information Gain."</p>
+                <p className="card-subtitle">Decision Trees are highly interpretable, non-parametric algorithms built entirely on sequential logical splits, drastically outperforming linear models on extreme non-linear relationships. They entirely solve the tedious operational burden of manually scaling tabular features by recursively splitting the raw training dataset, greedily selecting the exact continuous feature and threshold that absolutely maximizes Information Gain (reducing Gini/Entropy) at each node. They are deployed aggressively on highly unscaled datasets, or whenever stakeholders strictly demand a transparent, flowchart-like reasoning trace.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Classification / Regression</span>
                     <span className="badge badge-green">Non-linear</span>
@@ -533,11 +547,11 @@ print(classification_report(y_test, pipe.predict(X_test))) # Print strict evalua
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>Finds split that maximizes Information Gain: {String.raw`$IG = Entropy(Parent) - \sum \frac{N_i}{N} Entropy(Child_i)$`}</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Gini Impurity or Entropy (Classification), MSE / Variance Reduction (Regression)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Gini / Entropy (Classification) or MSE (Regression):</strong> The loss measures node impurity. Instead of continuous gradients, it calculates the discrete reduction in chaos (Information Gain) for each possible split. It takes the output (group labels) and evaluates how uniformly segregated they've become.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Greedy recursive splitting (CART or ID3 algorithm)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Greedy Recursive Splitting:</strong> Trees are non-differentiable (no chain rule). The optimizer works by brutally brute-forcing all features and thresholds at the current node to find the one split that minimizes the loss the most right now (greedy approach).</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Terminal leaf node majority class / average</span>
@@ -611,7 +625,7 @@ print(classification_report(y_test, pipe.predict(X_test)))  # Run the untouched 
             {/* NAIVE BAYES */}
             <section className="card" id="scratch-naive">
                 <h2 className="card-title">Naive Bayes</h2>
-                <p className="card-subtitle">"For high-dimensional baseline NLP tasks, I employ Naive Bayes. By assuming feature independence, I can completely skip gradient descent and just rely on direct statistical counting of priors and likelihoods to perform incredibly fast inference."</p>
+                <p className="card-subtitle">Naive Bayes is an ultra-fast, purely probabilistic classifier relying entirely on Bayes Theorem natively to avoid computationally heavy iterative architectures. It explicitly solves the extreme computational cost inherent in training heavily high-dimensional string data by mathematically assuming absolute independence between every single predictive feature, instantly multiplying historical conditional likelihoods to output a classification. It is the absolute optimal baseline for NLP, basic spam filtering, and extremely wide categorical datasets requiring instant deployment speed.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Classification</span>
                     <span className="badge badge-green">Probabilistic</span>
@@ -638,11 +652,11 @@ print(classification_report(y_test, pipe.predict(X_test)))  # Run the untouched 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>{String.raw`$P(y|X) \propto P(y) \prod P(x_i|y)$`} — applies Bayes Theorem using conditional probability distributions.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>None explicitly minimized during training (Maximum Likelihood Estimation of parameters)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>None:</strong> It doesn't use a backpropagated loss or chain rule. Instead, it performs Maximum Likelihood Estimation. Given the output classes, it calculates the raw probability of the features given the classes directly from the dataset.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Direct statistical computation (counting frequencies or calculating mean/variance)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Statistical computation:</strong> There are no iterative weight updates. The "optimizer" is simply counting frequencies for discrete variables or computing the mean and variance for continuous variables in one pass.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Posterior probability distribution across classes</span>
@@ -702,7 +716,7 @@ print(classification_report(y_test, pipe.predict(X_test)))  # Run inference usin
             {/* RANDOM FOREST */}
             <section className="card" id="random-forest">
                 <h2 className="card-title">Random Forest</h2>
-                <p className="card-subtitle">"Because single Decision Trees suffer from massive variance, I upgrade to a Random Forest ensemble. By bootstrapping subsets of data and randomly selecting features per split, I mathematically force the trees to be decorrelated, drastically improving generalization through bagging."</p>
+                <p className="card-subtitle">Random Forest is a natively robust ensemble of highly decorrelated Decision Trees operating entirely in parallel. It structurally solves the massive validation variance and catastrophic overfitting absolutely inescapable in single deep trees by systematically bootstrapping row subsets and severely restricting available column features at each individual split, mathematically forcing systemic structural diversity across the ensemble. It is natively deployed across virtually any structured tabular dataset where extreme mathematical interpretability is not strictly demanded by stakeholders.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Classification / Regression</span>
                     <span className="badge badge-green">Ensemble — Bagging</span>
@@ -737,11 +751,11 @@ print(classification_report(y_test, pipe.predict(X_test)))  # Run inference usin
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>{String.raw`$\hat{y} = \frac{1}{B} \sum_{b=1}^{B} f_b(X)$`} — predicts the average or majority vote of $B$ independent trees trained on bootstrap samples and random feature subsets.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Gini / Entropy (per constituent tree)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Gini / Entropy:</strong> The loss evaluates impurity independently for every single tree. The ensemble output is the averaged vote, which smoothens out the harsh, discrete variance of any individual tree's loss surface. No chain rule applies here since trees are non-differentiable.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Greedy splitting on random subsets</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Bootstrap Aggregation (Bagging):</strong> The "optimizer" relies on random sampling of data rows (bootstrapping) and feature columns. It forces diversity among the trees, mathematically guaranteeing a reduction in overall variance when the outputs are averaged.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Aggregated probability / mean scalar</span>
@@ -788,7 +802,7 @@ print(f"Test AUC: {roc_auc_score(y_test, y_prob):.3f}")     # Ensure Test AUC cl
             {/* XGBOOST */}
             <section className="card" id="xgboost">
                 <h2 className="card-title">XGBoost</h2>
-                <p className="card-subtitle">"When I need maximum performance on structured tabular data, I default to XGBoost. By sequentially building trees where each tree is literally trained to predict the negative gradient (residual) of the previous ensemble, I can push accuracy to state-of-the-art limits."</p>
+                <p className="card-subtitle">XGBoost is the absolute state-of-the-art boosted tree ensemble powering modern structured data prediction. It explicitly solves the empirical predictive accuracy limits safely reached by simple parallel averaging (like Random Forest) by sequentially training new weak trees dedicated explicitly to predicting the strictly negative gradient (residual errors) of the previous frozen ensemble. It is natively deployed when pushing for maximum competitive baseline performance on strictly tabular or structured data.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Classification / Regression</span>
                     <span className="badge badge-green">Ensemble — Boosting</span>
@@ -813,11 +827,11 @@ print(f"Test AUC: {roc_auc_score(y_test, y_prob):.3f}")     # Ensure Test AUC cl
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>Optimizes a regularized objective: {String.raw`$Obj = \sum L(y_i, \hat{y}_i) + \sum \Omega(f_k)$`} using Taylor expansion approximation for gradients.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Customizable (Log-Loss, MSE, etc.) + {String.raw`$L1/L2$`} penalty</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Objective with L1/L2:</strong> It calculates a custom loss (like MSE or Log-Loss) plus a strict complexity penalty for the number of leaves. Uniquely, XGBoost uses a second-order Taylor expansion (using both the Gradient and the Hessian / 2nd derivative) of the loss to find the optimal leaf weights directly, rather than just splitting greedily.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Second-order Gradient Descent (Newton-Raphson step equivalent in tree space)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Second-order Boosting:</strong> New trees are fit precisely to the negative gradients (residuals) of the loss function from the existing ensemble. It's essentially taking a highly optimized Newton-Raphson step in function space.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Sum of raw leaf scores, passed through Sigmoid/Softmax</span>
@@ -864,7 +878,7 @@ print(f"Test AUC: {roc_auc_score(y_test, y_prob):.3f}")     # Gauge total geomet
             {/* GRADIENT BOOSTING */}
             <section className="card" id="gradient-boosting">
                 <h2 className="card-title">Gradient Boosting &amp; AdaBoost</h2>
-                <p className="card-subtitle">"If I can't install XGBoost or need to stay strictly within the scikit-learn ecosystem, I leverage its built-in GradientBoostingClassifier. Like XGBoost, I fit new trees directly to the residuals, slowly reducing the bias of the overall ensemble."</p>
+                <p className="card-subtitle">GradientBoostingClassifier is the native scikit-learn implementation of sequential Gradient Boosting. It specifically solves environments facing a severe administrative restriction against installing heavily optimized external libraries (like C++/XGBoost). It structurally fits sequential trees identically to XGBoost, albeit missing extreme hardware optimizations and advanced regularisation, making it ideal when bound strictly by pure native Python deployment environments.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Classification / Regression</span>
                     <span className="badge badge-green">Ensemble — Boosting</span>
@@ -888,11 +902,11 @@ print(f"Test AUC: {roc_auc_score(y_test, y_prob):.3f}")     # Gauge total geomet
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>{String.raw`$F_m(x) = F_{m-1}(x) + \gamma_m h_m(x)$`} — the new tree $h_m$ fits exactly to the negative gradient of the loss with respect to the previous prediction.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Deviance / Cross-Entropy / MSE</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Deviance / Cross-Entropy:</strong> It computes the error of the current ensemble. The new tree is then trained taking these <em>errors</em> as its target variables.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Gradient Descent in function space (fitting trees to residuals)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Gradient Descent in Function Space:</strong> Instead of tweaking weights using a chain rule, it adds entirely new functions (trees) that point in the direction of the negative gradient of the loss, stepping towards the minimum.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Aggregated sum scaled by a learning rate</span>
@@ -940,7 +954,7 @@ print(classification_report(y_test, pipe.predict(X_test)))  # Run metrics infere
             {/* SVM */}
             <section className="card" id="svm">
                 <h2 className="card-title">Support Vector Machine (SVM)</h2>
-                <p className="card-subtitle">"When I need strict classification boundaries on smaller, complex datasets, I use an SVM. Instead of just picking any line that separates data, I mathematically solve for the hyperplane that maximizes the geometric margin between classes."</p>
+                <p className="card-subtitle">Support Vector Machines are highly rigorous classification algorithms engineered to mathematically maximize the geometric margin between classes. Proceeding beyond simple linear models, SVMs solve the problem of finding the mathematically safest possible decision boundary precisely amidst strictly overlapping classes by utilizing the Kernel Trick to computationally project lower-dimensional data into higher dimensions where a clean structural hyperplane can easily separate it. They are exceptionally effective on smaller datasets requiring strict boundaries or extremely wide datasets like genetics.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Classification / Regression</span>
                     <span className="badge badge-green">Max-margin</span>
@@ -964,11 +978,11 @@ print(classification_report(y_test, pipe.predict(X_test)))  # Run metrics infere
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>Optimizes {String.raw`$\max \frac{2}{||w||}$`} subject to {String.raw`$y_i(w^T x_i + b) \geq 1$`} using Lagrange multipliers.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Hinge Loss + L2 Regularization penalty</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Hinge Loss:</strong> It penalizes predictions that fall on the wrong side of the margin. The chain rule derivative is exactly -1 for violated margins and 0 for correct ones. This forces the model to ignore correctly classified points far from the boundary and focus entirely on the difficult points near the edge (the support vectors).</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Sequential Minimal Optimization (SMO) / Quadratic Programming solver</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Sequential Minimal Optimization (SMO):</strong> SVMs don't use standard SGD. SMO breaks the large optimization problem into a series of smallest possible quadratic programming problems, solving them analytically.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Distance from the separating hyperplane {String.raw`$\in (-\infty, \infty)$`} (pluggable into Platt scaling for probability)</span>
@@ -1003,7 +1017,7 @@ print(classification_report(y_test, pipe.predict(X_test)))  # Run metrics infere
             {/* K-MEANS */}
             <section className="card" id="kmeans">
                 <h2 className="card-title">K-Means Clustering</h2>
-                <p className="card-subtitle">"For baseline customer segmentation, I usually start with K-Means. I assign points to the nearest centroid, update the centroids via the mean, and iterate. However, its primary drawback is that I have to guess the number of clusters (K) in advance using the elbow method."</p>
+                <p className="card-subtitle">K-Means is the foundational centroid-based unsupervised clustering algorithm. It replaces the impossible task of manually labelling massive datasets by finding implicit structural groups when a defining target variable entirely lacks existence. Functionally, it dynamically and iteratively assigns data points to the nearest cluster centroid and then sequentially recomputes the centroid means locally until convergence, making it the premier choice for basic customer segmentation across highly spherical cluster shapes.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Unsupervised</span>
                     <span className="badge badge-green">Centroid-based</span>
@@ -1027,11 +1041,11 @@ print(classification_report(y_test, pipe.predict(X_test)))  # Run metrics infere
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>Minimizes Within-Cluster Sum of Squares (WCSS): {String.raw`$\sum_{i=1}^k \sum_{x \in C_i} ||x - \mu_i||^2$`}</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Inertia (Sum of squared distances to centroid)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Inertia (WCSS):</strong> It calculates the sum of squared distances from each point to its assigned centroid. It mathematically evaluates how tightly bound the unlabelled data is.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Lloyd's Algorithm (Expectation-Maximization alternating between assignment and centroid update)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Lloyd's Algorithm:</strong> No chain rule here. It uses Expectation-Maximization by first assigning points to the nearest centroid (Expectation), and then moving the centroid to the mathematical mean of those points (Maximization), repeating until convergence.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Distinct integer cluster label {String.raw`$\in [0, K-1]$`}</span>
@@ -1081,7 +1095,7 @@ print(f"Silhouette: {silhouette_score(X_scaled, labels):.3f}") # Print total den
             {/* DBSCAN */}
             <section className="card" id="dbscan">
                 <h2 className="card-title">DBSCAN</h2>
-                <p className="card-subtitle">"When my clusters are strangely shaped or I don't know how many clusters exist, K-Means fails completely. Instead, I use DBSCAN, which groups points using local density and beautifully isolates true anomalies as 'noise' rather than forcing them into a cluster."</p>
+                <p className="card-subtitle">DBSCAN is a strictly continuous, density-based unsupervised clustering framework. It explicitly solves K-Means' catastrophic flaw of natively forcing all anomalies into clusters and failing on non-spherical geometric shapes. It works by expanding clusters locally sequentially connecting deeply dense core points, whilst explicitly labeling isolated sparse points directly as structural 'noise', making it the absolute gold-standard for geospatial point data, active fraud detection, and uncovering bizarre structural shapes.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Unsupervised</span>
                     <span className="badge badge-green">Density-based</span>
@@ -1115,11 +1129,11 @@ print(f"Silhouette: {silhouette_score(X_scaled, labels):.3f}") # Print total den
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>Core point definition: Must have $\geq$ `min_samples` within a radius `eps` {String.raw`$N_{\epsilon}(p)$`}. Connects overlapping core points.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>None (Rule-based region growing)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>None:</strong> There is no loss function and no iterative improvement. It purely evaluates static density thresholds algorithmically.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Graph traversal / Breadth-First Search on density reachability network</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Graph Traversal:</strong> It iterates through points sequentially, expanding clusters by linking core points within an epsilon radius, efficiently mapping out continuous dense regions.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Cluster label {String.raw`$\geq 0$`}, or `-1` for anomalies/noise</span>
@@ -1148,7 +1162,7 @@ if len(set(labels[mask])) > 1:                              # Ensure there is ac
             {/* HIERARCHICAL */}
             <section className="card" id="hierarchical">
                 <h2 className="card-title">Hierarchical / Agglomerative Clustering</h2>
-                <p className="card-subtitle">"If I have a small dataset and stakeholders want to understand exactly how the groupings merge at different granularity levels, I use Agglomerative Hierarchical clustering so I can present them with a visual Dendrogram."</p>
+                <p className="card-subtitle">Hierarchical Agglomerative Clustering is a bottom-up structural unsupervised clustering methodology. It fundamentally solves the extreme guessing game of pre-selecting the exact number of K clusters before ever knowing the innate structural hierarchy of the overall data. It operates by iteratively merging the two closest distinct clusters sequentially until exactly one massive cluster remains, actively drawing a dendrogram to definitively show stakeholders exactly how and why subgroupings logically merge at varied scales.</p>
                 <div className="badge-container">
                     <span className="badge badge-blue">Unsupervised</span>
                     <span className="badge badge-green">Dendrogram-based</span>

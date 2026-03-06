@@ -45,7 +45,7 @@ export default function DeepLearningPage() {
             {/* MLP */}
             <section className="card" id="mlp">
                 <h2 className="card-title">MLP — Multi-Layer Perceptron</h2>
-                <p className="card-subtitle">"When I need a baseline neural network, I start with an MLP. It serves as the mathematical foundation for every other architecture I build."</p>
+                <p className="card-subtitle">A Multi-Layer Perceptron (MLP) is a baseline feed-forward neural network serving as the mathematical foundation for modern deep learning architectures. Evolving past simple Logistic Regression, it natively solves the inability to learn non-linear decision boundaries by fundamentally stacking multiple layers of linear transformations followed by non-linear activations. It serves as the absolute baseline architecture when dealing with simple structured tabular data.</p>
                 <div className="badge-container" style={{ marginBottom: '1rem' }}>
                     <span className="badge badge-blue">Tabular data</span>
                     <span className="badge badge-blue">Classification</span>
@@ -72,11 +72,11 @@ export default function DeepLearningPage() {
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>{String.raw`$z^{(l)} = W^{(l)} a^{(l-1)} + b^{(l)} \quad \implies \quad a^{(l)} = \sigma(z^{(l)})$`}</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Cross-Entropy (Classification) / MSE (Regression)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Cross-Entropy (Classification):</strong> Used because it heavily penalizes confident but wrong predictions. By chain rule, the derivative of Cross-Entropy combined with Softmax simplifies beautifully to {String.raw`$p_i - y_i$`} (predicted probability minus true one-hot label), giving a clean, direct gradient.<br /><strong>MSE (Regression):</strong> Penalizes large errors quadratically. Its derivative simplifies to {String.raw`$2(y_{pred} - y_{true})$`}, providing direct, proportional error feedback.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Stochastic Gradient Descent (SGD) / Adam</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Adam:</strong> I generally default to Adam because it combines momentum (to glide through flat regions smoothly) and adaptive scaling (to handle sparse or noisy gradients), converging far faster than pure SGD without needing intense manual rate tuning.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Logits or probabilities {String.raw`$\in [0, 1]$`} per class</span>
@@ -97,7 +97,7 @@ export default function DeepLearningPage() {
             {/* FORWARD PASS */}
             <section className="card" id="forward-pass">
                 <h2 className="card-title">Forward Pass</h2>
-                <p className="card-subtitle">"During the forward pass, I push the input through the network to get a prediction. For each layer, I perform a linear transformation followed immediately by a nonlinear activation."</p>
+                <p className="card-subtitle">The forward pass is the sequential operation of fundamentally pushing input data unilaterally through the network layers to generate a prediction. It natively solves the need to generate a mathematical probability structure required to subsequently evaluate the network error against the true labels. It operates by iteratively computing {String.raw`$a = \sigma(Wx + b)$`} layer by layer, generating outputs natively during both training phases and active production inference runs.</p>
                 <div className="math-block">
                     {String.raw`$$z^{(l)} = W^{(l)} \cdot a^{(l-1)} + b^{(l)}$$`}
                     {String.raw`$$a^{(l)} = \sigma(z^{(l)})$$`}
@@ -115,7 +115,7 @@ export default function DeepLearningPage() {
             {/* RELU */}
             <section className="card" id="relu">
                 <h2 className="card-title">ReLU Activation</h2>
-                <p className="card-subtitle">"I default to ReLU for hidden layers because it avoids the vanishing gradient problem inherent in Sigmoid/Tanh, while creating sparse, computationally efficient activations."</p>
+                <p className="card-subtitle">Activation functions, distinctly the modern default ReLU, are powerful non-linear mathematical constraints explicitly applied to the output of each layer. Replacing archaic step functions or pure linear outputs, they natively allow a network to learn complex, highly non-linear geometric manifolds, preventing deep networks from collapsing algebraically into a single linear equation. They are structurally applied to the raw logits immediately after every hidden layer's native linear transformation.</p>
                 <div className="math-block">
                     {String.raw`$$\text{ReLU}(x) = \max(0, x)$$`}
                 </div>
@@ -136,7 +136,7 @@ export default function DeepLearningPage() {
             {/* BACKPROP */}
             <section className="card" id="backprop">
                 <h2 className="card-title">Backpropagation + Training Loop</h2>
-                <p className="card-subtitle">"To train the network, I rely on backpropagation. It applies the chain rule backward from the loss to compute gradients for every weight. While PyTorch handles this under the hood, I always keep the math in mind to debug training stalls."</p>
+                <p className="card-subtitle">Backpropagation is the absolute core mechanism of neural network training that dictates exactly how much each mathematical weight linearly contributed to the final aggregated error. Abandoning the computational impossibility of random weight guessing, it explicitly solves the massive credit assignment problem structurally across billions of stacked parameters. It works precisely by applying the foundational chain rule of calculus directly backwards from the loss function down to the initial input layer instantly after every training forward pass.</p>
                 <h3>The 4-Step Loop</h3>
                 <ol>
                     <li><strong>optimizer.zero_grad()</strong> — clear gradients from previous step (PyTorch accumulates)</li>
@@ -154,7 +154,7 @@ export default function DeepLearningPage() {
             {/* ADAM */}
             <section className="card" id="adam">
                 <h2 className="card-title">Adam Optimizer</h2>
-                <p className="card-subtitle">"I almost exclusively use Adam to optimize my models. It computes an adaptive learning rate for each parameter individually using momentum (1st moment) and variance (2nd moment), which significantly speeds up my convergence."</p>
+                <p className="card-subtitle">The Adam Optimizer is the algorithm directly responsible for translating pure mathematical gradients into active structural weight updates. Superseding standard Gradient Descent, it drastically solves the severe instability of navigating massively non-convex and chaotic high-dimensional loss landscapes. It operates by iteratively stepping contrary to the gradient slope using natively smoothed momentum alongside tightly adaptive individual learning rates, acting as the undisputed default optimizer for virtually all neural architectures.</p>
                 <div className="math-block">
                     {String.raw`$$m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t \quad \text{(momentum)}$$`}
                     {String.raw`$$v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2 \quad \text{(adaptive rate)}$$`}
@@ -166,7 +166,7 @@ export default function DeepLearningPage() {
             {/* DROPOUT */}
             <section className="card" id="dropout">
                 <h2 className="card-title">Dropout</h2>
-                <p className="card-subtitle">"When I notice my model overfitting, I inject Dropout. By randomly zeroing out neurons during training, I force the network to distribute learned representations rather than relying on a few dominant pathways."</p>
+                <p className="card-subtitle">Dropout is a harsh regularization framework that explicitly destroys established local neural pathways arbitrarily during active training rounds. Enhancing classical L1/L2 Weight Decay, it natively solves severe neural network overfitting and the lazy co-adaptation of linked neurons. Structurally, it randomly zeroes out a strict percentage of functional neurons in a layer at each training step, aggressively forcing the holistic network to distribute learned representations broadly when training deep networks with severely limited data.</p>
                 <div className="math-block">
                     {String.raw`$$\tilde{a} = a \cdot \text{Bernoulli}(p) \;/\; p$$`}
                 </div>
@@ -188,7 +188,7 @@ export default function DeepLearningPage() {
             {/* EARLY STOPPING */}
             <section className="card" id="early-stopping">
                 <h2 className="card-title">Early Stopping</h2>
-                <p className="card-subtitle">"Instead of guessing the optimal number of epochs, I implement Early Stopping. I monitor the validation loss, and if it stops improving after a set patience threshold, I halt training and restore the best weights."</p>
+                <p className="card-subtitle">Early Stopping is an automated training termination mechanism based purely on empirical generalisation performance. It solves the blind guessing game of setting fixed epochs and completely halts chronic structural over-training. It natively monitors the strict validation loss per epoch, cleanly terminating training if the loss utterly stops improving after a pre-set 'patience' threshold, permanently locking in the absolute best historical weights encountered during every single deep learning training loop.</p>
                 <h3>Algorithm</h3>
                 <ol>
                     <li>Track best_val_loss and a patience counter</li>
@@ -206,7 +206,7 @@ export default function DeepLearningPage() {
             {/* CNN INTRO */}
             <section className="card" id="cnn-intro">
                 <h2 className="card-title">Why CNNs for Images</h2>
-                <p className="card-subtitle">"When working with images, I never use basic MLPs because flattening a 64×64 image destroys its spatial geometry. Instead, I use CNNs to preserve the 2D neighborhood relationships."</p>
+                <p className="card-subtitle">Convolutional Neural Networks (CNNs) are custom-designed architectures strictly engineered for spatial and grid-like data (e.g., images). Replacing standard MLPs that catastrophically destroy spatial relationships by flattening images into 1D arrays, CNNs natively use localized filters that share weights across the entire image. They are the absolute foundational standard for Computer Vision and any task demanding spatial or positional invariance.</p>
 
                 <div style={{ background: 'var(--color-bg-secondary)', padding: '1.25rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--color-border)', fontSize: '0.9rem' }}>
                     <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-text)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>Architecture Context</h4>
@@ -226,11 +226,11 @@ export default function DeepLearningPage() {
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>{String.raw`$(f * g)[i,j] = \sum_m \sum_n f[m,n] g[i-m, j-n]$`} — element-wise multiplication sum over a sliding local window.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Categorical Cross-Entropy</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Categorical Cross-Entropy:</strong> It pushes the network to increase the predicted probability of the correct class while squashing the others. Thanks to chain rule simplification, passing the flattened feature outputs through Softmax and CE yields the gradient $p_i - y_i$, seamlessly feeding error signals back through the dense layers into the convolutional filters without complex cascading derivatives.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Adam / RMSProp</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Adam or RMSProp:</strong> CNNs have significantly different gradient scales between deep convolutional filters and flat output layers. Adam/RMSProp adapt per-parameter learning rates, keeping the different layers learning stably.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Feature maps flattened into fully connected layers $\implies$ Class Probabilities</span>
@@ -256,7 +256,7 @@ export default function DeepLearningPage() {
             {/* CONVOLUTION */}
             <section className="card" id="convolution">
                 <h2 className="card-title">The Convolution Operation</h2>
-                <p className="card-subtitle">"Instead of dense weights, I apply Convolution. I slide small learnable filters across the image. Because I share these same filter weights across the entire image, my model achieves translation invariance while using vastly fewer parameters."</p>
+                <p className="card-subtitle">The Convolution operation is the core mathematical engine of a CNN used to extract localized contextual features. It natively solves the severe parameter explosion and lack of translation invariance found in dense layers by sliding small, explicitly learnable filter matrices (kernels) across the input space to compute dot products. It is the mandatory continuous operation used when processing spatial data where important structural features can appear anywhere.</p>
                 <div className="math-block">
                     {String.raw`$$\text{Output}(i,j) = \sum_m \sum_n \text{Input}(i+m,\; j+n) \cdot K(m,n)$$`}
                 </div>
@@ -272,7 +272,7 @@ export default function DeepLearningPage() {
             {/* POOLING */}
             <section className="card" id="pooling">
                 <h2 className="card-title">Pooling</h2>
-                <p className="card-subtitle">"To reduce the spatial footprint and computational load, I insert Pooling layers. They don't have learnable parameters; they structurally downsample the feature maps."</p>
+                <p className="card-subtitle">Pooling is a structural downsampling layer natively interleaved between convolutional blocks. Discarding archaic strided convolutions, it elegantly solves the problem of excessive spatial resolution and spiraling computational costs as networks deepen by applying a non-learnable mathematical operation (like Max) over small fixed windows. This ensures the network structurally retains only the absolute most aggressively activating features while shrinking the dimensionality.</p>
                 <p>"I typically use <strong>Max Pooling</strong> to keep the strongest activation in a local region, which effectively asks: 'Did I detect this specific feature anywhere in this patch?'"</p>
                 <p>"At the very end of my deep networks like ResNet, I replace the traditional Flatten operation with <strong>Global Average Pooling (GAP)</strong> to collapse each spatial feature map into a single number, drastically reducing parameters."</p>
             </section>
@@ -280,7 +280,7 @@ export default function DeepLearningPage() {
             {/* CHANNELS */}
             <section className="card" id="channels">
                 <h2 className="card-title">Multiple Filters &amp; Channels</h2>
-                <p className="card-subtitle">"As I build deeper into a CNN, I systematically decrease the spatial dimensions (H, W) while increasing the number of channels (filters). This allows my network to transition from learning simple edges to complex object semantics."</p>
+                <p className="card-subtitle">"Strategic architectural principles for building robust spatial networks." | <strong>Predecessor:</strong> Ad-hoc network sizing. | <strong>Solves:</strong> Guesswork in architecture design. | <strong>How:</strong> Systematically decreasing spatial dimensions via pooling while simultaneously increasing channel depth to capture high-level semantics. | <strong>When:</strong> Designing any custom CNN from scratch.</p>
                 <div className="math-block">
                     {String.raw`$$\text{params per Conv2d} = d_{\text{out}} \times (k \times k \times d_{\text{in}}) + d_{\text{out}}$$`}
                 </div>
@@ -293,7 +293,7 @@ export default function DeepLearningPage() {
             {/* RESNET */}
             <section className="card" id="resnet">
                 <h2 className="card-title">ResNet — Skip Connections</h2>
-                <p className="card-subtitle">"When I try to train networks deeper than 30 layers, they succumb to the vanishing gradient problem. To solve this, I utilize the ResNet architecture, which implements skip connections."</p>
+                <p className="card-subtitle">ResNet is an ultra-deep CNN architecture explicitly defined by its integration of residual skip connections. Superseding shallow models like VGG, it definitively solves the catastrophic vanishing gradient problem that aggressively prevented historically training networks deeper than roughly 30 layers. It functions by mathematically adding the original input tensor cleanly to the output of a convolutional block ({String.raw`$F(x) + x$`}), creating uninterrupted gradient super-highways required for virtually all modern generic image recognition tasks.</p>
 
                 <div style={{ background: 'var(--color-bg-secondary)', padding: '1.25rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--color-border)', fontSize: '0.9rem' }}>
                     <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-text)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>Architecture Context</h4>
@@ -313,11 +313,11 @@ export default function DeepLearningPage() {
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>Instead of learning $H(x)$, it learns the residual $F(x) = H(x) - x$. The output is {String.raw`$y = F(x) + x$`}</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Categorical Cross-Entropy</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Categorical Cross-Entropy:</strong> Evaluates class probability distributions as with standard CNNs. Chain rule converts it to $p_i - y_i$. Skip connections mean this error gradient doesn't diminish as it travels back.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Adam / SGD with Momentum</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>SGD with Momentum / Adam:</strong> For extremely deep ResNets on ImageNet, SGD with momentum and learning rate scheduling historically yields slightly better generalization than Adam by finding broader, flatter minima.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Class Probabilities (after Global Average Pooling)</span>
@@ -347,7 +347,7 @@ export default function DeepLearningPage() {
             {/* TRANSFER LEARNING */}
             <section className="card" id="transfer">
                 <h2 className="card-title">Transfer Learning</h2>
-                <p className="card-subtitle">"Since I rarely have millions of labeled images or the compute to train from scratch, I rely heavily on Transfer Learning. I take a backbone pretrained on ImageNet and just replace the final classification head for my specific domain."</p>
+                <p className="card-subtitle">Transfer Learning is the undisputed modern paradigm of deep learning where a rigorously trained network is repurposed for a new, highly specific task. Replacing the agonizingly slow method of randomly initializing weights and training exclusively from scratch, it solves the catastrophic reality that most businesses completely lack the billion-scale datasets required to converge modern architectures. It fundamentally operates by freezing the pre-trained feature extraction backbone and merely swapping out the final output head, acting as the absolute default starting point for production data science.</p>
                 <h3>Two Modes</h3>
                 <ul>
                     <li><strong>Feature extraction</strong> — freeze backbone, train head only. Fast, few params.</li>
@@ -373,7 +373,7 @@ for param in model.backbone.parameters():
             {/* RNN */}
             <section className="card" id="rnn">
                 <h2 className="card-title">RNN — Recurrent Neural Network</h2>
-                <p className="card-subtitle">"When I encounter sequential data like time-series, I need a model with memory. I use recurrent architectures that pass a hidden state forward one step at a time, reusing the exact same weight matrix at every step."</p>
+                <p className="card-subtitle">Recurrent Neural Networks (RNNs) are sequential architectures fundamentally engineered to retain a hidden mathematical state across temporal steps. Bypassing rigid MLPs that strictly demand fixed input dimensions, RNNs solve the necessity of mathematically processing time-series sequences of highly variable lengths (like language or stock prices). They operate by feeding the processed output of the current time step continuously directly back into the network as input for the subsequent step.</p>
 
                 <div style={{ background: 'var(--color-bg-secondary)', padding: '1.25rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--color-border)', fontSize: '0.9rem' }}>
                     <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-text)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>Architecture Context</h4>
@@ -384,25 +384,25 @@ for param in model.backbone.parameters():
                         <strong style={{ color: 'var(--color-text-muted)' }}>Flaws of Predecessor:</strong>
                         <span>Feedforward networks have no memory. They cannot natively process sequential data of variable length where historical order matters (like text or time-series).</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>What it Solves:</strong>
+                        <strong style={{ color: 'var(--color-text-muted)' }}> What it Solves:</strong>
                         <span>Maintains an internal hidden state memory that persists across time steps, feeding previous history into the current prediction.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Where to Use:</strong>
+                        <strong style={{ color: 'var(--color-text-muted)' }}> Where to Use:</strong>
                         <span>Short sequence tracking, simple time-series analysis (though entirely largely superseded by LSTM/GRU).</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
+                        <strong style={{ color: 'var(--color-text-muted)' }}> Math Under Hood:</strong>
                         <span>{String.raw`$h_t = \tanh(W_h h_{t-1} + W_x x_t + b)$`} — current state is a combination of previous state and current input.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Cross-Entropy (for sequence tokens) / MSE (for time-series)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}> Loss Rationale:</strong >
+                        <span><strong>Cross-Entropy / MSE:</strong> Evaluates sequential outputs token by token. For sequences, error gradients from this loss are passed back through time (BPTT).</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Adam</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Adam:</strong> Handles the varying gradient magnitudes across time steps much better than SGD.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Hidden state vector $h_t$ per time step, often mapped to vocab logits</span>
-                    </div>
-                </div>
+                    </div >
+                </div >
                 <div className="math-block">
                     {String.raw`$$h_t = \tanh(W_x \cdot x_t + W_h \cdot h_{t-1} + b)$$`}
                 </div>
@@ -411,12 +411,12 @@ for param in model.backbone.parameters():
                 <pre><code className="language-python">{`self.rnn = nn.RNN(input_size=5, hidden_size=32, batch_first=True)  # define RNN layer
 out, h_n = self.rnn(x)          # out: (batch, seq, hidden) — all timesteps
 last = out[:, -1, :]            # last timestep = sequence summary for classification`}</code></pre>
-            </section>
+            </section >
 
             {/* LSTM */}
-            <section className="card" id="lstm">
+            < section className="card" id="lstm" >
                 <h2 className="card-title">LSTM — Long Short-Term Memory</h2>
-                <p className="card-subtitle">"Vanilla RNNs completely forget earlier tokens in long sequences. To fix this, I upgrade to LSTMs. I leverage its 'Cell State' highway and its three gates (Forget, Input, Output) to explicitly control what information I maintain over time."</p>
+                <p className="card-subtitle">Long Short-Term Memory (LSTM) is a highly complex recurrent cell containing explicit internal gating mechanisms. Superseding vanilla RNNs, LSTMs decisively solve the severe Vanishing/Exploding Gradient anomaly that practically prevented standard RNNs from remembering temporal context beyond a few steps. They achieve this by establishing an uninterrupted central 'cell state' highway spanning the sequence, guarded exclusively by learned sigmoidal gates determining precisely what data to keep or destroy.</p>
 
                 <img src="https://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-chain.png" alt="LSTM cell architecture showing forget gate, input gate, and output gate with cell state highway" style={{ width: '100%', borderRadius: '8px', marginBottom: '1rem', border: '1px solid var(--color-border)', background: 'white', padding: '0.5rem' }} />
 
@@ -439,16 +439,16 @@ last = out[:, -1, :]            # last timestep = sequence summary for classific
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>Forget Gate: {String.raw`$f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)$`} | Update: {String.raw`$C_t = f_t * C_{t-1} + i_t * \tilde{C}_t$`}</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Cross-Entropy / MSE</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Cross-Entropy / MSE:</strong> The same as RNNs, but thanks to the cell state highway, the chain rule allows the error gradient from the final prediction to easily backpropagate to the very first token without vanishing.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Adam</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Adam:</strong> Works well, though gradient clipping is still strictly required to prevent exploding gradients.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Cell state $C_t$ and Hidden state $h_t$</span>
                     </div>
-                </div>
+                </div >
                 <div className="math-block">
                     {String.raw`$$f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f) \quad \text{(forget gate)}$$`}
                     {String.raw`$$i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i), \quad \tilde{g}_t = \tanh(W_g \cdot [h_{t-1}, x_t] + b_g) \quad \text{(input gate)}$$`}
@@ -470,12 +470,12 @@ last = out[:, -1, :]            # last timestep = sequence summary for classific
                 <pre><code className="language-python">{`self.lstm = nn.LSTM(input_size=5, hidden_size=32, batch_first=True)  # define LSTM
 out, (h_n, c_n) = self.lstm(x)  # c_n is LSTM-only cell state (no GRU equivalent)
 last = out[:, -1, :]             # last timestep for classification`}</code></pre>
-            </section>
+            </section >
 
             {/* GRU */}
-            <section className="card" id="gru">
+            < section className="card" id="gru" >
                 <h2 className="card-title">GRU — Gated Recurrent Unit</h2>
-                <p className="card-subtitle">"If my LSTM is too computationally heavy, I switch to a GRU. By merging the cell and hidden states and reducing to just two gates, I achieve nearly identical performance but with much faster training times."</p>
+                <p className="card-subtitle">Gated Recurrent Units (GRUs) are highly streamlined, efficient recurrent cells engineered to perform nearly identically to LSTMs using far fewer parameters. They intentionally solve the excessive computational bloat generated by the LSTM's independent hidden and cell states simply by merging them directly into a single unified temporal state, making them the superior choice for computationally constrained sequential environments natively lacking the resources for heavy LSTMs.</p>
 
                 <div style={{ background: 'var(--color-bg-secondary)', padding: '1.25rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--color-border)', fontSize: '0.9rem' }}>
                     <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-text)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>Architecture Context</h4>
@@ -495,16 +495,16 @@ last = out[:, -1, :]             # last timestep for classification`}</code></pr
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>{String.raw`$h_t = (1 - z_t) * h_{t-1} + z_t * \tilde{h}_t$`}, where $z_t$ is the update gate balancing past vs present.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Cross-Entropy / MSE</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Cross-Entropy / MSE:</strong> Uses standard sequential losses. Chain rule gradients propagate smoothly through the update gate.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>Adam</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>Adam:</strong> Accelerates training efficiently across sequential contexts.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Single unified Hidden State $h_t$</span>
-                    </div>
-                </div>
+                    </div >
+                </div >
                 <div className="math-block">
                     {String.raw`$$r_t = \sigma(W_r \cdot [h_{t-1}, x_t] + b_r) \quad \text{(reset gate)}$$`}
                     {String.raw`$$z_t = \sigma(W_z \cdot [h_{t-1}, x_t] + b_z) \quad \text{(update gate)}$$`}
@@ -525,17 +525,18 @@ last = out[:, -1, :]             # last timestep for classification`}</code></pr
                     </table>
                 </div>
                 <div className="callout"><strong>Gradient clipping for all RNNs:</strong> <code>torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)</code> — call before optimizer.step().</div>
-            </section>
+            </section >
 
             {/* ═══════════ PART 4: TRANSFORMERS ═══════════ */}
-            <h2 className="part-header" style={{ color: 'var(--color-accent)', fontSize: '0.8rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--color-border)' }}>Transformers</h2>
+            < h2 className="part-header" style={{ color: 'var(--color-accent)', fontSize: '0.8rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--color-border)' }
+            }> Transformers</h2 >
 
             {/* ATTENTION */}
-            <section className="card" id="attention">
+            < section className="card" id="attention" >
                 <h2 className="card-title">Scaled Dot-Product Attention</h2>
-                <p className="card-subtitle">"I found that LSTMs bottleneck my training because they must process tokens sequentially. To solve this, I completely discarded recurrence and implemented Scaled Dot-Product Attention, allowing every token to look directly at every other token simultaneously."</p>
+                <p className="card-subtitle">"A context-routing mechanism that allows every token to look directly at every other token simultaneously." | <strong>Predecessor:</strong> LSTMs / Seq2Seq. | <strong>Solves:</strong> The sequential bottleneck of RNNs that prevents hardware parallelism, and the degradation of long-range context. | <strong>How:</strong> Computing scaled dot-products between Query, Key, and Value matrices to determine contextual relevance regardless of distance. | <strong>When:</strong> The core engine of all modern Large Language Models and Vision Transformers.</p>
 
-                <img src="https://jalammar.github.io/images/t/transformer_self-attention_visualization.png" alt="Self-attention visualization showing how each token attends to all other tokens" style={{ width: '100%', borderRadius: '8px', marginBottom: '1rem', border: '1px solid var(--color-border)', background: 'white', padding: '0.5rem' }} />
+                <img src="https://jalammar.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-chain.png" alt="LSTM cell architecture showing forget gate, input gate, and output gate with cell state highway" style={{ width: '100%', borderRadius: '8px', marginBottom: '1rem', border: '1px solid var(--color-border)', background: 'white', padding: '0.5rem' }} />
 
                 <div className="math-block">
                     {String.raw`$$Q = XW^Q, \quad K = XW^K, \quad V = XW^V$$`}
@@ -548,12 +549,12 @@ last = out[:, -1, :]             # last timestep for classification`}</code></pr
                     {String.raw`$$\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_H) \cdot W^O$$`}
                 </div>
                 <p style={{ fontSize: '0.85rem', color: 'var(--color-text-subtle)' }}>{'$H$'} heads run in parallel, each with own {'$W^Q_i, W^K_i, W^V_i$'}. Each head learns a different relationship type. {String.raw`$d_k = d_{\text{model}}/H$`} per head.</p>
-            </section>
+            </section >
 
             {/* TRANSFORMER ARCH */}
-            <section className="card" id="transformer-arch">
+            < section className="card" id="transformer-arch" >
                 <h2 className="card-title">Transformer Architecture</h2>
-                <p className="card-subtitle">"When building a full Transformer, I use an Encoder to read the input bidirectionally for deep context, and a Decoder to generate the output causally. I stack blocks of self-attention, feed-forward networks, and residual LayerNorms to build depth."</p>
+                <p className="card-subtitle">"A highly parallelizable sequence-to-sequence architecture built entirely on self-attention." | <strong>Predecessor:</strong> LSTM Seq2Seq with attention. | <strong>Solves:</strong> The absolute inability to massively scale recurrent networks across thousands of GPUs. | <strong>How:</strong> Stacking blocks of Multi-Head Self-Attention, Feed-Forward Networks, and residual LayerNorms to build deep contextual representations. | <strong>When:</strong> SOTA NLP, translation, LLMs, and foundational multi-modal models.</p>
 
                 <img src="https://jalammar.github.io/images/t/The_transformer_encoder_decoder_stack.png" alt="Transformer encoder-decoder stack showing N encoder blocks feeding into N decoder blocks" style={{ width: '100%', maxWidth: '500px', borderRadius: '8px', marginBottom: '1rem', border: '1px solid var(--color-border)', background: 'white', padding: '0.5rem' }} />
 
@@ -576,11 +577,11 @@ last = out[:, -1, :]             # last timestep for classification`}</code></pr
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
                         <span>Scaled Dot-Product Attention: {String.raw`$Attention(Q, K, V) = softmax\left(\frac{QK^T}{\sqrt{d_k}}\right)V$`}</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Categorical Cross-Entropy (per token)</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Categorical Cross-Entropy (per token):</strong> The model outputs a probability distribution over the entire vocabulary for every sequence position simultaneously. The derivative {String.raw`$p_i - y_i$`} is computed independently per token, removing the sequential backpropagation bottleneck altogether.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>AdamW with Learning Rate Warmup</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>AdamW with Warmup:</strong> High-dimensional attention layers require immense regularization to prevent overfitting. AdamW securely decouples weight decay (L2) from the adaptive learning rate formula. Warmup is mathematically required for Transformers because the variance of AdamW's momentum estimators is dangerously high early in training.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
                         <span>Contextualized embeddings per token $\implies$ Logits</span>
@@ -603,12 +604,12 @@ x = LayerNorm(x + FFN(x))                     # Add & Norm after feed-forward
                         </tbody>
                     </table>
                 </div>
-            </section>
+            </section >
 
             {/* ADD & NORM */}
-            <section className="card" id="add-norm">
+            < section className="card" id="add-norm" >
                 <h2 className="card-title">Add &amp; Norm</h2>
-                <p className="card-subtitle">"To stabilize the massive gradients inside my Transformer blocks, I wrap every sublayer in a residual Add connection followed immediately by Layer Normalisation."</p>
+                <p className="card-subtitle">"A critical stabilization mechanism for ultra-deep networks." | <strong>Predecessor:</strong> Unnormalized deep networks / BatchNorm (for CNNs). | <strong>Solves:</strong> Exploding/vanishing gradients and internal covariate shift across hundreds of successive transformer blocks. | <strong>How:</strong> Wrapping every sublayer in a residual Add connection ({String.raw`$x + layer(x)$`}) followed immediately by Layer Normalisation computed strictly across the feature dimension. | <strong>When:</strong> Standard practice inside every single Transformer block.</p>
                 <div className="math-block">
                     {String.raw`$$\text{output} = \text{LayerNorm}(x + \text{sublayer}(x))$$`}
                 </div>
@@ -627,23 +628,23 @@ x = LayerNorm(x + FFN(x))                     # Add & Norm after feed-forward
                         </tbody>
                     </table>
                 </div>
-            </section>
+            </section >
 
             {/* POSITIONAL ENCODING */}
-            <section className="card" id="pos-enc">
+            < section className="card" id="pos-enc" >
                 <h2 className="card-title">Positional Encoding</h2>
-                <p className="card-subtitle">"Because attention processes everything in parallel, the model has absolutely no concept of sequencing. I inject this missing structural information by adding a Positional Encoding vector to every token embedding before it enters the network."</p>
+                <p className="card-subtitle">"A structural injection of absolute sequence order into parallelized token embeddings." | <strong>Predecessor:</strong> RNNs (natively strictly sequential). | <strong>Solves:</strong> The mathematically problematic fact that Multi-Head Attention processes all tokens simultaneously and therefore has absolutely no inherent concept of order. | <strong>How:</strong> Adding deterministic sine/cosine waves (or learned weights) directly into the raw token embedding vector before it enters the first network block. | <strong>When:</strong> Any architecture that processes sequences purely in parallel (Transformers).</p>
                 <div className="math-block">
                     {String.raw`$$PE(\text{pos}, 2i) = \sin\!\left(\frac{\text{pos}}{10000^{2i/d}}\right), \quad PE(\text{pos}, 2i{+}1) = \cos\!\left(\frac{\text{pos}}{10000^{2i/d}}\right)$$`}
                 </div>
                 <p style={{ fontSize: '0.85rem', color: 'var(--color-text-subtle)' }}>{String.raw`$\text{pos}$`} = position index · {'$i$'} = dimension index · {'$d$'} = model dimension. Different dimensions oscillate at different frequencies. Final input = token_embedding + PE.</p>
                 <p>Modern models (BERT, GPT) use <strong>learned</strong> PE: <code>nn.Embedding(max_seq_len, d_model)</code> trained like any weight.</p>
-            </section>
+            </section >
 
             {/* MASKED ATTENTION */}
-            <section className="card" id="masked-attn">
+            < section className="card" id="masked-attn" >
                 <h2 className="card-title">Masked Self-Attention</h2>
-                <p className="card-subtitle">"When I'm generating text with a decoder, it would be 'cheating' if the model could look ahead at future tokens. I enforce causality by applying a strictly upper-triangular mask of negative infinities to the attention scores."</p>
+                <p className="card-subtitle">"A rigid causality-enforcing modification to standard Self-Attention." | <strong>Predecessor:</strong> Standard bidirectional attention. | <strong>Solves:</strong> The 'look-ahead' cheating problem during autoregressive text generation where a model could peer into future tokens to predict the next token. | <strong>How:</strong> Applying a strictly upper-triangular mask of negative infinities exclusively to the attention scores, pushing aggregate future softmax probabilities exactly to zero. | <strong>When:</strong> Exclusively inside causal Transformer Decoders (e.g., GPT).</p>
                 <div className="math-block">
                     {String.raw`$$\text{scores} = \frac{QK^T}{\sqrt{d_k}} + M$$`}
                 </div>
@@ -661,66 +662,130 @@ mask = torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool()
                         </tbody>
                     </table>
                 </div>
-            </section>
+            </section >
 
-            {/* BERT GPT T5 */}
-            <section className="card" id="bert-gpt-t5">
-                <h2 className="card-title">BERT vs GPT vs T5</h2>
-                <p className="card-subtitle">"I choose my foundation model based on the task: I use BERT (Encoder-only) when I need to understand or classify text, GPT (Decoder-only) when I need to generate text freely, and T5 (Encoder-Decoder) when I need to transform one text sequence into another."</p>
+            {/* BERT */}
+            <section className="card" id="bert">
+                <h2 className="card-title">BERT — Bidirectional Encoder Representations</h2>
+                <p className="card-subtitle">BERT is a massive, encoder-only model pre-trained on huge amounts of ordinary text using a "fill-in-the-blank" learning style. It completely replaces the old approach of building tiny, task-specific RNN models from scratch for every new project. It solves the problem of models only reading left-to-right, instead forcing the network to deeply understand the full surrounding context of a sentence in both directions at once. BERT architectures are the standard starting point for almost all high-accuracy text classification, semantic search embeddings, and Named Entity Recognition tasks.</p>
 
                 <div style={{ background: 'var(--color-bg-secondary)', padding: '1.25rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--color-border)', fontSize: '0.9rem' }}>
                     <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-text)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>Architecture Context</h4>
                     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, max-content) 1fr', gap: '0.5rem 1rem' }}>
                         <strong style={{ color: 'var(--color-text-muted)' }}>Predecessor:</strong>
-                        <span>Base Transformer Architecture</span>
+                        <span>Base Encoder-Decoder Transformers & LSTMs</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Flaws of Predecessor:</strong>
-                        <span>The original Transformer was trained purely on task-specific aligned datasets (e.g., English paired with French). It lacked general-purpose world knowledge representation.</span>
+                        <span>Sequential models like LSTMs struggled to remember long sentences, while early decoder models (like the first GPT) could only read text in one direction (left-to-right), making them blind to the future context of a sentence.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>What it Solves:</strong>
-                        <span>Introduced Massive Unsupervised Pre-training on internet-scale text to learn language representation first, fine-tuning for specific tasks later. BERT = Encoder-only (bi-directional context), GPT = Decoder-only (causal generation).</span>
+                        <span>It removes the generative Decoder part entirely and uses only an unmasked Encoder, allowing it to look at all words in a sentence simultaneously. It learns language by explicitly trying to guess 15% of the words that have been purposely hidden (Masked Language Modeling).</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Where to Use:</strong>
-                        <span>Virtually all modern NLP tasks. BERT for understanding/classification, GPT for text generation/chatbots.</span>
+                        <span>Text classification (spam, sentiment), semantic search embeddings, NER, question-answering systems.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
-                        <span>Masked Language Modeling (BERT): max {String.raw`$P(x_{mask} | x_{unmasked})$`}. Causal Modeling (GPT): max {String.raw`$P(x_t | x_{<t})$`}</span>
+                        <span>Masked Language Modeling (MLM): maximize {String.raw`$P(x_{mask} | x_{unmasked})$`} across all indices using Softmax.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Function:</strong>
-                        <span>Cross-Entropy over Vocabulary Distribution</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Cross-Entropy:</strong> It calculates loss only on the specific words it hid. This forces the model's internal representations to stretch and warp until it learns exactly how context clues predict missing words.</span>
 
-                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer:</strong>
-                        <span>AdamW</span>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>AdamW:</strong> The standard for all giant neural networks, ensuring the massive number of weights shrink (decay) correctly without ruining the optimizer's learning speed.</span>
 
                         <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
-                        <span>Probability distribution across entire vocabulary per token</span>
+                        <span>A dense summary vector (usually 768 dimensions) for every single token, typically pooled through the `[CLS]` token for full-sentence classification.</span>
                     </div>
                 </div>
+                <div className="callout"><strong>Key interview Q:</strong> Why can't BERT generate text? It doesn't have a built-in step-by-step Decoder mechanism and has no causal masking. It processes whole paragraphs at once and was never trained to output words sequentially.</div>
+            </section>
+
+            {/* GPT */}
+            <section className="card" id="gpt">
+                <h2 className="card-title">GPT — Generative Pre-trained Transformer</h2>
+                <p className="card-subtitle">GPT is an autoregressive, decoder-only foundation model built specifically to generate continuous text. It replaces older recurrent text generators that would quickly forget what they were talking about after a few sentences. It solves the challenge of open-ended generation by using strict "causal masking," forcing the network to predict exactly one new word at a time based only on the words that came before it. GPT architectures are the absolute standard whenever you need a system for chatting, writing code, or generating long, open-ended content.</p>
+
+                <div style={{ background: 'var(--color-bg-secondary)', padding: '1.25rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--color-border)', fontSize: '0.9rem' }}>
+                    <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-text)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>Architecture Context</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, max-content) 1fr', gap: '0.5rem 1rem' }}>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Predecessor:</strong>
+                        <span>Base Encoder-Decoder Transformers</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Flaws of Predecessor:</strong>
+                        <span>Full Encoder-Decoder setups were too bulky and largely unnecessary if your only goal was to generate new text, which inherently only relies on the past context anyway.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>What it Solves:</strong>
+                        <span>Strips out the Encoder half entirely. It operates purely on Causal (Masked) Self-Attention, learning language by endlessly playing "predict the next word" on internet-scale text.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Where to Use:</strong>
+                        <span>Chatbots, code generation, summarization, zero-shot/few-shot reasoning.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
+                        <span>Next-token prediction: maximize {String.raw`$P(x_t | x_{<t})$`} by blocking out future tokens with an upper-triangular mask of negative infinities.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Categorical Cross-Entropy:</strong> It is penalized every single time it fails to assign the highest probability score to the actual real-world next word in the sequence.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>AdamW:</strong> Identical to BERT; used to safely manage weight decay across billions of parameters while keeping gradient momentum steady.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
+                        <span>Exactly one single token, sampled (via Softmax and Temperature) directly from the overall vocabulary.</span>
+                    </div>
+                </div>
+            </section>
+
+            {/* T5 */}
+            <section className="card" id="t5">
+                <h2 className="card-title">T5 — Text-to-Text Transfer Transformer</h2>
+                <p className="card-subtitle">T5 is a complete Encoder-Decoder model engineered to treat absolutely every NLP task as a simple "text-in, text-out" problem. It replaces the messy practice of trying to force classification tasks into generative models, or translation tasks into encoders. It solves industry fragmentation by forcing everything—whether it's translation, summarizing, or even regression testing—to simply input a string of text and output a new string of text. T5 architectures shine when your explicitly stated goal is to read one large, structured document and output a completely transformed document.</p>
+
+                <div style={{ background: 'var(--color-bg-secondary)', padding: '1.25rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--color-border)', fontSize: '0.9rem' }}>
+                    <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-text)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>Architecture Context</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, max-content) 1fr', gap: '0.5rem 1rem' }}>
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Predecessor:</strong>
+                        <span>Fragmented specialized models (BERT for classification, GPT for generation).</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Flaws of Predecessor:</strong>
+                        <span>Companies had to maintain completely different model architectures depending on the specific goal they wanted to achieve, which slowed down deployment.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>What it Solves:</strong>
+                        <span>It keeps the original full Encoder + Decoder setup intact. It formats every task identically (e.g., inputting "translate English to German: That is good" outputs "Das ist gut"). It learns by fixing "corrupted spans" where multiple consecutive words are hidden at once.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Where to Use:</strong>
+                        <span>Translation, document summarization, question answering, rewriting workflows, executing Seq2Seq tasks.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Math Under Hood:</strong>
+                        <span>The Encoder uses standard bidirectional attention to freely map the input text. The Decoder uses masked attention to generate the new text, while also "cross-attending" heavily back to the Encoder's map to make sure it stays on topic.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Loss Rationale:</strong>
+                        <span><strong>Cross-Entropy:</strong> Calculated directly off the Decoder's generated output, feeding back into the network to simultaneously train both the Decoder's writing skills and the Encoder's reading comprehension.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Optimizer Rationale:</strong>
+                        <span><strong>AdaFactor:</strong> Often swapped in for Adam inside T5 to drastically cut down on memory usage without losing much training speed or stability.</span>
+
+                        <strong style={{ color: 'var(--color-text-muted)' }}>Output Format:</strong>
+                        <span>A fully generated string of sequential text.</span>
+                    </div>
+                </div>
+
+                <h3>Architectural Comparison Summary</h3>
                 <div className="table-wrapper">
                     <table>
-                        <thead><tr><th></th><th>BERT</th><th>GPT</th><th>T5</th></tr></thead>
+                        <thead><tr><th>Feature</th><th>BERT</th><th>GPT</th><th>T5</th></tr></thead>
                         <tbody>
                             <tr><td>Architecture</td><td>Encoder only</td><td>Decoder only</td><td>Encoder + Decoder</td></tr>
                             <tr><td>Attention</td><td>Bidirectional</td><td>Causal (masked)</td><td>Enc: bidir, Dec: causal</td></tr>
                             <tr><td>Pre-training</td><td>MLM — predict masked tokens</td><td>CLM — predict next token</td><td>Span corruption</td></tr>
-                            <tr><td>Best for</td><td>Classification, NER, Q&amp;A</td><td>Generation, chat, code</td><td>Translation, summarization</td></tr>
-                            <tr><td>Examples</td><td>RoBERTa, DeBERTa</td><td>GPT-4, Claude, Llama</td><td>FLAN-T5, BART</td></tr>
                         </tbody>
                     </table>
                 </div>
-                <h3>Decision Rule</h3>
-                <ul>
-                    <li>"When I need to strictly understand or classify text, I select the <strong>BERT family</strong>."</li>
-                    <li>"When my goal is to generate open-ended text, I deploy the <strong>GPT family</strong>."</li>
-                    <li>"When I need to map one text sequence directly into another (like translation), I use <strong>T5 / BART</strong>."</li>
-                </ul>
-                <div className="callout"><strong>Key interview Q:</strong> Why can't BERT generate text? It has no decoder — no mechanism to produce tokens sequentially. It was never trained to predict the next token.</div>
             </section>
 
             {/* PRETRAIN FINETUNE */}
             <section className="card" id="pretrain">
                 <h2 className="card-title">Pre-training vs Fine-tuning</h2>
-                <p className="card-subtitle">"I follow a two-step paradigm: First, I rely on foundation models that have been pre-trained on billions of unsupervised tokens. Then, I fine-tune them on my specific, smaller labeled dataset to achieve state-of-the-art results."</p>
+                <p className="card-subtitle">Pre-training vs Fine-tuning is the standard deployment strategy for functionally adapting enormous models to tight, highly specific business use cases. Moving past direct inference (zero-shot) or the impossibility of training from scratch, it fundamentally solves the issue of foundation models being overly generalized by taking a deeply pre-trained backbone and rigorously training it strictly on a small, high-quality labeled dataset using tight parameter-efficient frameworks to prevent catastrophic forgetting.</p>
                 <h3>Three Fine-tuning Modes</h3>
                 <div className="table-wrapper">
                     <table>
@@ -740,7 +805,73 @@ mask = torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool()
                 <div className="callout"><strong>Catastrophic forgetting:</strong> Full fine-tuning on small data overwrites pre-trained knowledge. Prevent with low lr (1e-5), early stopping, or LoRA.</div>
             </section>
 
-            {/* ═══════════ PART 5: REFERENCE ═══════════ */}
+            {/* ═══════════ PART 4.5: LOSS, OPTIMIZATION & METRICS ═══════════ */}
+            <h2 className="part-header" style={{ color: 'var(--color-accent)', fontSize: '0.8rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--color-border)' }}>Loss Functions &amp; Evaluation Metrics</h2>
+
+            <section className="card" id="loss-functions">
+                <h2 className="card-title">Loss Functions &amp; Chain Rule Simplifications</h2>
+                <p className="card-subtitle">Loss functions act not just as metrics, but as fundamental gradient generators. By intelligently pairing a definitive loss function with a specific final layer activation, the exceedingly messy calculus of the neural chain rule perfectly reduces into a remarkably clean linear mathematical difference. This directly provides parameter weights with a proportional, flawlessly structured scalar measuring exactly how far off the resulting final probability was from the absolute truth boundaries.</p>
+
+                <h3>1. Categorical Cross-Entropy (Multi-class)</h3>
+                <p><strong>What it does with the output:</strong> It takes the raw logits, applies Softmax to create a probability distribution, and calculates the negative log-likelihood of the true class. It forces the correct class probability to 1 and all others to 0.</p>
+                <div className="math-block">{String.raw`$$\text{CCE} = -\sum y_i \log(\hat{y}_i) \quad \text{where} \quad \hat{y}_i = \frac{e^{z_i}}{\sum e^{z_k}}$$`}</div>
+                <p><strong>Chain Rule Simplification:</strong> Taking the derivative of the CE Loss with respect to the Softmax inputs {String.raw`$z_i$`} usually involves incredibly messy quotient rules. However, the properties of exponents perfectly cancel out the fractions, yielding a phenomenally simple gradient:</p>
+                <div className="math-block">{String.raw`$$\frac{\partial \text{CCE}}{\partial z_i} = \hat{y}_i - y_i$$`}</div>
+                <p><strong>Why this matters:</strong> The gradient is exactly the error! If predicted {String.raw`$\hat{y}_i = 0.9$`} and true {String.raw`$y_i = 1$`}, error is -0.1. The preceding dense layer simply receives exactly how far off it was, linearly.</p>
+
+                <h3>2. Binary Cross-Entropy (Binary)</h3>
+                <p><strong>What it does with the output:</strong> Evaluates a single sigmoid output bounding between 0 and 1, creating a steep logarithmic penalty the further the prediction is from the true binary 0 or 1 label.</p>
+                <div className="math-block">{String.raw`$$\text{BCE} = -[y\log\hat{y} + (1-y)\log(1-\hat{y})] \quad \text{where} \quad \hat{y} = \sigma(z)$$`}</div>
+                <p><strong>Chain Rule Simplification:</strong> Just like multi-class, combining BCE with the Sigmoid derivative ({String.raw`$\hat{y}(1-\hat{y})$`}) algebraically reduces to:</p>
+                <div className="math-block">{String.raw`$$\frac{\partial \text{BCE}}{\partial z} = \hat{y} - y$$`}</div>
+
+                <h3>3. Mean Squared Error (Regression)</h3>
+                <p><strong>What it does with the output:</strong> Measures the average squared difference between continuous predictions and actuals. Squaring the error heavily penalizes large outliers.</p>
+                <div className="math-block">{String.raw`$$\text{MSE} = \frac{1}{n} \sum (y_i - \hat{y}_i)^2$$`}</div>
+                <p><strong>Chain Rule Simplification:</strong> Differentiating a square merely brings down the exponent.</p>
+                <div className="math-block">{String.raw`$$\frac{\partial \text{MSE}}{\partial \hat{y}_i} = \frac{2}{n}(\hat{y}_i - y_i)$$`}</div>
+                <p><strong>Why this matters:</strong> The gradient scales linearly with the error. Small errors produce small weight updates, allowing the network to settle smoothly into the regression minimum.</p>
+            </section>
+
+            <section className="card" id="optimizers">
+                <h2 className="card-title">Optimizers &amp; Gradient Descent</h2>
+                <p className="card-subtitle">Optimizers strictly dictate how mathematical gradients are physically translated into structural parameter weight updates. Replacing the impossibility of blindly navigating non-convex high-dimensional loss landscapes, they dictate exactly how aggressively or adaptively to iteratively step mathematically contrary to the local gradient slope, establishing the final required procedure utilized universally across all iteration-based neural networks.</p>
+
+                <h3>1. Stochastic Gradient Descent (SGD)</h3>
+                <p><strong>What it does with the gradients:</strong> It takes the raw gradient of the loss with respect to a weight, simply scales it by the learning rate, and subtracts it.</p>
+                <div className="math-block">
+                    {String.raw`$$W_{\text{new}} = W_{\text{old}} - \eta \frac{\partial L}{\partial W}$$`}
+                </div>
+                <p><strong>Why use it:</strong> Rarely used entirely on its own today, but SGD with Momentum is strongly favoured by researchers for fine-tuning ResNets or CNNs where extreme generalization is needed. Its noisy trajectory escapes bad local minima better than Adam.</p>
+
+                <h3>2. Adam (Adaptive Moment Estimation)</h3>
+                <p><strong>What it does with the gradients:</strong> Instead of a single uniform learning rate, Adam computes individual adaptive learning rates for every single parameter. It keeps a running moving average of both the past gradients (1st moment, momentum) and the squared gradients (2nd moment, variance scaling).</p>
+                <div className="math-block">
+                    {String.raw`$$W_{\text{new}} = W_{\text{old}} - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}$$`}
+                </div>
+                <p><strong>Why use it:</strong> This is the universal default for almost all Deep Learning models today (Transformers, RNNs, MLPs). It aggressively forces convergence even on sparse gradients and highly erratic loss landscapes.</p>
+            </section>
+
+            <section className="card" id="evaluation-metrics">
+                <h2 className="card-title">Evaluation Metrics</h2>
+                <p className="card-subtitle">"Human-readable statistical proxy metrics for explicitly communicating actual, real-world model quality." | <strong>Solves:</strong> Cross-Entropy or MSE loss values are highly abstract, strictly comparative, and mathematically impossible to directly translate into business ROI, clinical safety, or product requirements. | <strong>How:</strong> Computing heavily discrete success matrices like Precision, Recall, F1-Score, or MAE evaluated strictly on a hold-out test set. | <strong>When:</strong> Absolutely mandatory when formally reporting validated model performance to stakeholders or making hard deployment decisions.</p>
+
+                <h3>Classification Metrics</h3>
+                <ul>
+                    <li><strong>Accuracy:</strong> Percentage of correct predictions. (Useless for imbalanced datasets).</li>
+                    <li><strong>Precision:</strong> {String.raw`$TP / (TP + FP)$`} — "Of all positive predictions, how many were actually positive?" (Crucial when false positives are expensive, e.g., spam filters).</li>
+                    <li><strong>Recall / Sensitivity:</strong> {String.raw`$TP / (TP + FN)$`} — "Of all actual positives, how many did we catch?" (Crucial when false negatives are dangerous, e.g., cancer detection).</li>
+                    <li><strong>F1-Score:</strong> Harmonic mean of Precision and Recall. Balances the two for uneven datasets.</li>
+                    <li><strong>ROC-AUC:</strong> Area under the Receiver Operating Characteristic curve. Evaluates the model's ability to rank positive instances higher than negative instances, regardless of the classification threshold.</li>
+                </ul>
+
+                <h3>Regression Metrics</h3>
+                <ul>
+                    <li><strong>MAE (Mean Absolute Error):</strong> Average absolute distance between prediction and actual. Highly interpretable business metric (e.g., "We are off by $500 on average").</li>
+                    <li><strong>RMSE (Root Mean Squared Error):</strong> Standard deviation of prediction errors. Penalizes larger errors much more heavily than MAE.</li>
+                    <li><strong>R² (Coefficient of Determination):</strong> Proportion of the variance in the target variable that is predictable from the features. Ranges from 0 to 1.</li>
+                </ul>
+            </section>
             <h2 className="part-header" style={{ color: 'var(--color-accent)', fontSize: '0.8rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--color-border)' }}>Reference</h2>
 
             {/* FORMULA SHEET */}

@@ -48,8 +48,7 @@ export default function PreModellingPage() {
       <section id="intro">
         <div className="topic-card">
           <h2 className="section-title">What is Pre-Modelling?</h2>
-          <p className="intro-text">Pre-modelling is the systematic process of interrogating your data <strong>before training any model</strong>. Think of it as the soil check before laying a building's foundations — you wouldn't start laying bricks without verifying the ground is stable.</p>
-          <p>It answers three fundamental questions:</p>
+          <p className="intro-text">The systematic process of interrogating data before training any model to validate distributions and signals. Pre-modelling replaces the critical error of laying foundations blindly by forcing statistical checks. It solves silent model failures like multicollinearity or biased coefficients before compute is wasted. It is conducted after Data Cleaning but strictly before Feature Engineering, answering if variables genuinely carry useful predictive signals.</p>
           <div className="tag-row">
             <span className="tag tag-when">Is my data healthy enough to model?</span>
             <span className="tag tag-when">Do my variables carry useful signal?</span>
@@ -85,7 +84,7 @@ export default function PreModellingPage() {
       <section id="pipeline">
         <div className="topic-card">
           <h2 className="section-title">Where Pre-Modelling Fits</h2>
-          <p className="intro-text">Pre-modelling sits <strong>after data cleaning</strong> and <strong>before feature engineering</strong>. It's the bridge between "I have data" and "I'm ready to model."</p>
+          <p className="intro-text">A discrete validation phase sitting strategically between data cleaning and feature engineering. It replaces the naive "garbage in, garbage out" pipeline flow with statistical rigor. It directly prevents the catastrophic failure of transforming broken data into models by mathematically validating assumptions early. Pre-modelling is performed strictly after missing values are imputed but before interactions or polynomials are structurally generated.</p>
           <table>
             <thead><tr><th>Stage</th><th>What You're Doing</th></tr></thead>
             <tbody>
@@ -113,7 +112,7 @@ export default function PreModellingPage() {
       <section id="cont-cont">
         <div className="topic-card">
           <h2 className="section-title">Continuous vs Continuous</h2>
-          <p className="intro-text">When both predictor and target are continuous, you measure how strongly and consistently they move together. Always pair visual checks (scatter plots) with statistical tests.</p>
+          <p className="intro-text">The mathematical assessment of linear and non-linear associations between two strictly numerical features. It replaces purely visual scatterplot interpretations. It directly flags when variables move in tandem consistently, solving the need to identify if a predictor actually drives the target. Correlation checks are run universally across numeric columns early in EDA to map initial relationships.</p>
 
 
           <div id="pearson">
@@ -192,8 +191,8 @@ print(vif.sort_values("VIF", ascending=False))      # Sort highest internal corr
       <section id="multicollinearity">
         <div className="topic-card">
           <h2 className="section-title">The Multicollinearity Problem</h2>
-          <p className="intro-text">When two or more input variables are highly correlated with <strong>each other</strong>, the model can't tell which one deserves credit for explaining the target.</p>
-          <p>Consequences: unstable coefficients (swing wildly on small data changes), inflated standard errors, wrong variable importance. Your model may predict well but explain nothing correctly.</p>
+          <p className="intro-text">A phenomenon where inputs share so much structural information they prevent the model from assigning independent attribution. It invalidates raw regression interpretation. It is solved explicitly using Variance Inflation Factors (VIF) or penalised models like Ridge, allowing true independent coefficients to emerge. It must be checked and eradicated when individual coefficients swing wildly upon small data changes or exhibit inflated standard errors.</p>
+          <p>Consequences: unstable coefficients, inflated standard errors, wrong variable importance. Your model may predict well but explain nothing correctly.</p>
 
           <div className="gotcha"><strong>Key trap:</strong> The correlation matrix only catches pairwise collinearity. VIF catches group collinearity — three or four variables that are collectively linear combinations of each other, even when no single pair exceeds 0.8.</div>
 
@@ -212,7 +211,7 @@ print(vif.sort_values("VIF", ascending=False))      # Sort highest internal corr
       <section id="cat-cont">
         <div className="topic-card">
           <h2 className="section-title">Categorical vs Continuous</h2>
-          <p className="intro-text">Does the value of a categorical variable shift the distribution of a continuous target? If all groups produce similar distributions, the variable adds nothing.</p>
+          <p className="intro-text">Statistical tests validating if discrete groups exhibit significantly different continuous output distributions. It replaces subjective box-plot visual reviews. It statistically proves whether a categorical class actually shifts a target mean enough to carry signal, filtering out useless categories. It is applied immediately whenever assessing a categorical predictor against a continuous regression target.</p>
 
           <div id="anova">
             <h3>t-test / ANOVA</h3>
@@ -287,7 +286,7 @@ print(result.summary())                             # Prints a matrix stating 'T
       <section id="cat-cat">
         <div className="topic-card">
           <h2 className="section-title">Categorical vs Categorical</h2>
-          <p className="intro-text">Does knowing the category of one variable change the probability distribution of the other? Always pair Chi-Square (significance) with Cramér's V (effect size).</p>
+          <p className="intro-text">Statistical evaluations of independence between two categorical variables. It replaces basic frequency tables by quantifying if observed counts differ significantly from random expected counts. It determines if belonging to one category naturally predicts belonging to another. It is used exclusively when comparing two discrete, non-numerical columns, like predicting churn (Yes/No) based on subscription tier (Free/Pro/Enterprise).</p>
 
           <div id="chisq">
             <h3>Chi-Square Test of Independence</h3>
@@ -365,8 +364,8 @@ print(cramers_v(df[col], df[target]))               # Small values (<0.1) mean t
       <section id="normality">
         <div className="topic-card">
           <h2 className="section-title">Normality Testing</h2>
-          <p className="intro-text">Checks whether a variable follows a Gaussian distribution. Critical nuance: <strong>linear regression requires residual normality, not input normality</strong>. Testing inputs here is early warning for likely residual problems downstream.</p>
-          <p>Always use visual + statistical together. Visuals tell you the shape; statistical tests tell you if it's detectable.</p>
+          <p className="intro-text">The explicit verification of mathematical properties required by parametric models like Linear Regression. It replaces assuming data behaves perfectly. It solves the risk of building invalid models by formally checking distributions, variance consistency, and structural linearity. Assumptions must be validated immediately before assigning final predictive features to a linear learning algorithm.</p>
+          <p>Assumption failure doesn't mean you can't model; it means <strong>you must change your approach</strong> (e.g., transform data, use robust standard errors, or switch to tree-based models).</p>
 
           <h3>Visual Checks First</h3>
           <table>
@@ -417,7 +416,7 @@ for col in num_cols:                                # Iterate numerical columns
       <section id="homoscedasticity">
         <div className="topic-card">
           <h2 className="section-title">Homoscedasticity</h2>
-          <p className="intro-text"><strong>Homo = same, scedasticity = scatter.</strong> Variance of residuals must stay constant across all predictor levels. When it fans out (heteroscedasticity), coefficients remain unbiased but standard errors become wrong — making p-values and confidence intervals unreliable.</p>
+          <p className="intro-text">Statistical tests ensuring errors exhibit constant variance across all predicted values. It replaces visual residual plots with formal mathematical bounds. It solves the problem of model uncertainty growing disproportionately for certain predictions, which actively destroys standard error calculations. It is tested using Breusch-Pagan or White's Test whenever utilizing OLS regression models.</p>
 
           <h3>Visual Check: Residual vs Fitted Plot</h3>
           <p>Plot residuals against fitted values. A flat horizontal band = homoscedastic. A cone/funnel = heteroscedastic. A curve = linearity problem too.</p>
@@ -453,7 +452,7 @@ print(f"White's Test: LM={lm_w:.3f}, p={lm_p_w:.4f}")`}</code></pre>
             <div className="d-title">Fix strategy</div>
             <ul>
               <li><strong>Mild</strong> → log transform the target variable</li>
-              <li><strong>Moderate</strong> → Weighted Least Squares (WLS): $\min \sum w_i(y_i - \hat&#123;y&#125;_i)^2$ where $w_i = 1/\text&#123;Var&#125;(\epsilon_i)$</li>
+              <li><strong>Moderate</strong> → Weighted Least Squares (WLS): $\min \sum w_i(y_i - \hat&#123;y&#123;i)^2$ where $w_i = 1/\text&#123;Var&#125;(\epsilon_i)$</li>
               <li><strong>Severe</strong> → HC3 robust standard errors: keeps coefficients, corrects the SEs</li>
               <li><strong>Cannot fix</strong> → switch to tree-based models (no assumption)</li>
             </ul>
@@ -466,7 +465,7 @@ print(f"White's Test: LM={lm_w:.3f}, p={lm_p_w:.4f}")`}</code></pre>
       <section id="linearity">
         <div className="topic-card">
           <h2 className="section-title">Linearity Assessment</h2>
-          <p className="intro-text">The relationship between inputs and target must follow a straight line for linear models. Non-linearity won't crash your model — it produces plausible-looking but <strong>systematically wrong</strong> coefficients in a structured, predictable way.</p>
+          <p className="intro-text">"I stress that for linear models, the relationship must follow a straight line. Non-linearity produces plausible-looking but <strong>systematically wrong</strong> coefficients."</p>
 
           <h3>Tests</h3>
           <table>
@@ -516,7 +515,7 @@ print(f"White's Test: LM={lm_w:.3f}, p={lm_p_w:.4f}")`}</code></pre>
       <section id="interactions">
         <div className="topic-card">
           <h2 className="section-title">Interaction Effects</h2>
-          <p className="intro-text">The effect of variable A on the target <strong>changes depending on the value of variable B</strong>. This is not just two variables both influencing the target — it's them modifying each other's influence.</p>
+          <p className="intro-text">A structural equation term representing when the effect of one input strictly depends on the value of a second input. It replaces additive models where variables never influence one another. It solves scenarios where a feature only acts as a strong predictor under specific conditional circumstances. Interactions are introduced into linear models or organically handled by tree-based algorithms when slopes cross across groups.</p>
           <p>Example: income reduces default risk strongly for salaried employees — but barely at all for self-employed. The effect of income <em>depends on</em> employment type.</p>
 
           <div className="gotcha"><strong>Critical:</strong> most models won't automatically create interaction terms. You must engineer them explicitly. Tree-based models are the exception — they detect interactions naturally via splits.</div>
@@ -550,7 +549,7 @@ print(f"Interaction p-value: {model.pvalues['X1_X2']:.4f}")    # If p<0.05, X1 a
       <section id="confounding">
         <div className="topic-card">
           <h2 className="section-title">Confounding</h2>
-          <p className="intro-text">A third variable C drives both X and Y, creating a spurious or exaggerated X→Y relationship. Classic example: ice cream sales and drowning rates correlate — not because ice cream causes drowning, but because <em>temperature</em> drives both.</p>
+          <p className="intro-text">The mathematical investigation of how variables alter each other's effects and hide true relationships. It replaces analyzing predictors in strict isolation. It solves the critical error of concluding a variable has no effect, when in reality its effect is being masked or reversed by an unseen third variable. Relationship interactions are mapped continuously throughout late-stage EDA.</p>
 
           <div className="two-col">
             <div>
@@ -609,7 +608,7 @@ print(result[['r', 'p-val']])                       # If r craters to 0, X1 was 
       <section id="target-dist">
         <div className="topic-card">
           <h2 className="section-title">Target Distribution</h2>
-          <p className="intro-text">The shape of the target determines which model family is appropriate. Most people default to linear or logistic regression without checking. Using a linear model on count data can predict negative counts — this is wrong.</p>
+          <p className="intro-text">"I always tell interviewers that the shape of the target determines the appropriate model family. Defaulting to linear models on count data, for example, can predict impossible negative counts."</p>
           <table>
             <thead><tr><th>Target Distribution</th><th>Appropriate Model Family</th></tr></thead>
             <tbody>
@@ -640,7 +639,7 @@ for dist in ['norm', 'lognorm', 'expon']:           # Normal, Log-Normal, Expone
       <section id="imbalance">
         <div className="topic-card">
           <h2 className="section-title">Class Imbalance</h2>
-          <p className="intro-text">One class heavily outnumbers another. A model trained on 95/5 imbalance achieves <strong>95% accuracy by saying "not fraud" every single time</strong> — catching zero actual fraud. Accuracy becomes a completely meaningless metric.</p>
+          <p className="intro-text">Strategies designed to normalize learning environments when one target outcome vastly outnumbers another. It replaces building models that achieve 99% accuracy by trivially ignoring the 1% minority class. It solves the catastrophic failure of algorithms missing the critical events (e.g., fraud, cancer) they were built to detect. Imbalance treatments are strictly applied inside cross-validation loops during preliminary model structuring.</p>
 
           <h3>Severity Thresholds</h3>
           <table>
@@ -681,7 +680,7 @@ print(f"After SMOTE: {dict(zip(*np.unique(y_res, return_counts=True)))}") # Conf
       <section id="outliers">
         <div className="topic-card">
           <h2 className="section-title">Target Outliers</h2>
-          <p className="intro-text">Outliers in the target are more dangerous than outliers in inputs. In OLS, every extreme value in Y exerts <strong>gravitational pull</strong> on the regression line — distorting coefficients for every variable in the model. One influential observation can shift the model's entire understanding of reality.</p>
+          <p className="intro-text">The mathematical quantification of how much a single data point skews an entire regression model. It replaces blindly deleting every outlier based on standard deviations. It solves the risk of building poor models driven entirely by a few extreme values that exert massive leverage over the coefficients. It is calculated via Cook's Distance and plotted via stem plots immediately prior to final linear model fitting.</p>
 
           <h3>IQR Rule + Z-Score (initial flagging)</h3>
           <div className="formula-block">
@@ -723,7 +722,7 @@ print(f"Cook's D > 1:   {sum(cooks_d > 1)}")        # Hard Rule Threshold: Numbe
       <section id="leakage">
         <div className="topic-card">
           <h2 className="section-title">Target Leakage</h2>
-          <p className="intro-text">The most dangerous issue in pre-modelling. Variables containing information about the target that would <strong>not exist at prediction time in production</strong>. Produces spectacular development metrics and complete production failure.</p>
+          <p className="intro-text">A critical data engineering failure where features hold future information that would be impossible to know at prediction time. It replaces blindly accepting models with unrealistically perfect metrics. It solves catastrophic production failures where models simply memorize the structural footprint of the answer rather than learning generalizable patterns. Leakage is fiercely audited during feature selection by mentally walking through the real-world timeline of every variable.</p>
 
           <div className="gotcha"><strong>The model isn't learning a pattern — it's memorising the answer.</strong></div>
 
@@ -764,6 +763,60 @@ scores = cross_val_score(pipeline, X, y, cv=5, scoring='roc_auc') # All 5 folds 
 print(f"CV AUC: {scores.mean():.4f} ± {scores.std():.4f}")        # Confirmed mathematically bounded, non-leaking AUC check`}</code></pre>
 
           <div className="gotcha"><strong>Red flag:</strong> AUC &gt; 0.97 on a non-trivial problem, or a single feature dominating importance (&gt;60%) — investigate for leakage immediately.</div>
+        </div>
+      </section>
+
+      <hr className="section-divider" />
+
+
+      <div id="cp5" className="checkpoint-header">
+        <div className="cp-num">Checkpoint 5</div>
+        <h2>Feature Scaling</h2>
+        <p>Many numeric models require features to be on the same scale to work correctly or converge efficiently. Skipping this step can ruin distance-based models or make neural networks unstable.</p>
+      </div>
+
+      <section id="scalers">
+        <div className="topic-card">
+          <h2 className="section-title">Scalers</h2>
+          <p className="intro-text">"When asked about scalers, I explain that they transform numerical data to a standard range without changing the underlying distribution shape. I choose standard, minimax, or robust scaling depending on the model and the presence of outliers."</p>
+
+          <h3>StandardScaler (Z-Score Normalization)</h3>
+          <div className="tag-row">
+            <span className="tag tag-when">Best for: Linear models, Logistic Regression, SVMs, Neural Networks</span>
+          </div>
+          <p>Shifts the mean to 0 and scales the variance to 1.</p>
+          <div className="formula-block">
+            {String.raw`$$z = \frac{x - \mu}{\sigma}$$`}
+            <p className="formula-label">x = value, {String.raw`$\mu$`} = mean, {String.raw`$\sigma$`} = standard deviation.</p>
+          </div>
+
+          <h3>MinMaxScaler</h3>
+          <div className="tag-row">
+            <span className="tag tag-when">Best for: Neural Networks, KNN, when exact bounds are needed</span>
+            <span className="tag tag-warn">Highly sensitive to outliers</span>
+          </div>
+          <p>Compresses all data strictly into a fixed range, typically [0, 1].</p>
+          <div className="formula-block">
+            {String.raw`$$x_{scaled} = \frac{x - x_{min}}{x_{max} - x_{min}}$$`}
+            <p className="formula-label">The min becomes 0, the max becomes 1, everything else scales linearly.</p>
+          </div>
+
+          <h3>RobustScaler</h3>
+          <div className="tag-row">
+            <span className="tag tag-when">Best for: Data with significant outliers</span>
+          </div>
+          <p>Like StandardScaler, but uses median and quartiles instead of mean and standard deviation, so outliers don't skew the transformation.</p>
+          <div className="formula-block">
+            {String.raw`$$x_{scaled} = \frac{x - Q_2}{Q_3 - Q_1}$$`}
+            <p className="formula-label">{String.raw`$Q_2$`} = median, {String.raw`$Q_3 - Q_1$`} = Interquartile Range (IQR).</p>
+          </div>
+
+          <pre><code className="language-python">{`from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+
+# Always fit on train, transform on both!
+std_scaler = StandardScaler()
+X_train_std = std_scaler.fit_transform(X_train)
+X_test_std = std_scaler.transform(X_test)`}</code></pre>
         </div>
       </section>
 

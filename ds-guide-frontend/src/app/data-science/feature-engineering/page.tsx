@@ -41,7 +41,7 @@ export default function FeatureEngineeringPage() {
 
             <section className="card" id="why">
                 <h2 className="card-title">Why Feature Engineering</h2>
-                <p className="card-subtitle">Raw data is almost never model-ready.</p>
+                <p className="card-subtitle">The applied practice of using domain knowledge to create new structural features that make machine learning algorithms work better. It replaces passing raw, natively unprocessed data directly into models. It solves the issue that algorithms cannot inherently understand dates, raw text, or complex combinatorial interactions natively without explicit mathematical representation. Features are engineered by generating interaction terms, extracting datetime boundaries, or creating specific boolean flags after EDA identifies missing signals, but strictly before model training.</p>
 
                 <div className="badge-container" style={{ marginBottom: '1rem' }}>
                     <span className="badge badge-blue">Before any modelling</span>
@@ -134,7 +134,7 @@ df['category_freq'] = df['category'].map(freq)         # map proportions to colu
 
             <section className="card" id="selection">
                 <h2 className="card-title">Feature Selection</h2>
-                <p className="card-subtitle">Knowing what to remove is as important as knowing what to create.</p>
+                <p className="card-subtitle">The systematic process of completely removing redundant, noisy, or irrelevant features from the dataset. It replaces the naive "more is better" approach to keeping all raw data. It solves the Curse of Dimensionality, severe catastrophic overfitting, multicollinearity, and unnecessarily bloated training times. Features are explicitly dropped using statistical testing (ANOVA), strict collinearity checks, or tree-based feature importance thresholds. This must be done universally, especially when the feature count closely approaches or exceeds the absolute sample size.</p>
 
                 <h3>Filter Methods — Statistics First, Model Never</h3>
                 <div className="table-wrapper">
@@ -244,7 +244,7 @@ print("Top features by tree importance:", list(top_k.index))`}</code></pre>
 
             <section className="card" id="dimreduction">
                 <h2 className="card-title">Dimensionality Reduction</h2>
-                <p className="card-subtitle">Synthesizing new features to compress data. The trade-off: interpretability vs signal density.</p>
+                <p className="card-subtitle">The mathematical synthesis of massive high-dimensional data into a lower-dimensional, highly dense semantic representation. It replaces hard feature selection where columns are completely dropped. It solves how to retain the underlying aggregated signal of hundreds of highly correlated variables without actually keeping hundreds of distinct columns. Data is mathematically squeezed using orthogonal transformations like PCA to extract components that independently maximize variance. Dimensionality reduction is typically deployed when confronted with massive multicollinearity or when forcefully visualizing high-dimensional data in 2D or 3D space.</p>
 
                 <h3>Principal Component Analysis (PCA)</h3>
                 <p>PCA finds directions in feature space along which data varies most, then projects data onto top k directions.</p>
@@ -268,7 +268,7 @@ print("Top features by tree importance:", list(top_k.index))`}</code></pre>
 
             <section className="card" id="autoencoders">
                 <h2 className="card-title">Autoencoders — Non-Linear PCA</h2>
-                <p className="card-subtitle">Neural network that compresses data to a bottleneck Z and reconstructs X.</p>
+                <p className="card-subtitle">A neural network architecture explicitly designed to strictly learn efficient data encodings. It replaces linear dimensionality reduction techniques like PCA. It solves PCA's mathematical inability to capture complex, non-linear manifolds and geometric relationships hidden within the feature space. Data is forced through a highly compressed bottleneck layer and the model is aggressively penalized for inaccurate reconstructions of the original input. Autoencoders are uniquely utilized for non-linear dimensionality reduction, deep anomaly detection, and unsupervised latent representation learning.</p>
                 <p>Unlike PCA, which finds straight-line linear combinations, Autoencoders learn curved manifolds.</p>
                 <div className="math-block">
                     {String.raw`$$\mathcal{L} = \frac{1}{n} \sum_{i=1}^{n} \|X_i - \hat{X}_i\|^2$$`}
